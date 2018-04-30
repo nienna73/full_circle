@@ -2,7 +2,7 @@ import subprocess
 import time
 
 video_length = 3
-# 29 minutes = 1740s
+# 29 minutes = 1740
 camera_ports = []
 
 ports_string = subprocess.check_output(["gphoto2", "--auto-detect"])
