@@ -17,5 +17,5 @@ for port in ports_string_split:
 while x < images_to_capture:
     for port in camera_ports:
         subprocess.call(["gphoto2", "--port=" + port, "--capture-image-and-download", "--filename=" + port + str(x)])
-        time.sleep(wait_interval)
-        x = x + 1
+    time.sleep(wait_interval)
+    x = x + 1
