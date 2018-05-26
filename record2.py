@@ -1,7 +1,7 @@
 import subprocess
 import time
 
-video_length = 3
+video_length = 4 
 # 29 minutes = 1740
 camera_ports = []
 x = 0
