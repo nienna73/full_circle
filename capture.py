@@ -1,8 +1,18 @@
+#!/usr/bin/env python
+
 import subprocess
 import time
 import threading
+import sys
+import datetime
 
 camera_ports = []
+images_to_capture = int(sys.argv[2])   # the total number of panoramic photos you want to take (indexed from 1)
+x = 0
+wait_interval = int(sys.argv[3])   # time to wait between taking each photo in seconds, this is not currently being used
+filename = "placeholder"
+
+number_of_ports = len(sys.argv)
 
 ports_string = subprocess.check_output(["gphoto2", "--auto-detect"])
 ports_string_split = ports_string.split()
@@ -11,10 +21,12 @@ for port in ports_string_split:
     if port[0] == 'u':
         camera_ports.append(port)
 
+while x < images_to_capture:
+    now = datetime.datetime.now()
+    filename = now.strftime("%Y-%m-%d_%H-%M-%S") + "_" + str(sys.argv[1])
+    # subprocess.call(["gphoto2", "--port=" + camera_ports[int(sys.argv[1])], "--capture-tethered", "--filename=" + filename])
 
-for port in camera_ports:
-    print("Thread" + str(x) + "started")
-    threading.Thread(target=loop1_10(port, x)).start()
+
+    subprocess.call(["gphoto2", "--port=" + camera_ports[int(sys.argv[1])], "--capture-image-and-download", "--filename=" + filename])
     x = x + 1
-    print(threading.activeCount())
-
+    time.sleep(wait_interval)
