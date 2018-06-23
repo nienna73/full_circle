@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <Placemark>
+      <name>CDATA example 1</name>
+      <description>
+        <![CDATA[
+          <h1>Point 1</h1>
+          <p><font color="red">Text is <i>more readable</i> and 
+          <b>easier to write</b> when you can avoid using entity 
+          references.</font></p>
+		<img width="450" height="300" border="2" src="http://punkoryan.com/phidgetSBC2/2012-10-05_23-30-43_53.5272333333_-113.44741.jpg" />
+        ]]>
+      </description>
+      <Point>
+        <coordinates>-113.44741,53.5272333333</coordinates>
+      </Point>
+    </Placemark>
+
+	<Placemark>
+      <name>CDATA example 2</name>
+      <description>
+        <![CDATA[
+          <h1>Point 2</h1>
+          <p><font color="red">Text is <i>more readable</i> and 
+          <b>easier to write</b> when you can avoid using entity 
+          references.</font></p>
+		<img width="450" height="300" border="2" src="http://punkoryan.com/phidgetSBC2/2012-10-05_23-31-40_53.5267466667_-113.447935.jpg" />
+        ]]>
+      </description>
+      <Point>
+        <coordinates>-113.447935,53.5267466667</coordinates>
+      </Point>
+    </Placemark>
+
+	<Placemark>
+      <name>CDATA example 3</name>
+      <description>
+        <![CDATA[
+          <h1>Point 3</h1>
+          <p><font color="red">Text is <i>more readable</i> and 
+          <b>easier to write</b> when you can avoid using entity 
+          references.</font></p>
+		<img width="450" height="300" border="2" src="http://punkoryan.com/phidgetSBC2/2012-10-05_23-32-54_53.5261033333_-113.448393333.jpg" />
+        ]]>
+      </description>
+      <Point>
+        <coordinates>-113.448393333,53.5261033333</coordinates>
+<Placemark>
+<name>2012-10-09_22-20-35</name>
+<description>
+<![CDATA[
+53.5401366667,-113.494845,<img width="450" height="300" border="2" src="http://punkoryan.com/phidgetSBC2/2012-10-09_22-20-35_53.5401366667_-113.494845.jpg" />
+]]>
+</description>
+<Point>
+<coordinates>-113.494845,53.5401366667</coordinates>
+</Point>
+</Placemark>
+</Document>
+</kml>
