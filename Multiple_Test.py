@@ -27,7 +27,7 @@ from Phidget22.Devices.VoltageInput import *
 
 def main():
     time = 60
-    
+
     #Create an interfacekit object
     try:
         rotator1 = VoltageInput()
