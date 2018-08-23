@@ -18,12 +18,14 @@ ports_string = subprocess.check_output(["gphoto2", "--auto-detect"])
 ports_string_split = ports_string.split()
 
 for port in ports_string_split:
+    port = port.decode('utf-8')
     if port[0] == 'u':
         camera_ports.append(port)
 
 while x < images_to_capture:
     now = datetime.datetime.now()
-    filename = now.strftime("%Y-%m-%d_%H-%M-%S") + "_" + str(sys.argv[1])
+    # filename = now.strftime("%Y-%m-%d_%H-%M-%S") + "_" + str(sys.argv[1])
+    filename = "%06d" % (x + 1) + "-" + str(chr(65 + int(sys.argv[1]))) + ".arw"
     # subprocess.call(["gphoto2", "--port=" + camera_ports[int(sys.argv[1])], "--capture-tethered", "--filename=" + filename])
 
 

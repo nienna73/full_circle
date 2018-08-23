@@ -14,6 +14,8 @@ from ctypes import *
 import sys
 import os
 import random
+import subprocess
+import datetime
 from time import sleep
 #Phidget specific imports
 from Phidget22.PhidgetException import *
@@ -235,13 +237,13 @@ def main():
 
     def interfaceKitVoltageChange1(interfaceKit, voltage):
         output = int(voltage*10)
-        text = "1: " + str(output)
+        text = "Wait: " + str(output)
         textLCD.writeText(LCDFont.FONT_5x8, 0, 0, text)
         textLCD.flush()
 
     def interfaceKitVoltageChange2(interfaceKit, voltage):
         output = int(voltage*10)
-        text = "2: " + str(output)
+        text = "Total: " + str(output)
         textLCD.writeText(LCDFont.FONT_5x8, 10, 0, text)
         textLCD.flush()
 
@@ -347,11 +349,23 @@ def main():
 
     def runCapture():
         print("Run")
-        frequency = int(rotator1.getSensorValue() * 10)
-        duration = int(rotator2.getSensorValue() * 10)
+        now = datetime.datetime.now()
+        dir_name = now.strftime("%Y%m%d_%Hh%Mm%Ss")
+
+        try:
+            os.chdir(str(dir_name))
+        except:
+            make_dir = subprocess.Popen(["mkdir", str(dir_name)])
+            make_dir.wait()
+            os.chdir(str(dir_name))
+
+        time_between = int(rotator1.getSensorValue() * 10)
+        total_time = int(rotator2.getSensorValue() * 10)
         # funtion_call = "python3 test.py" + str(frequency) + str(duration)
-        # "for(int i=0;i<3;i++)); do python3 test.py " + str(frequency) + " " + str(duration) + "done"
-        os.system("for i in {1..3}; do python3 test.py " + str(frequency) + " " + str(duration) + " & done")
+        # os.system("for(int i=0;i<3;i++)); do python3 test.py " + str(frequency) + " " + str(duration) + " & done")
+        # os.system("for i in {1..4}; do python3 test.py " + str(frequency) + " " + str(duration) + " & done")
+        subprocess.call(["python3", "../run_capture.py", str(total_time), str(time_between)])
+
 
 
 
