@@ -14,12 +14,14 @@ from ctypes import *
 import sys
 import os
 import random
+import signal
 import subprocess
 import datetime
+import math
 from time import sleep
 #Phidget specific imports
-from Phidget22.PhidgetException import *
 from Phidget22.Devices.DigitalInput import *
+from Phidget22.Devices.DigitalOutput import *
 from Phidget22.Devices.LCD import *
 from Phidget22.PhidgetException import *
 from Phidget22.Phidget import *
@@ -28,14 +30,15 @@ from Phidget22.Devices.VoltageInput import *
 
 
 def main():
-    time = 60
 
     #Create an interfacekit object
     try:
         rotator1 = VoltageInput()
         rotator2 = VoltageInput()
         rotator3 = VoltageInput()
-        button = DigitalInput()
+        runButton = DigitalInput()
+        killButton = DigitalInput()
+        relay = DigitalOutput()
     except RuntimeError as e:
         print("Runtime Exception: %s" % e.details)
         print("Exiting....")
@@ -272,9 +275,9 @@ def main():
             print("Phidget Exception %i: %s" % (e.code, e.details))
 
     #Digital Input functions
-    def buttonAttachHandler(e):
+    def runButtonAttachHandler(e):
 
-        ph = button
+        ph = runButton
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
             #www.phidgets.com/docs/Using_Multiple_Phidgets for information
@@ -303,9 +306,40 @@ def main():
             traceback.print_exc()
             return
 
-    def buttonDetachHandler(e):
+    def killButtonAttachHandler(e):
 
-        ph = button
+        ph = killButton
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nAttach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = ph.getDeviceSerialNumber()
+            channelClass = ph.getChannelClassName()
+            channel = ph.getChannel()
+
+            deviceClass = ph.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = ph.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Attach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
+    def runButtonDetachHandler(e):
+
+        ph = runButton
 
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -335,20 +369,68 @@ def main():
             traceback.print_exc()
             return
 
-    def buttonErrorHandler(button, errorCode, errorString):
+    def killButtonDetachHandler(e):
+
+        ph = killButton
+
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nDetach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = ph.getDeviceSerialNumber()
+            channelClass = ph.getChannelClassName()
+            channel = ph.getChannel()
+
+            deviceClass = ph.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = ph.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Detach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
+    def runButtonErrorHandler(button, errorCode, errorString):
 
         sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
 
-    def buttonStateChangeHandler(self, state):
+    def killButtonErrorHandler(button, errorCode, errorString):
+
+        sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
+
+    def runButtonStateChangeHandler(self, state):
         if(state == 1):
             runCapture()
 
-        text = "State: " + str(state)
+        text = str(state)
         textLCD.writeText(LCDFont.FONT_5x8, 10, 1, text)
+        textLCD.flush()
+
+    def killButtonStateChangeHandler(self, state):
+        if(state == 1):
+            killAll()
+
+        text = str(state)
+        textLCD.writeText(LCDFont.FONT_5x8, 13, 1, text)
         textLCD.flush()
 
     def runCapture():
         print("Run")
+        # relay.setDutyCycle(1.0)
+        # sleep(1)
+        # relay.setDutyCycle(0.0)
+
         now = datetime.datetime.now()
         dir_name = now.strftime("%Y%m%d_%Hh%Mm%Ss")
 
@@ -359,15 +441,127 @@ def main():
             make_dir.wait()
             os.chdir(str(dir_name))
 
-        time_between = int(rotator1.getSensorValue() * 10)
+        interval = int(rotator1.getSensorValue() * 10)
         total_time = int(rotator2.getSensorValue() * 10)
-        # funtion_call = "python3 test.py" + str(frequency) + str(duration)
-        # os.system("for(int i=0;i<3;i++)); do python3 test.py " + str(frequency) + " " + str(duration) + " & done")
-        # os.system("for i in {1..4}; do python3 test.py " + str(frequency) + " " + str(duration) + " & done")
-        subprocess.call(["python3", "../run_capture.py", str(total_time), str(time_between)])
+
+        camera_ports = []
+
+        ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
+        ports_strings_split = ports_strings.split()
 
 
+        for item in ports_strings_split:
+            item = item.decode('utf-8')
+            if item[0] == 'u':
+                camera_ports.append(item)
 
+        number_of_cameras = len(camera_ports)
+
+        number_of_photos = str(math.ceil(int(total_time)/int(interval)))
+
+        processes = []
+        i = 0
+        x = 0
+        while x < int(number_of_photos):
+            while i < number_of_cameras:
+                # print('i = ', i)
+                # print('x = ', x)
+                process = subprocess.Popen(["python3", "../capture.py", str(i), number_of_photos, str(interval)])
+                processes.append(process)
+                i = i + 1
+            x = x + 1
+            relay.setDutyCycle(1.0)
+            sleep(3)
+            relay.setDutyCycle(0.0)
+            sleep(int(interval) - 3)
+            # for proc in processes:
+                # os.killpg(os.getpgid(proc.pid), signal.SIGHUP)
+
+            # funtion_call = "python3 test.py" + str(frequency) + str(duration)
+            # os.system("for(int i=0;i<3;i++)); do python3 test.py " + str(frequency) + " " + str(duration) + " & done")
+            # os.system("for i in {1..4}; do python3 test.py " + str(frequency) + " " + str(duration) + " & done")
+        # subprocess.call(["python3", "../run_capture.py", str(total_time), str(interval)])
+
+    def killAll():
+        print('Kill all processes')
+        process = subprocess.Popen(['ls'])
+        os.killpg(os.getpgid(process.pid), signal.SIGTERM)
+
+    # Digital output functions
+    def relayAttachHandler(e):
+
+        ph = relay
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nAttach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = ph.getDeviceSerialNumber()
+            channelClass = ph.getChannelClassName()
+            channel = ph.getChannel()
+
+            deviceClass = ph.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = ph.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Attach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
+    def relayDetachHandler(e):
+
+        ph = relay
+
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nDetach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = ph.getDeviceSerialNumber()
+            channelClass = ph.getChannelClassName()
+            channel = ph.getChannel()
+
+            deviceClass = ph.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = ph.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Detach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
+    def relayErrorHandler(button, errorCode, errorString):
+
+        sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
+
+    def relayStateChangeHandler(self, state):
+        if(state == 1):
+            print('relay')
+
+        text = str(state)
+        textLCD.writeText(LCDFont.FONT_5x8, 13, 1, text)
+        textLCD.flush()
 
     #Main Program Code for IFkit
     try:
@@ -390,10 +584,17 @@ def main():
 
     #Setup for digital input
     try:
-        button.setOnAttachHandler(buttonAttachHandler)
-        button.setOnDetachHandler(buttonDetachHandler)
-        button.setOnErrorHandler(buttonErrorHandler)
-        button.setOnStateChangeHandler(buttonStateChangeHandler)
+        runButton.setOnAttachHandler(runButtonAttachHandler)
+        runButton.setOnDetachHandler(runButtonDetachHandler)
+        runButton.setOnErrorHandler(runButtonErrorHandler)
+        runButton.setOnStateChangeHandler(runButtonStateChangeHandler)
+        killButton.setOnAttachHandler(killButtonAttachHandler)
+        killButton.setOnDetachHandler(killButtonDetachHandler)
+        killButton.setOnErrorHandler(killButtonErrorHandler)
+        killButton.setOnStateChangeHandler(killButtonStateChangeHandler)
+        relay.setOnAttachHandler(relayAttachHandler)
+        relay.setOnDetachHandler(relayDetachHandler)
+        relay.setOnErrorHandler(relayErrorHandler)
     except PhidgetException as e:
         print("Phidget Exception %i: %s" % (e.code, e.details))
         print("Exiting....")
@@ -450,7 +651,18 @@ def main():
         exit(1)
 
     try:
-        button.openWaitForAttachment(5000)
+        runButton.setDeviceSerialNumber(120683)
+        runButton.setChannel(0)
+        runButton.open()
+        runButton.openWaitForAttachment(5000)
+        killButton.setDeviceSerialNumber(120683)
+        killButton.setChannel(1)
+        killButton.open()
+        killButton.openWaitForAttachment(5000)
+        relay.setDeviceSerialNumber(120683)
+        relay.setChannel(0)
+        relay.open()
+        relay.openWaitForAttachment(5000)
     except PhidgetException as e:
         PrintOpenErrorMessage(e, ch)
         raise EndProgramSignal("Program Terminated: Digital Input Open Failed")
@@ -495,9 +707,12 @@ def main():
         rotator3.setOnVoltageChangeHandler(None)
         rotator3.setOnSensorChangeHandler(None)
         rotator3.close()
-        button.setOnStateChangeHandler(None)
-        button.close()
+        runButton.setOnStateChangeHandler(None)
+        runButton.close()
+        killButton.setOnStateChangeHandler(None)
+        killButton.close()
         textLCD.close()
+        relay.close()
     except PhidgetException as e:
         print("Phidget Exception %i: %s" % (e.code, e.details))
         print("Exiting....")
