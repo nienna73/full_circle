@@ -463,24 +463,18 @@ def main():
         i = 0
         x = 0
         while x < int(number_of_photos):
+
             while i < number_of_cameras:
-                # print('i = ', i)
-                # print('x = ', x)
-                process = subprocess.Popen(["python3", "../capture.py", str(i), number_of_photos, str(interval)])
+                process = subprocess.Popen(["python3", "../capture.py", str(x), str(i), number_of_photos, str(interval)])
                 processes.append(process)
                 i = i + 1
+
             x = x + 1
             relay.setDutyCycle(1.0)
             sleep(3)
             relay.setDutyCycle(0.0)
             sleep(int(interval) - 3)
-            # for proc in processes:
-                # os.killpg(os.getpgid(proc.pid), signal.SIGHUP)
-
-            # funtion_call = "python3 test.py" + str(frequency) + str(duration)
-            # os.system("for(int i=0;i<3;i++)); do python3 test.py " + str(frequency) + " " + str(duration) + " & done")
-            # os.system("for i in {1..4}; do python3 test.py " + str(frequency) + " " + str(duration) + " & done")
-        # subprocess.call(["python3", "../run_capture.py", str(total_time), str(interval)])
+            i = 0
 
     def killAll():
         print('Kill all processes')
@@ -693,7 +687,7 @@ def main():
 
     print("Press Enter to quit....")
 
-    chr = sys.stdin.read(1)
+    char = sys.stdin.read(1)
 
     print("Closing...")
 

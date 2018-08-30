@@ -9,7 +9,7 @@ import os
 
 camera_ports = []
 images_to_capture = int(sys.argv[2])   # the total number of panoramic photos you want to take (indexed from 1)
-x = 0
+x = int(sys.argv[1])
 wait_interval = int(sys.argv[3])   # time to wait between taking each photo in seconds, this is not currently being used
 filename = "placeholder"
 
@@ -24,23 +24,14 @@ for port in ports_string_split:
         camera_ports.append(port)
 
 
-filename = "%06d" % (x + 1) + "-" + str(chr(65 + int(sys.argv[1]))) + ".arw"
-while(os.path.exists(filename)):
-    print('HI')
-    # x = x + 1
-    # filename = "%06d" % (x + 1) + "-" + str(chr(65 + int(sys.argv[1]))) + ".arw"
+filename = "%06d" % (x + 1) + "-" + str(chr(65 + int(sys.argv[2]))) + ".arw"
+interval = str(int(wait_interval) / 2)
+subprocess.call(["gphoto2", "--port=" + camera_ports[int(sys.argv[2])], "--capture-tethered", "2s", "--filename=" + filename])
 
-# subprocess.call(["gphoto2", "--port=" + camera_ports[int(sys.argv[1])], "--capture-tethered"])
-subprocess.call(["gphoto2", "--port=" + camera_ports[int(sys.argv[1])], "--capture-tethered", "--filename=" + filename])
 
 
 # while x < images_to_capture:
-#     now = datetime.datetime.now()
-#     # filename = now.strftime("%Y-%m-%d_%H-%M-%S") + "_" + str(sys.argv[1])
 #     filename = "%06d" % (x + 1) + "-" + str(chr(65 + int(sys.argv[1]))) + ".arw"
-#     # subprocess.call(["gphoto2", "--port=" + camera_ports[int(sys.argv[1])], "--capture-tethered", "--filename=" + filename])
-#
-#
 #     subprocess.call(["gphoto2", "--port=" + camera_ports[int(sys.argv[1])], "--capture-image-and-download", "--filename=" + filename])
 #     x = x + 1
 #     time.sleep(wait_interval)
