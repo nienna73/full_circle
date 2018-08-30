@@ -23,6 +23,7 @@ from time import sleep
 from Phidget22.Devices.DigitalInput import *
 from Phidget22.Devices.DigitalOutput import *
 from Phidget22.Devices.LCD import *
+from Phidget22.Devices.GPS import *
 from Phidget22.PhidgetException import *
 from Phidget22.Phidget import *
 from Phidget22.Net import *
@@ -36,8 +37,14 @@ def main():
         rotator1 = VoltageInput()
         rotator2 = VoltageInput()
         rotator3 = VoltageInput()
+        shutterSpeed = VoltageInput()
+        iso = VoltageInput()
+        lightSensor = VoltageInput()
         runButton = DigitalInput()
         killButton = DigitalInput()
+        toggle1 = DigitalInput()
+        toggle2 = DigitalInput()
+        toggle3 = DigitalInput()
         relay = DigitalOutput()
     except RuntimeError as e:
         print("Runtime Exception: %s" % e.details)
@@ -47,6 +54,7 @@ def main():
     #Create an TextLCD object
     try:
         textLCD = LCD()
+        gps = GPS()
     except RuntimeError as e:
         print("Runtime Exception: %s" % e.details)
         print("Exiting....")
@@ -113,6 +121,93 @@ def main():
             return
 
     def inferfaceKitAttached3(e):
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nAttach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = rotator3.getDeviceSerialNumber()
+            channelClass = rotator3.getChannelClassName()
+            channel = rotator3.getChannel()
+
+            deviceClass = rotator3.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = rotator3.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Attach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
+    def lightSensorAttached(e):
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nAttach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = rotator3.getDeviceSerialNumber()
+            channelClass = rotator3.getChannelClassName()
+            channel = rotator3.getChannel()
+
+            deviceClass = rotator3.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = rotator3.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Attach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
+    def shutterSpeedAttached(e):
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nAttach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = rotator3.getDeviceSerialNumber()
+            channelClass = rotator3.getChannelClassName()
+            channel = rotator3.getChannel()
+
+            deviceClass = rotator3.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = rotator3.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Attach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
+    def isoAttached(e):
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
             #www.phidgets.com/docs/Using_Multiple_Phidgets for information
@@ -231,6 +326,96 @@ def main():
             traceback.print_exc()
             return
 
+    def lightSensorDetached(e):
+
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nDetach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = rotator3.getDeviceSerialNumber()
+            channelClass = rotator3.getChannelClassName()
+            channel = rotator3.getChannel()
+
+            deviceClass = rotator3.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = rotator3.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Detach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
+    def shutterSpeedDetached(e):
+
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nDetach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = rotator3.getDeviceSerialNumber()
+            channelClass = rotator3.getChannelClassName()
+            channel = rotator3.getChannel()
+
+            deviceClass = rotator3.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = rotator3.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Detach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
+    def isoDetached(e):
+
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nDetach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = rotator3.getDeviceSerialNumber()
+            channelClass = rotator3.getChannelClassName()
+            channel = rotator3.getChannel()
+
+            deviceClass = rotator3.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = rotator3.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Detach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
     def interfaceKitError(e):
         try:
             source = e.device
@@ -240,20 +425,91 @@ def main():
 
     def interfaceKitVoltageChange1(interfaceKit, voltage):
         output = int(voltage*10)
-        text = "Wait: " + str(output)
+        if (toggle2.getState() == 0):
+            units = 's'
+        elif (toggle2.getState() == 1):
+            units = 'm'
+        text = "I:" + str(output) + units + " "
         textLCD.writeText(LCDFont.FONT_5x8, 0, 0, text)
         textLCD.flush()
 
     def interfaceKitVoltageChange2(interfaceKit, voltage):
         output = int(voltage*10)
-        text = "Total: " + str(output)
-        textLCD.writeText(LCDFont.FONT_5x8, 10, 0, text)
+        if (toggle3.getState() == 0):
+            units = 'm'
+        elif (toggle3.getState() == 1):
+            units = 'h'
+        text = "T:" + str(output) + units + " "
+        textLCD.writeText(LCDFont.FONT_5x8, 7, 0, text)
         textLCD.flush()
 
     def interfaceKitVoltageChange3(interfaceKit, voltage):
         output = int(voltage*10)
-        text = "3: " + str(output)
+        text = "L:" + str(output) + " "
+        textLCD.writeText(LCDFont.FONT_5x8, 13, 0, text)
+        textLCD.flush()
+
+    def lightSensorChanged(interfaceKit, voltage):
+        exponent = (0.02470) * (voltage * 200) + (-0.5727)
+        lux = pow(math.e, exponent)
+        print("Lux = " + str(lux))
+
+    def shutterSpeedChanged(interfaceKit, voltage):
+        output = voltage
+
+        if (voltage <= 0.357):
+            output = "10    "
+        elif (0.357 < voltage <= 0.714):
+            output = "4     "
+        elif (0.714 < voltage <= 1.071):
+            output = "2     "
+        elif (1.071 < voltage <= 1.428):
+            output = "1     "
+        elif (1.428 < voltage <= 1.785):
+            output = "1/30  "
+        elif (1.785 < voltage <= 2.142):
+            output = "1/50  "
+        elif (2.142 < voltage <= 2.499):
+            output = "1/100 "
+        elif (2.499 < voltage <= 2.856):
+            output = "1/250 "
+        elif (2.856 < voltage <= 3.213):
+            output = "1/400 "
+        elif (3.213 < voltage <= 3.57):
+            output = "1/500 "
+        elif (3.57 < voltage <= 3.927):
+            output = "1/800 "
+        elif (3.927 < voltage <= 4.284):
+            output = "1/1000"
+        elif (4.284 < voltage <= 4.641):
+            output = "1/1600"
+        elif (4.641 < voltage):
+            output = "1/2000"
+
+        text = "S:" + str(output)
         textLCD.writeText(LCDFont.FONT_5x8, 0, 1, text)
+        textLCD.flush()
+
+    def isoChanged(interfaceKit, voltage):
+        output = voltage
+
+        if (voltage <= 0.714):
+            output = "100   "
+        elif (0.714 < voltage <= 1.428):
+            output = "800   "
+        elif (0.1428 < voltage <= 2.142):
+            output = "1600  "
+        elif (2.142 < voltage <= 2.856):
+            output = "3200  "
+        elif (2.856 < voltage <= 3.57):
+            output = "6400  "
+        elif (3.57 < voltage <= 4.284):
+            output = "12800 "
+        elif (4.2824 < voltage):
+            output = "25600 "
+
+        text = "ISO:" + str(output)
+        textLCD.writeText(LCDFont.FONT_5x8, 10, 1, text)
         textLCD.flush()
 
     ### new code for LCD
@@ -309,6 +565,99 @@ def main():
     def killButtonAttachHandler(e):
 
         ph = killButton
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nAttach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = ph.getDeviceSerialNumber()
+            channelClass = ph.getChannelClassName()
+            channel = ph.getChannel()
+
+            deviceClass = ph.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = ph.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Attach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
+    def toggle1AttachHandler(e):
+
+        ph = toggle1
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nAttach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = ph.getDeviceSerialNumber()
+            channelClass = ph.getChannelClassName()
+            channel = ph.getChannel()
+
+            deviceClass = ph.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = ph.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Attach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
+    def toggle2AttachHandler(e):
+
+        ph = toggle2
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nAttach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = ph.getDeviceSerialNumber()
+            channelClass = ph.getChannelClassName()
+            channel = ph.getChannel()
+
+            deviceClass = ph.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = ph.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Attach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
+    def toggle3AttachHandler(e):
+
+        ph = toggle3
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
             #www.phidgets.com/docs/Using_Multiple_Phidgets for information
@@ -401,6 +750,102 @@ def main():
             traceback.print_exc()
             return
 
+    def toggle1DetachHandler(e):
+
+        ph = toggle1
+
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nDetach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = ph.getDeviceSerialNumber()
+            channelClass = ph.getChannelClassName()
+            channel = ph.getChannel()
+
+            deviceClass = ph.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = ph.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Detach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
+    def toggle2DetachHandler(e):
+
+        ph = toggle2
+
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nDetach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = ph.getDeviceSerialNumber()
+            channelClass = ph.getChannelClassName()
+            channel = ph.getChannel()
+
+            deviceClass = ph.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = ph.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Detach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
+    def toggle3DetachHandler(e):
+
+        ph = toggle3
+
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nDetach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = ph.getDeviceSerialNumber()
+            channelClass = ph.getChannelClassName()
+            channel = ph.getChannel()
+
+            deviceClass = ph.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = ph.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Detach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
     def runButtonErrorHandler(button, errorCode, errorString):
 
         sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
@@ -409,21 +854,47 @@ def main():
 
         sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
 
+    def toggleErrorHandler(button, errorCode, errorString):
+
+        sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
+
     def runButtonStateChangeHandler(self, state):
         if(state == 1):
-            runCapture()
+            if (toggle1.getState() == 0):
+                runCapture()
+            elif (toggle1.getState() == 1):
+                runRecord()
 
         text = str(state)
-        textLCD.writeText(LCDFont.FONT_5x8, 10, 1, text)
-        textLCD.flush()
+        # textLCD.writeText(LCDFont.FONT_5x8, 7, 1, text)
+        # textLCD.flush()
 
     def killButtonStateChangeHandler(self, state):
         if(state == 1):
             killAll()
 
         text = str(state)
-        textLCD.writeText(LCDFont.FONT_5x8, 13, 1, text)
+        # textLCD.writeText(LCDFont.FONT_5x8, 10, 1, text)
+        # textLCD.flush()
+
+    def toggle1StateChangeHandler(self, state):
+        text = str(state)
+        if (state == 0):
+            text = "C"
+        elif (state == 1):
+            text = "R"
+        textLCD.writeText(LCDFont.FONT_5x8, 19, 0, text)
         textLCD.flush()
+
+    def toggle2StateChangeHandler(self, state):
+        text = str(state)
+        # textLCD.writeText(LCDFont.FONT_5x8, 16, 1, text)
+        # textLCD.flush()
+
+    def toggle3StateChangeHandler(self, state):
+        text = str(state)
+        # textLCD.writeText(LCDFont.FONT_5x8, 19, 1, text)
+        # textLCD.flush()
 
     def runCapture():
         print("Run")
@@ -444,6 +915,62 @@ def main():
         interval = int(rotator1.getSensorValue() * 10)
         total_time = int(rotator2.getSensorValue() * 10)
 
+        if (toggle2.getState() == 1):
+            interval = interval * 60
+
+        if (toggle3.getState() == 1):
+            total_time = total_time * 3600
+        elif (toggle3.getState() == 0):
+            total_time = total_time * 60
+
+        shutterSpeedVoltage = shutterSpeed.getSensorValue()
+        shutterSpeedValue = ""
+        if (shutterSpeedVoltage <= 0.357):
+            shutterSpeedValue = "10"
+        elif (0.357 < shutterSpeedVoltage <= 0.714):
+            shutterSpeedValue = "4"
+        elif (0.714 < shutterSpeedVoltage <= 1.071):
+            shutterSpeedValue = "2"
+        elif (1.071 < shutterSpeedVoltage <= 1.428):
+            shutterSpeedValue = "1"
+        elif (1.428 < shutterSpeedVoltage <= 1.785):
+            shutterSpeedValue = "1/30"
+        elif (1.785 < shutterSpeedVoltage <= 2.142):
+            shutterSpeedValue = "1/50"
+        elif (2.142 < shutterSpeedVoltage <= 2.499):
+            shutterSpeedValue = "1/100"
+        elif (2.499 < shutterSpeedVoltage <= 2.856):
+            shutterSpeedValue = "1/250"
+        elif (2.856 < shutterSpeedVoltage <= 3.213):
+            shutterSpeedValue = "1/400"
+        elif (3.213 < shutterSpeedVoltage <= 3.57):
+            shutterSpeedValue = "1/500"
+        elif (3.57 < shutterSpeedVoltage <= 3.927):
+            shutterSpeedValue = "1/800"
+        elif (3.927 < shutterSpeedVoltage <= 4.284):
+            shutterSpeedValue = "1/1000"
+        elif (4.284 < shutterSpeedVoltage <= 4.641):
+            shutterSpeedValue = "1/1600"
+        elif (4.641 < shutterSpeedVoltage):
+            shutterSpeedValue = "1/2000"
+
+        isoSensorValue = iso.getSensorValue()
+        isoValue = ""
+        if (isoSensorValue <= 0.714):
+            isoValue = "100"
+        elif (0.714 < isoSensorValue <= 1.428):
+            isoValue = "800"
+        elif (0.1428 < isoSensorValue <= 2.142):
+            isoValue = "1600"
+        elif (2.142 < isoSensorValue <= 2.856):
+            isoValue = "3200"
+        elif (2.856 < isoSensorValue <= 3.57):
+            isoValue = "6400"
+        elif (3.57 < isoSensorValue <= 4.284):
+            isoValue = "12800"
+        elif (4.2824 < isoSensorValue):
+            isoValue = "25600"
+
         camera_ports = []
 
         ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
@@ -462,6 +989,11 @@ def main():
         processes = []
         i = 0
         x = 0
+
+        for port in camera_ports:
+            print(port)
+            subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + shutterSpeedValue, "--set-config-value", "iso=" + isoValue])
+
         while x < int(number_of_photos):
 
             while i < number_of_cameras:
@@ -471,13 +1003,131 @@ def main():
 
             x = x + 1
             relay.setDutyCycle(1.0)
-            sleep(3)
+            sleep(int(interval))
             relay.setDutyCycle(0.0)
-            sleep(int(interval) - 3)
             i = 0
+
+        os.chdir("../")
+
+    def runRecord():
+        print('record')
+        video_length = int(rotator3.getSensorValue() * 10)
+        total_time = int(rotator2.getSensorValue() * 10)
+        number_of_videos = int(math.ceil(total_time / video_length))
+        interval = int(rotator1.getSensorValue() * 10)
+
+        shutterSpeedVoltage = shutterSpeed.getSensorValue()
+        shutterSpeedValue = ""
+        if (shutterSpeedVoltage <= 0.357):
+            shutterSpeedValue = "10"
+        elif (0.357 < shutterSpeedVoltage <= 0.714):
+            shutterSpeedValue = "4"
+        elif (0.714 < shutterSpeedVoltage <= 1.071):
+            shutterSpeedValue = "2"
+        elif (1.071 < shutterSpeedVoltage <= 1.428):
+            shutterSpeedValue = "1"
+        elif (1.428 < shutterSpeedVoltage <= 1.785):
+            shutterSpeedValue = "1/30"
+        elif (1.785 < shutterSpeedVoltage <= 2.142):
+            shutterSpeedValue = "1/50"
+        elif (2.142 < shutterSpeedVoltage <= 2.499):
+            shutterSpeedValue = "1/100"
+        elif (2.499 < shutterSpeedVoltage <= 2.856):
+            shutterSpeedValue = "1/250"
+        elif (2.856 < shutterSpeedVoltage <= 3.213):
+            shutterSpeedValue = "1/400"
+        elif (3.213 < shutterSpeedVoltage <= 3.57):
+            shutterSpeedValue = "1/500"
+        elif (3.57 < shutterSpeedVoltage <= 3.927):
+            shutterSpeedValue = "1/800"
+        elif (3.927 < shutterSpeedVoltage <= 4.284):
+            shutterSpeedValue = "1/1000"
+        elif (4.284 < shutterSpeedVoltage <= 4.641):
+            shutterSpeedValue = "1/1600"
+        elif (4.641 < shutterSpeedVoltage):
+            shutterSpeedValue = "1/2000"
+
+        isoSensorValue = iso.getSensorValue()
+        isoValue = ""
+        if (isoSensorValue <= 0.714):
+            isoValue = "100"
+        elif (0.714 < isoSensorValue <= 1.428):
+            isoValue = "800"
+        elif (0.1428 < isoSensorValue <= 2.142):
+            isoValue = "1600"
+        elif (2.142 < isoSensorValue <= 2.856):
+            isoValue = "3200"
+        elif (2.856 < isoSensorValue <= 3.57):
+            isoValue = "6400"
+        elif (3.57 < isoSensorValue <= 4.284):
+            isoValue = "12800"
+        elif (4.2824 < isoSensorValue):
+            isoValue = "25600"
+
+        # if (toggle2.getState() == 1):
+        #     interval = interval * 60
+        #
+        # if (toggle3.getState() == 1):
+        #     total_time = total_time * 3600
+        # elif (toggle3.getState() == 0):
+        #     total_time = total_time * 60
+
+
+        camera_ports = []
+
+        ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
+        ports_strings_split = ports_strings.split()
+
+
+        for item in ports_strings_split:
+            item = item.decode('utf-8')
+            if item[0] == 'u':
+                camera_ports.append(item)
+
+        for port in camera_ports:
+            print(port)
+            subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + shutterSpeedValue, "--set-config-value", "iso=" + isoValue])
+
+        subprocess.Popen(["python3", "record2.py", str(video_length), str(number_of_videos), str(interval)])
 
     def killAll():
         print('Kill all processes')
+        try:
+            rotator1.setOnVoltageChangeHandler(None)
+            rotator1.setOnSensorChangeHandler(None)
+            rotator1.close()
+            rotator2.setOnVoltageChangeHandler(None)
+            rotator2.setOnSensorChangeHandler(None)
+            rotator2.close()
+            rotator3.setOnVoltageChangeHandler(None)
+            rotator3.setOnSensorChangeHandler(None)
+            rotator3.close()
+            shutterSpeed.setOnVoltageChangeHandler(None)
+            shutterSpeed.setOnSensorChangeHandler(None)
+            shutterSpeed.close()
+            iso.setOnVoltageChangeHandler(None)
+            iso.setOnSensorChangeHandler(None)
+            iso.close()
+            lightSensor.setOnVoltageChangeHandler(None)
+            lightSensor.setOnSensorChangeHandler(None)
+            lightSensor.close()
+            runButton.setOnStateChangeHandler(None)
+            runButton.close()
+            killButton.setOnStateChangeHandler(None)
+            killButton.close()
+            toggle1.setOnStateChangeHandler(None)
+            toggle1.close()
+            toggle2.setOnStateChangeHandler(None)
+            toggle2.close()
+            toggle3.setOnStateChangeHandler(None)
+            toggle3.close()
+            textLCD.close()
+            relay.close()
+        except PhidgetException as e:
+            print("Phidget Exception %i: %s" % (e.code, e.details))
+            print("Exiting....")
+            exit(1)
+
         process = subprocess.Popen(['ls'])
         os.killpg(os.getpgid(process.pid), signal.SIGTERM)
 
@@ -571,6 +1221,18 @@ def main():
         rotator3.setOnDetachHandler(interfaceKitDetached3)
         rotator3.setOnErrorHandler(interfaceKitError)
         rotator3.setOnVoltageChangeHandler(interfaceKitVoltageChange3)
+        shutterSpeed.setOnAttachHandler(shutterSpeedAttached)
+        shutterSpeed.setOnDetachHandler(shutterSpeedDetached)
+        shutterSpeed.setOnErrorHandler(interfaceKitError)
+        shutterSpeed.setOnVoltageChangeHandler(shutterSpeedChanged)
+        iso.setOnAttachHandler(isoAttached)
+        iso.setOnDetachHandler(isoDetached)
+        iso.setOnErrorHandler(interfaceKitError)
+        iso.setOnVoltageChangeHandler(isoChanged)
+        lightSensor.setOnAttachHandler(lightSensorAttached)
+        lightSensor.setOnDetachHandler(lightSensorDetached)
+        lightSensor.setOnErrorHandler(interfaceKitError)
+        lightSensor.setOnVoltageChangeHandler(lightSensorChanged)
     except PhidgetException as e:
         print("Phidget Exception %i: %s" % (e.code, e.details))
         print("Exiting....")
@@ -586,6 +1248,18 @@ def main():
         killButton.setOnDetachHandler(killButtonDetachHandler)
         killButton.setOnErrorHandler(killButtonErrorHandler)
         killButton.setOnStateChangeHandler(killButtonStateChangeHandler)
+        toggle1.setOnAttachHandler(toggle1AttachHandler)
+        toggle1.setOnDetachHandler(toggle1DetachHandler)
+        toggle1.setOnErrorHandler(toggleErrorHandler)
+        toggle1.setOnStateChangeHandler(toggle1StateChangeHandler)
+        toggle2.setOnAttachHandler(toggle2AttachHandler)
+        toggle2.setOnDetachHandler(toggle2DetachHandler)
+        toggle2.setOnErrorHandler(toggleErrorHandler)
+        toggle2.setOnStateChangeHandler(toggle2StateChangeHandler)
+        toggle3.setOnAttachHandler(toggle3AttachHandler)
+        toggle3.setOnDetachHandler(toggle3DetachHandler)
+        toggle3.setOnErrorHandler(toggleErrorHandler)
+        toggle3.setOnStateChangeHandler(toggle3StateChangeHandler)
         relay.setOnAttachHandler(relayAttachHandler)
         relay.setOnDetachHandler(relayDetachHandler)
         relay.setOnErrorHandler(relayErrorHandler)
@@ -648,14 +1322,32 @@ def main():
         runButton.setDeviceSerialNumber(120683)
         runButton.setChannel(0)
         runButton.open()
+        print('Wait for button 0 attach...')
         runButton.openWaitForAttachment(5000)
         killButton.setDeviceSerialNumber(120683)
         killButton.setChannel(1)
         killButton.open()
+        print('Wait for button 1 attach...')
         killButton.openWaitForAttachment(5000)
+        toggle1.setDeviceSerialNumber(120683)
+        toggle1.setChannel(2)
+        toggle1.open()
+        print('Wait for toggle 2 attach...')
+        toggle1.openWaitForAttachment(5000)
+        toggle2.setDeviceSerialNumber(120683)
+        toggle2.setChannel(3)
+        toggle2.open()
+        print('Wait for toggle 3 attach...')
+        toggle2.openWaitForAttachment(5000)
+        toggle3.setDeviceSerialNumber(120683)
+        toggle3.setChannel(4)
+        toggle3.open()
+        print('Wait for toggle 4 attach...')
+        toggle3.openWaitForAttachment(5000)
         relay.setDeviceSerialNumber(120683)
         relay.setChannel(0)
         relay.open()
+        print('Wait for relay attach...')
         relay.openWaitForAttachment(5000)
     except PhidgetException as e:
         PrintOpenErrorMessage(e, ch)
@@ -663,21 +1355,130 @@ def main():
 
     textLCD.setBacklight(1)
 
+    #### New code for GPS
+    def gpsAttachHandler(self):
+
+        ph = gps
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nAttach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            channelClassName = ph.getChannelClassName()
+            serialNumber = ph.getDeviceSerialNumber()
+            channel = ph.getChannel()
+            if(ph.getDeviceClass() == DeviceClass.PHIDCLASS_VINT):
+                hubPort = ph.getHubPort()
+                print("\n\t-> Channel Class: " + channelClassName + "\n\t-> Serial Number: " + str(serialNumber) +
+                    "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel:  " + str(channel) + "\n")
+            else:
+                print("\n\t-> Channel Class: " + channelClassName + "\n\t-> Serial Number: " + str(serialNumber) +
+                        "\n\t-> Channel:  " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Attach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
+    def gpsDetachHandler(self):
+
+        ph = gps
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nDetach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = ph.getDeviceSerialNumber()
+            channelClass = ph.getChannelClassName()
+            channel = ph.getChannel()
+
+            deviceClass = ph.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel:  " + str(channel) + "\n")
+            else:
+                hubPort = ph.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel:  " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Detach Event:")
+            DisplayError(e)
+            traceback.print_exc()
+            return
+
+    def gpsErrorHandler(self, errorCode, errorString):
+
+        sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
+
+    def gpsPositionChangeHandler(self, latitude, longitude, altitude):
+
+        #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+        #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+        print("\n[Position Event] -> Latitude:  %7.3f\n", latitude)
+        print("                 -> Longitude: %7.3f\n", longitude)
+        print("                 -> Altitude:  %7.3f\n", altitude)
+
+
+    try:
+        gps.setDeviceSerialNumber(131151)
+        gps.setChannel(0)
+        gps.setOnAttachHandler(gpsAttachHandler)
+        gps.setOnDetachHandler(gpsDetachHandler)
+        gps.setOnErrorHandler(gpsErrorHandler)
+        print('Wait for GPS attach...')
+        gps.openWaitForAttachment(5000)
+    except PhidgetException as e:
+        print("Phidget Exception %i: %s" % (e.code, e.details))
+        print("Exiting....")
+        exit(1)
+
     try:
         rotator1.setDeviceSerialNumber(120683)
         rotator1.setChannel(0)
         rotator1.open()
+        print('Wait for rotator 0 attach...')
         rotator1.openWaitForAttachment(5000)
-        sleep(2)
+        sleep(1)
         rotator2.setDeviceSerialNumber(120683)
         rotator2.setChannel(2)
         rotator2.open()
+        print('Wait for rotator 2 attach...')
         rotator2.openWaitForAttachment(5000)
-        sleep(2)
+        sleep(1)
         rotator3.setDeviceSerialNumber(120683)
         rotator3.setChannel(5)
         rotator3.open()
+        print('Wait for rotator 5 attach...')
         rotator3.openWaitForAttachment(5000)
+        sleep(1)
+        shutterSpeed.setDeviceSerialNumber(120683)
+        shutterSpeed.setChannel(4)
+        shutterSpeed.open()
+        print('Wait for shutter speed 4 attach...')
+        shutterSpeed.openWaitForAttachment(5000)
+        sleep(1)
+        iso.setDeviceSerialNumber(120683)
+        iso.setChannel(3)
+        iso.open()
+        print('Wait for iso 3 attach...')
+        iso.openWaitForAttachment(5000)
+        lightSensor.setDeviceSerialNumber(120683)
+        lightSensor.setChannel(6)
+        lightSensor.open()
+        print('Wait for light sensor 6 attach...')
+        lightSensor.openWaitForAttachment(5000)
+        sleep(1)
     except PhidgetException as e:
         print("Phidget Exception %i: %s" % (e.code, e.details))
         print("Exiting....")
@@ -686,6 +1487,7 @@ def main():
     sleep(10)
 
     print("Press Enter to quit....")
+    # print(str(gps.getLongitude()))
 
     char = sys.stdin.read(1)
 
@@ -701,11 +1503,27 @@ def main():
         rotator3.setOnVoltageChangeHandler(None)
         rotator3.setOnSensorChangeHandler(None)
         rotator3.close()
+        shutterSpeed.setOnVoltageChangeHandler(None)
+        shutterSpeed.setOnSensorChangeHandler(None)
+        shutterSpeed.close()
+        iso.setOnVoltageChangeHandler(None)
+        iso.setOnSensorChangeHandler(None)
+        iso.close()
+        lightSensor.setOnVoltageChangeHandler(None)
+        lightSensor.setOnSensorChangeHandler(None)
+        lightSensor.close()
         runButton.setOnStateChangeHandler(None)
         runButton.close()
         killButton.setOnStateChangeHandler(None)
         killButton.close()
+        toggle1.setOnStateChangeHandler(None)
+        toggle1.close()
+        toggle2.setOnStateChangeHandler(None)
+        toggle2.close()
+        toggle3.setOnStateChangeHandler(None)
+        toggle3.close()
         textLCD.close()
+        gps.close()
         relay.close()
     except PhidgetException as e:
         print("Phidget Exception %i: %s" % (e.code, e.details))
