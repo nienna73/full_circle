@@ -429,6 +429,9 @@ def main():
             units = 's'
         elif (toggle2.getState() == 1):
             units = 'm'
+
+        if (output < 4):
+            output = 4
         text = "I:" + str(output) + units + " "
         textLCD.writeText(LCDFont.FONT_5x8, 0, 0, text)
         textLCD.flush()
@@ -440,13 +443,36 @@ def main():
         elif (toggle3.getState() == 1):
             units = 'h'
         text = "T:" + str(output) + units + " "
-        textLCD.writeText(LCDFont.FONT_5x8, 7, 0, text)
+        textLCD.writeText(LCDFont.FONT_5x8, 6, 0, text)
         textLCD.flush()
 
     def interfaceKitVoltageChange3(interfaceKit, voltage):
-        output = int(voltage*10)
-        text = "L:" + str(output) + " "
-        textLCD.writeText(LCDFont.FONT_5x8, 13, 0, text)
+        volt = int(voltage*10)
+
+        if (volt <= 4.9):
+            output = 1
+        elif (4.9 < volt <= 9.8):
+            output = 2
+        elif (9.8 < volt <= 14.7):
+            output = 3
+        elif (14.7 < volt <= 19.6):
+            output = 4
+        elif (19.6 < volt <= 24.5):
+            output = 5
+        elif (24.5 < volt <= 29.4):
+            output = 10
+        elif (29.4 < volt <= 34.3):
+            output = 15
+        elif (34.3 < volt <= 39.2):
+            output = 20
+        elif (39.2 < volt <= 44.1):
+            output = 25
+        elif (44.1 < volt):
+            output = 30         # where 30 = 29.5 'cause the cameras can't record that long
+
+
+        text = "L:" + str(output) + "m "
+        textLCD.writeText(LCDFont.FONT_5x8, 12, 0, text)
         textLCD.flush()
 
     def lightSensorChanged(interfaceKit, voltage):
@@ -486,7 +512,7 @@ def main():
         elif (4.641 < voltage):
             output = "1/2000"
 
-        text = "S:" + str(output)
+        text = str(output)
         textLCD.writeText(LCDFont.FONT_5x8, 0, 1, text)
         textLCD.flush()
 
@@ -508,8 +534,8 @@ def main():
         elif (4.2824 < voltage):
             output = "25600 "
 
-        text = "ISO:" + str(output)
-        textLCD.writeText(LCDFont.FONT_5x8, 10, 1, text)
+        text = str(output)
+        textLCD.writeText(LCDFont.FONT_5x8, 7, 1, text)
         textLCD.flush()
 
     ### new code for LCD
@@ -880,9 +906,9 @@ def main():
     def toggle1StateChangeHandler(self, state):
         text = str(state)
         if (state == 0):
-            text = "C"
+            text = "CAP"
         elif (state == 1):
-            text = "R"
+            text = "REC"
         textLCD.writeText(LCDFont.FONT_5x8, 19, 0, text)
         textLCD.flush()
 
@@ -917,6 +943,8 @@ def main():
 
         if (toggle2.getState() == 1):
             interval = interval * 60
+        elif (toggle2.getState() == 0 and interval < 4):
+            interval = 4
 
         if (toggle3.getState() == 1):
             total_time = total_time * 3600
@@ -990,12 +1018,16 @@ def main():
         i = 0
         x = 0
 
+        textLCD.writeText(LCDFont.FONT_5x8, 15, 1, 'PREP')
+        textLCD.flush()
         for port in camera_ports:
             print(port)
             subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + shutterSpeedValue, "--set-config-value", "iso=" + isoValue])
 
         while x < int(number_of_photos):
-
+            status = str(x + 1) + '/' + str(number_of_photos) + '   '
+            textLCD.writeText(LCDFont.FONT_5x8, 13, 1, status)
+            textLCD.flush()
             while i < number_of_cameras:
                 process = subprocess.Popen(["python3", "../capture.py", str(x), str(i), number_of_photos, str(interval)])
                 processes.append(process)
@@ -1011,9 +1043,9 @@ def main():
 
     def runRecord():
         print('record')
-        video_length = int(rotator3.getSensorValue() * 10)
+        video_length = int(rotator3.getSensorValue() * 10) * 60
         total_time = int(rotator2.getSensorValue() * 10)
-        number_of_videos = int(math.ceil(total_time / video_length))
+
         interval = int(rotator1.getSensorValue() * 10)
 
         shutterSpeedVoltage = shutterSpeed.getSensorValue()
@@ -1064,13 +1096,39 @@ def main():
         elif (4.2824 < isoSensorValue):
             isoValue = "25600"
 
-        # if (toggle2.getState() == 1):
-        #     interval = interval * 60
-        #
-        # if (toggle3.getState() == 1):
-        #     total_time = total_time * 3600
-        # elif (toggle3.getState() == 0):
-        #     total_time = total_time * 60
+        rawLength = rotator3.getSensorValue() * 10
+        if (rawLength <= 4.9):
+            video_length = 1
+        elif (4.9 < rawLength <= 9.8):
+            video_length = 2
+        elif (9.8 < rawLength <= 14.7):
+            video_length = 3
+        elif (14.7 < rawLength <= 19.6):
+            video_length = 4
+        elif (19.6 < rawLength <= 24.5):
+            video_length = 5
+        elif (24.5 < rawLength <= 29.4):
+            video_length = 10
+        elif (29.4 < rawLength <= 34.3):
+            video_length = 15
+        elif (34.3 < rawLength <= 39.2):
+            video_length = 20
+        elif (39.2 < rawLength <= 44.1):
+            video_length = 25
+        elif (44.1 < rawLength):
+            video_length = 29         # where 30 = 29.5 'cause the cameras can't record that long
+
+        video_length = video_length * 60
+
+        if (toggle2.getState() == 1):
+            interval = interval * 60
+
+        if (toggle3.getState() == 1):
+            total_time = total_time * 3600
+        elif (toggle3.getState() == 0):
+            total_time = total_time * 60
+
+        number_of_videos = int(math.ceil(total_time / video_length))
 
 
         camera_ports = []
@@ -1084,10 +1142,14 @@ def main():
             if item[0] == 'u':
                 camera_ports.append(item)
 
+        textLCD.writeText(LCDFont.FONT_5x8, 15, 1, 'PREP')
+        textLCD.flush()
         for port in camera_ports:
             print(port)
             subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + shutterSpeedValue, "--set-config-value", "iso=" + isoValue])
 
+        textLCD.writeText(LCDFont.FONT_5x8, 15, 1, 'ON  ')
+        textLCD.flush()
         subprocess.Popen(["python3", "record2.py", str(video_length), str(number_of_videos), str(interval)])
 
     def killAll():
