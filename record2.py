@@ -30,4 +30,4 @@ while (x < total_videos):
         subprocess.call(["gphoto2", "--port=" + port, "--set-config", "movie=0"])
 
     x = x + 1
-    time.sleep(interval)
+    time.sleep(interval - video_length)

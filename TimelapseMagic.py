@@ -1128,7 +1128,7 @@ def main():
         elif (toggle3.getState() == 0):
             total_time = total_time * 60
 
-        number_of_videos = int(math.ceil(total_time / video_length))
+        number_of_videos = int(math.ceil(total_time / interval))
 
 
         camera_ports = []
