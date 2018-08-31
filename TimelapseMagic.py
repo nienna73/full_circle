@@ -430,8 +430,9 @@ def main():
         elif (toggle2.getState() == 1):
             units = 'm'
 
-        if (output < 4):
+        if (toggle2.getState() == 0 and output < 4):
             output = 4
+
         text = "I:" + str(output) + units + " "
         textLCD.writeText(LCDFont.FONT_5x8, 0, 0, text)
         textLCD.flush()
