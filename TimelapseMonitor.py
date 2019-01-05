@@ -17,4 +17,4 @@ while True:
         os.system('gnome-terminal -x python3 /home/ryan/Documents/full_circle/TimelapseMagic.py')
         print('Relaunching Program')
 
-    time.sleep(30)
+    time.sleep(10)
