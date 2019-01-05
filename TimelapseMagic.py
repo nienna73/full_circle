@@ -28,8 +28,7 @@ from Phidget22.PhidgetException import *
 from Phidget22.Phidget import *
 from Phidget22.Net import *
 from Phidget22.Devices.VoltageInput import *
-#custom imports
-from file_monitor import check_shutter_and_iso
+
 
 
 def main():
@@ -1040,14 +1039,8 @@ def main():
 
             x = x + 1
             relay.setDutyCycle(1.0)
-            sleep(20)
-            # sleep(int(interval))
+            sleep(int(interval))
             relay.setDutyCycle(0.0)
-            path = "/home/ryan/" + str(dir_name)
-            results = check_shutter_and_iso(files, path)
-            print(results['iso'])
-            print(results['shutter'])
-            files = os.listdir(path)
             i = 0
 
         os.chdir("../")
