@@ -87,7 +87,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Attach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -116,7 +116,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Attach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -145,7 +145,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Attach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -174,7 +174,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Attach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -203,7 +203,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Attach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -232,7 +232,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Attach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -262,7 +262,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Detach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -292,7 +292,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Detach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -322,7 +322,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Detach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -352,7 +352,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Detach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -382,7 +382,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Detach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -412,7 +412,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Detach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -585,7 +585,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Attach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -616,7 +616,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Attach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -647,7 +647,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Attach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -678,7 +678,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Attach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -709,7 +709,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Attach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -741,7 +741,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Detach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -773,7 +773,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Detach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -805,7 +805,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Detach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -837,7 +837,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Detach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -869,7 +869,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Detach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -1021,6 +1021,7 @@ def main():
 
         textLCD.writeText(LCDFont.FONT_5x8, 15, 1, 'PREP')
         textLCD.flush()
+        camera_ports.sort(reverse = True)
         for port in camera_ports:
             print(port)
             subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + shutterSpeedValue, "--set-config-value", "iso=" + isoValue])
@@ -1036,7 +1037,8 @@ def main():
 
             x = x + 1
             relay.setDutyCycle(1.0)
-            sleep(int(interval))
+            # sleep(int(interval))
+            sleep(20)
             relay.setDutyCycle(0.0)
             i = 0
 
@@ -1151,7 +1153,7 @@ def main():
 
         textLCD.writeText(LCDFont.FONT_5x8, 15, 1, 'ON  ')
         textLCD.flush()
-        subprocess.Popen(["python3", "record2.py", str(video_length), str(number_of_videos), str(interval)])
+        subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/record2.py", str(video_length), str(number_of_videos), str(interval)])
 
     def killAll():
         print('Kill all processes')
@@ -1222,7 +1224,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Attach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -1254,7 +1256,7 @@ def main():
 
         except PhidgetException as e:
             print("\nError in Detach Event:")
-            DisplayError(e)
+            #DisplayError(e)
             traceback.print_exc()
             return
 
@@ -1444,7 +1446,7 @@ def main():
 
 #        except PhidgetException as e:
 #            print("\nError in Attach Event:")
-#            DisplayError(e)
+#            #DisplayError(e)
 #            traceback.print_exc()
 #            return
 
@@ -1475,7 +1477,7 @@ def main():
 #
 #        except PhidgetException as e:
 #            print("\nError in Detach Event:")
-#            DisplayError(e)
+#            #DisplayError(e)
 #            traceback.print_exc()
 #            return
 
