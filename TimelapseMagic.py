@@ -28,6 +28,8 @@ from Phidget22.PhidgetException import *
 from Phidget22.Phidget import *
 from Phidget22.Net import *
 from Phidget22.Devices.VoltageInput import *
+#custom imports
+from file_monitor import check_shutter_and_iso
 
 
 def main():
@@ -1026,6 +1028,7 @@ def main():
             print(port)
             subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + shutterSpeedValue, "--set-config-value", "iso=" + isoValue])
 
+        files = []
         while x < int(number_of_photos):
             status = str(x + 1) + '/' + str(number_of_photos) + '   '
             textLCD.writeText(LCDFont.FONT_5x8, 13, 1, status)
@@ -1037,8 +1040,14 @@ def main():
 
             x = x + 1
             relay.setDutyCycle(1.0)
-            sleep(int(interval))
+            sleep(20)
+            # sleep(int(interval))
             relay.setDutyCycle(0.0)
+            path = "/home/ryan/" + str(dir_name)
+            results = check_shutter_and_iso(files, path)
+            print(results['iso'])
+            print(results['shutter'])
+            files = os.listdir(path)
             i = 0
 
         os.chdir("../")
