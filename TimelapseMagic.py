@@ -1037,8 +1037,7 @@ def main():
 
             x = x + 1
             relay.setDutyCycle(1.0)
-            # sleep(int(interval))
-            sleep(20)
+            sleep(int(interval))
             relay.setDutyCycle(0.0)
             i = 0
 

@@ -26,7 +26,7 @@ for port in ports_string_split:
 camera_ports.sort(reverse = True)
 filename = "%06d" % (x + 1) + "-" + str(chr(65 + int(sys.argv[2]))) + ".arw"
 interval = str(int(wait_interval) / 2)
-subprocess.call(["gphoto2", "--port=" + camera_ports[int(sys.argv[2])], "--capture-tethered", "20s", "--filename=" + filename])
+subprocess.call(["gphoto2", "--port=" + camera_ports[int(sys.argv[2])], "--capture-tethered", "1s", "--filename=" + filename])
 
 
 # while x < images_to_capture:
