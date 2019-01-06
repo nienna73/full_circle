@@ -171,6 +171,7 @@ def main():
             # time.sleep(1)
             # relay.setDutyCycle(0.0)
             files = os.listdir(path)
+            os.chdir("../")
 
 
     #Close the relay
