@@ -10,11 +10,10 @@ def check_shutter_and_iso(old_files, path):
     for file in new_files:
         if file not in old_files:
             print(file)
-            if ".jpg" in file or ".arw" in file:
+            if ".jpg" in file.lower() or ".arw" in file.lower():
                 iso = subprocess.check_output(["exiftool", "-iso", path+'/'+file])
                 iso = iso.decode('utf-8')
                 iso = iso.split(':')
                 iso = iso[1].strip()
-                print(iso)
                 shutter_speed = subprocess.check_output(["exiftool", "-shutterspeed", path+'/'+file]).decode('utf-8').split(':')[1].strip()
     return {'iso':iso, 'shutter':shutter_speed}
