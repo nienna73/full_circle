@@ -606,14 +606,17 @@ def main():
     ### new code for LCD
 
     #Event Handler Callback Functions
+    # Standard phidget LCD attach handler
     def TextLCDAttached(e):
         attached = e.device
         print("TextLCD %i Attached!" % (attached.getSerialNum()))
 
+    # Standard phidget LCD detach handler
     def TextLCDDetached(e):
         detached = e.device
         print("TextLCD %i Detached!" % (detached.getSerialNum()))
 
+    # Standard phidget LCD error handler
     def TextLCDError(e):
         try:
             source = e.device
@@ -622,6 +625,7 @@ def main():
             print("Phidget Exception %i: %s" % (e.code, e.details))
 
     #Digital Input functions
+    # Run button attach handler
     def runButtonAttachHandler(e):
 
         ph = runButton
@@ -653,6 +657,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Kill button attach handler
     def killButtonAttachHandler(e):
 
         ph = killButton
@@ -684,6 +689,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Toggle1 attach handler
     def toggle1AttachHandler(e):
 
         ph = toggle1
@@ -715,6 +721,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Toggle 2 attach handler
     def toggle2AttachHandler(e):
 
         ph = toggle2
@@ -746,6 +753,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Toggle 3 attach handler
     def toggle3AttachHandler(e):
 
         ph = toggle3
@@ -777,6 +785,8 @@ def main():
             traceback.print_exc()
             return
 
+
+    # Run button detach handler
     def runButtonDetachHandler(e):
 
         ph = runButton
@@ -809,6 +819,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Kill button detach handler
     def killButtonDetachHandler(e):
 
         ph = killButton
@@ -841,6 +852,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Toggle 1 detach handler
     def toggle1DetachHandler(e):
 
         ph = toggle1
@@ -873,6 +885,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Toggle 2 detach handler
     def toggle2DetachHandler(e):
 
         ph = toggle2
@@ -905,6 +918,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Toggle 3 detach handler
     def toggle3DetachHandler(e):
 
         ph = toggle3
@@ -937,38 +951,42 @@ def main():
             traceback.print_exc()
             return
 
+    # Run button error handler
     def runButtonErrorHandler(button, errorCode, errorString):
 
         sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
 
+    # Kill button error handler
     def killButtonErrorHandler(button, errorCode, errorString):
 
         sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
 
+    # Toggle error handler, shared by all toggles
     def toggleErrorHandler(button, errorCode, errorString):
 
         sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
 
+    # Run button state change handler
+    # This gets called every time the run button's state changes
     def runButtonStateChangeHandler(self, state):
         if(state == 1):
+            # Run the appropriate function
             if (toggle1.getState() == 0):
                 runCapture()
             elif (toggle1.getState() == 1):
                 runRecord()
 
-        text = str(state)
-        # textLCD.writeText(LCDFont.FONT_5x8, 7, 1, text)
-        # textLCD.flush()
-
+    # Kill button state handler
+    # This gets called every time the kill button is pressed
     def killButtonStateChangeHandler(self, state):
         if(state == 1):
+            # If pressed, properly shut down all running processes
             killAll()
 
-        text = str(state)
-        # textLCD.writeText(LCDFont.FONT_5x8, 10, 1, text)
-        # textLCD.flush()
 
+    # State change handler for toggle 1
     def toggle1StateChangeHandler(self, state):
+        # Toggle 1 decides if the system will record video or capture stills
         text = str(state)
         if (state == 0):
             text = "CAP"
@@ -977,25 +995,33 @@ def main():
         textLCD.writeText(LCDFont.FONT_5x8, 19, 0, text)
         textLCD.flush()
 
+    # Toggle 2 state handler
     def toggle2StateChangeHandler(self, state):
+        # This doesn't do anything, but you need it so the program
+        # doesn't get upset and throw errors
         text = str(state)
         # textLCD.writeText(LCDFont.FONT_5x8, 16, 1, text)
         # textLCD.flush()
 
+    # Toggle 3 state handler
     def toggle3StateChangeHandler(self, state):
+        # This doesn't do anything either, but the system
+        # gets upset without it
         text = str(state)
         # textLCD.writeText(LCDFont.FONT_5x8, 19, 1, text)
         # textLCD.flush()
 
+    # User-define function to capture stills
     def runCapture():
         print("Run")
-        # relay.setDutyCycle(1.0)
-        # sleep(1)
-        # relay.setDutyCycle(0.0)
 
+        # Get the current date and time and format it
         now = datetime.datetime.now()
         dir_name = now.strftime("%Y%m%d_%Hh%Mm%Ss")
 
+        # Try opening a directory with the name created above
+        # If the directory can't be opened, create a directory
+        # with that name and navigate to it
         try:
             os.chdir(str(dir_name))
         except:
@@ -1003,19 +1029,31 @@ def main():
             make_dir.wait()
             os.chdir(str(dir_name))
 
+        # Get the interval between photos and
+        # the total time the system should run for
+        # from their respective rotators
         interval = int(rotator1.getSensorValue() * 10)
         total_time = int(rotator2.getSensorValue() * 10)
 
+        # Determine if the interval is in seconds or minutes
+        # by getting the value from the correct toggle
         if (toggle2.getState() == 1):
+            # Convert the interval to minutes
             interval = interval * 60
         elif (toggle2.getState() == 0 and interval < 4):
+            # The smallest interval possible is 4 seconds
             interval = 4
 
+        # Determine if the total time the program runs is in minutes or hours
         if (toggle3.getState() == 1):
+            # Convert the time to hours
             total_time = total_time * 3600
         elif (toggle3.getState() == 0):
+            # Conver the time to minutes
             total_time = total_time * 60
 
+        # Get the shutter speed from the shutter speed slider
+        # and do the necessary math to get the proper shutter speed value
         shutterSpeedVoltage = shutterSpeed.getSensorValue()
         shutterSpeedValue = ""
         if (shutterSpeedVoltage <= 0.357):
@@ -1047,6 +1085,8 @@ def main():
         elif (4.641 < shutterSpeedVoltage):
             shutterSpeedValue = "1/2000"
 
+        # Get the iso value from the iso slider
+        # and do math to get the proper iso value
         isoSensorValue = iso.getSensorValue()
         isoValue = ""
         if (isoSensorValue <= 0.714):
@@ -1064,57 +1104,76 @@ def main():
         elif (4.2824 < isoSensorValue):
             isoValue = "25600"
 
-        camera_ports = []
+        camera_ports = []       # this will store all relevant camera ports
 
+        # Detect all connected cameras and split the output
         ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
         ports_strings_split = ports_strings.split()
 
-
+        # Decode the output and find all entries with the format "usb:xxx,xxx"
+        # then add those entries to the list of camera ports
         for item in ports_strings_split:
             item = item.decode('utf-8')
             if item[0] == 'u':
                 camera_ports.append(item)
 
+        # These are for use in the while loops below
         number_of_cameras = len(camera_ports)
-
         number_of_photos = str(math.ceil(int(total_time)/int(interval)))
 
-        processes = []
-        i = 0
-        x = 0
+        i = 0       # counts how many cameras we've activated
+        x = 0       # counts how many pictures we've taken
 
-        textLCD.writeText(LCDFont.FONT_5x8, 15, 1, 'PREP')
+        # Inform the user to wait while we adjust the settings
+        textLCD.writeText(LCDFont.FONT_5x8, 15, 1, 'WAIT')
         textLCD.flush()
-        camera_ports.sort(reverse = True)
+
+        camera_ports.sort(reverse = True)   # sorted so they capture in the correct order
+
+        # Update the shutter speed and iso of each camera, one at a time
         for port in camera_ports:
             print(port)
             subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + shutterSpeedValue, "--set-config-value", "iso=" + isoValue])
 
-        files = []
+        # So long as we haven't taken the desired number of photos,
+        # keep running this loop and taking photos
         while x < int(number_of_photos):
+            # Update the display to indicate progress
             status = str(x + 1) + '/' + str(number_of_photos) + '   '
             textLCD.writeText(LCDFont.FONT_5x8, 13, 1, status)
             textLCD.flush()
+
+            # Open the capture program for each camera
             while i < number_of_cameras:
                 process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i)])
                 processes.append(process)
                 i = i + 1
 
-            x = x + 1
+            # Trigger the relay so all cameras capture at the same time
             relay.setDutyCycle(1.0)
+            # Pause so the relay doesn't get confused
             sleep(int(interval))
             relay.setDutyCycle(0.0)
+
+            # Update the counters
+            x = x + 1
             i = 0
 
+        # Naviagte to the previous directory to prevent nested directories
         os.chdir("../")
 
+    # User-defined function for recording
     def runRecord():
         print('record')
+
+        # Get the video length, total time the program should run for,
+        # and the interval between videos from the appropriate rotators
         video_length = int(rotator3.getSensorValue() * 10) * 60
         total_time = int(rotator2.getSensorValue() * 10)
 
         interval = int(rotator1.getSensorValue() * 10)
 
+        # Get the shutter speed and convert it from voltage to shutter speed
         shutterSpeedVoltage = shutterSpeed.getSensorValue()
         shutterSpeedValue = ""
         if (shutterSpeedVoltage <= 0.357):
@@ -1146,6 +1205,7 @@ def main():
         elif (4.641 < shutterSpeedVoltage):
             shutterSpeedValue = "1/2000"
 
+        # Get the iso and convert it from voltage to iso
         isoSensorValue = iso.getSensorValue()
         isoValue = ""
         if (isoSensorValue <= 0.714):
@@ -1163,6 +1223,8 @@ def main():
         elif (4.2824 < isoSensorValue):
             isoValue = "25600"
 
+        # Get the total length the program should run for and convert it from
+        # voltage to an integer
         rawLength = rotator3.getSensorValue() * 10
         if (rawLength <= 4.9):
             video_length = 1
@@ -1183,44 +1245,60 @@ def main():
         elif (39.2 < rawLength <= 44.1):
             video_length = 25
         elif (44.1 < rawLength):
-            video_length = 29         # where 30 = 29.5 'cause the cameras can't record that long
+            video_length = 29
 
-        video_length = video_length * 60
+        video_length = video_length * 60    # convert the video length to minutes
 
+        # Determine if the interval is in seconds or minutes
         if (toggle2.getState() == 1):
-            interval = interval * 60
+            interval = interval * 60    # convert to minutes
 
+        # Determine if the total time is in minutes or hours
         if (toggle3.getState() == 1):
-            total_time = total_time * 3600
+            total_time = total_time * 3600  # convert to hours
         elif (toggle3.getState() == 0):
-            total_time = total_time * 60
+            total_time = total_time * 60    # convert to minutes
 
+        # Determine the total number of videos to take
         number_of_videos = int(math.ceil(total_time / interval))
 
 
-        camera_ports = []
+        camera_ports = []       # all relevant camera ports
 
+        # Detect all the cameras
         ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
         ports_strings_split = ports_strings.split()
 
-
+        # Find all the ports of format "usb:xxx,xxx"
         for item in ports_strings_split:
             item = item.decode('utf-8')
             if item[0] == 'u':
                 camera_ports.append(item)
 
-        textLCD.writeText(LCDFont.FONT_5x8, 15, 1, 'PREP')
+        # Inform the user to wait while we update the settings
+        textLCD.writeText(LCDFont.FONT_5x8, 15, 1, 'WAIT')
         textLCD.flush()
+
+        # Update the shutter speed and iso on each camera
         for port in camera_ports:
             print(port)
             subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + shutterSpeedValue, "--set-config-value", "iso=" + isoValue])
 
+        # Inform the user that the system is running
         textLCD.writeText(LCDFont.FONT_5x8, 15, 1, 'ON  ')
+            # the extra space after "ON" is to erase the lingering
+            # characters from "WAIT"
         textLCD.flush()
+
+        # Open record2.py, which does the rest of the recording from there
         subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/record2.py", str(video_length), str(number_of_videos), str(interval)])
 
+    # User-defined function to end all processes with the click of a button
     def killAll():
         print('Kill all processes')
+
+        # Try to close everything by setting all their handlers to None
+        # and the closing them. Catch and return any errors that occur
         try:
             rotator1.setOnVoltageChangeHandler(None)
             rotator1.setOnSensorChangeHandler(None)
@@ -1257,10 +1335,12 @@ def main():
             print("Exiting....")
             exit(1)
 
+        # This closes the terminal window that the program was running in,
+        # it should essentially emulate pressing CTRL-C
         process = subprocess.Popen(['ls'])
         os.killpg(os.getpgid(process.pid), signal.SIGTERM)
 
-    # Digital output functions
+    # Standard phidget attach handler for the relay
     def relayAttachHandler(e):
 
         ph = relay
@@ -1292,6 +1372,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Standard phidget detach handler for the relay
     def relayDetachHandler(e):
 
         ph = relay
@@ -1324,11 +1405,14 @@ def main():
             traceback.print_exc()
             return
 
+    # Standard error handler for the relay
     def relayErrorHandler(button, errorCode, errorString):
 
         sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
 
+    # Change handler for the relay
     def relayStateChangeHandler(self, state):
+        # Output the state in two locations to indicate that things are working
         if(state == 1):
             print('relay')
 
@@ -1337,6 +1421,8 @@ def main():
         textLCD.flush()
 
     #Main Program Code for IFkit
+    # Attach all the handlers to the proper phidgets,
+    # catch and return any errors
     try:
         rotator1.setOnAttachHandler(inferfaceKitAttached1)
         rotator1.setOnDetachHandler(interfaceKitDetached1)
@@ -1368,6 +1454,7 @@ def main():
         exit(1)
 
     #Setup for digital input
+    # More of what's above, attaching handlers to phidgets
     try:
         runButton.setOnAttachHandler(runButtonAttachHandler)
         runButton.setOnDetachHandler(runButtonDetachHandler)
@@ -1401,6 +1488,7 @@ def main():
     #### new code for LCD
     #Main Program Code
 
+    # Standard attach handler for the LCD
     def LCDAttached(self):
         try:
             attached = self
@@ -1423,6 +1511,7 @@ def main():
             readin = sys.stdin.read(1)
             exit(1)
 
+    # Standard detach handler for the LCD
     def LCDDetached(self):
         detached = self
         try:
@@ -1433,9 +1522,11 @@ def main():
             readin = sys.stdin.read(1)
             exit(1)
 
+    # Standard error handler for the LCD
     def ErrorEvent(self, eCode, description):
         print("Error %i : %s" % (eCode, description))
 
+    # Attach the handlers to the LCD, catch and return any errors
     try:
         textLCD.setOnAttachHandler(LCDAttached)
         textLCD.setOnDetachHandler(LCDDetached)
@@ -1447,6 +1538,13 @@ def main():
         print("Exiting....")
         exit(1)
 
+    # Set the serial number and port for all phidgets, give them each
+    # 5 seconds to be found before returning an error
+    # The serial number for the 8/8/8, to which everything is attached,
+    # is 120683. The channel mentioned for everything is either
+    # a digital or analog port that it's plugged in to. If something else
+    # gets plugged into that port, it will behave like the thing that's
+    # supposed to be plugged into that port, or there will be an error
     try:
         runButton.setDeviceSerialNumber(120683)
         runButton.setChannel(0)
@@ -1482,9 +1580,10 @@ def main():
         PrintOpenErrorMessage(e, ch)
         raise EndProgramSignal("Program Terminated: Digital Input Open Failed")
 
-    textLCD.setBacklight(1)
+    textLCD.setBacklight(1)     # Give it some light! (also very important)
 
     #### New code for GPS
+    # Standard Phidget attach handler for the gps
 #    def gpsAttachHandler(self):
 
 #        ph = gps
@@ -1514,6 +1613,7 @@ def main():
 #            traceback.print_exc()
 #            return
 
+#    # Standard phidget detach handler for the gps
 #    def gpsDetachHandler(self):
 #
 #        ph = gps
@@ -1545,23 +1645,25 @@ def main():
 #            traceback.print_exc()
 #            return
 
+#    # Standard phidget error handler for the gps
 #    def gpsErrorHandler(self, errorCode, errorString):
 #
 #        sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
 #
+#    # Change handler for the gps
 #    def gpsPositionChangeHandler(self, latitude, longitude, altitude):
 
         #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
         #www.phidgets.com/docs/Using_Multiple_Phidgets for information
-
+#        # Print the current coordinates to the terminal
 #        print("\n[Position Event] -> Latitude:  %7.3f\n", latitude)
 #        print("                 -> Longitude: %7.3f\n", longitude)
 #        print("                 -> Altitude:  %7.3f\n", altitude)
 
-
+#    # Attach everything to the gps
 #    try:
-#        gps.setDeviceSerialNumber(131151)
-#        gps.setChannel(0)
+#        gps.setDeviceSerialNumber(120683)
+#        gps.setChannel(0)      # THIS IS WRONG as far as I know, it needs a different channel
 #        gps.setOnAttachHandler(gpsAttachHandler)
 #        gps.setOnDetachHandler(gpsDetachHandler)
 #        gps.setOnErrorHandler(gpsErrorHandler)
@@ -1572,6 +1674,8 @@ def main():
 #        print("Exiting....")
 #        exit(1)
 
+    # Set the serial number and channel for each phidget, then open it
+    # and wait for 5 seconds for it to attach before returning an error
     try:
         rotator1.setDeviceSerialNumber(120683)
         rotator1.setChannel(0)
@@ -1615,6 +1719,7 @@ def main():
 
     sleep(10)
 
+    # From the initial phidget library
     print("Press Enter to quit....")
     # print(str(gps.getLongitude()))
 
@@ -1622,6 +1727,8 @@ def main():
 
     print("Closing...")
 
+    # Release everything! Close all the active phidgets, return an
+    # error if one is found
     try:
         rotator1.setOnVoltageChangeHandler(None)
         rotator1.setOnSensorChangeHandler(None)
@@ -1660,6 +1767,6 @@ def main():
         exit(1)
 
     print("Done.")
-    exit(0)
+    exit(0)     # close the program
 
 main()
