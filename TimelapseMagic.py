@@ -1,5 +1,20 @@
 #!/usr/bin/env python
 
+# This is the main file used to run the Phidget Timelapse program
+# This file has a desktop shortcut, TimelapseMagic.desktop, which is
+# started on machine startup. There's a file in the Google Drive that
+# gives an overview of this file:
+# https://docs.google.com/document/d/11WEyHnqQRX04gypeKa7C_SSdZmS9sN6zzPuxRPaHsrA/edit?ts=5c34e415
+
+# This file provides an interface to phidget objects, gphoto2, the cameras,
+# the system, and subprocesses running on the machine
+# Further description can be found at each function
+
+# This file was adapated from the files in the "reference_files" folder,
+# which was initially created by Adam Stelmack and Ryan Jackson
+# This file was created by Jolene Poulin with great help from Ryan Jackson
+# and Sam Brooks, starting around April 30th, 2018
+
 """Copyright 2010 Phidgets Inc.
 This work is licensed under the Creative Commons Attribution 2.5 Canada License.
 To view a copy of this license, visit http://creativecommons.org/licenses/by/2.5/ca/
@@ -19,6 +34,7 @@ import subprocess
 import datetime
 import math
 from time import sleep
+
 #Phidget specific imports
 from Phidget22.Devices.DigitalInput import *
 from Phidget22.Devices.DigitalOutput import *
@@ -30,10 +46,9 @@ from Phidget22.Net import *
 from Phidget22.Devices.VoltageInput import *
 
 
-
 def main():
 
-    #Create an interfacekit object
+    # Create objects for toggles, sensors, rotators, and sliders on the rig
     try:
         rotator1 = VoltageInput()
         rotator2 = VoltageInput()
@@ -52,7 +67,7 @@ def main():
         print("Exiting....")
         exit(1)
 
-    #Create an TextLCD object
+    #Create an TextLCD object and a GPS object
     try:
         textLCD = LCD()
         #gps = GPS()
@@ -63,6 +78,7 @@ def main():
 
 
     # Rotation Sensor Funtions
+    # Standard phidget attach handler for Rotator1
     def inferfaceKitAttached1(e):
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -92,6 +108,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Standard phidget attach handler for Rotator2
     def inferfaceKitAttached2(e):
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -121,6 +138,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Standard phidget attach handler for Rotator3
     def inferfaceKitAttached3(e):
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -150,6 +168,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Standard phidget attach handler for the light sensor
     def lightSensorAttached(e):
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -179,6 +198,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Standard phidget attach handler for rotator3
     def shutterSpeedAttached(e):
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
