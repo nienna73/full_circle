@@ -198,7 +198,7 @@ def main():
             traceback.print_exc()
             return
 
-    # Standard phidget attach handler for rotator3
+    # Standard phidget attach handler for the shutter speed
     def shutterSpeedAttached(e):
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -228,6 +228,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Standard phidget attach handler for the iso slider
     def isoAttached(e):
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -257,6 +258,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Standard phidget detach handler for rotator 1
     def interfaceKitDetached1(e):
 
         try:
@@ -287,6 +289,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Standard phidget detach handler for rotator2
     def interfaceKitDetached2(e):
 
         try:
@@ -317,6 +320,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Standard phidget detach handler for rotator3
     def interfaceKitDetached3(e):
 
         try:
@@ -347,6 +351,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Standard phidget detach handler for the light sensor
     def lightSensorDetached(e):
 
         try:
@@ -377,6 +382,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Standard phidget detach handler for the shutter speed slider
     def shutterSpeedDetached(e):
 
         try:
@@ -407,6 +413,7 @@ def main():
             traceback.print_exc()
             return
 
+    # Standard phidget detach handler for the iso slider
     def isoDetached(e):
 
         try:
@@ -437,6 +444,8 @@ def main():
             traceback.print_exc()
             return
 
+    # Standard interface kit error handler
+    # Shared by all the interface kits
     def interfaceKitError(e):
         try:
             source = e.device
@@ -444,33 +453,55 @@ def main():
         except PhidgetException as e:
             print("Phidget Exception %i: %s" % (e.code, e.details))
 
+    # Voltage change handler for toggle2
     def interfaceKitVoltageChange1(interfaceKit, voltage):
+        # This is the handler for the interval variable
+
         output = int(voltage*10)
+        # If the toggle is off, the units are in seconds
         if (toggle2.getState() == 0):
             units = 's'
+        # If the toggle is on, the units are in minutes
         elif (toggle2.getState() == 1):
             units = 'm'
 
+        # This quickest we can take photos is 4 seconds apart
+        # due to download speeds
         if (toggle2.getState() == 0 and output < 4):
             output = 4
 
+        # Update the LCD display to reflect the changes made
         text = "I:" + str(output) + units + " "
         textLCD.writeText(LCDFont.FONT_5x8, 0, 0, text)
-        textLCD.flush()
+        textLCD.flush()     # Don't forget this!
 
+    # This is the handler for when the total time rotator is changed
     def interfaceKitVoltageChange2(interfaceKit, voltage):
+        # This affects the total time the program runs for,
+        # whether that's for video or stills
+
         output = int(voltage*10)
+        # If the toggle is off, the units are in minutes
         if (toggle3.getState() == 0):
             units = 'm'
+        # If the toggle is on, the units are in hours
         elif (toggle3.getState() == 1):
             units = 'h'
+
+        # Update the LCD display to reflect the changes made
         text = "T:" + str(output) + units + " "
         textLCD.writeText(LCDFont.FONT_5x8, 6, 0, text)
-        textLCD.flush()
+        textLCD.flush()     # This is important!
 
+    # This is the phidget handler for the length of video
+    # This function is responsive, but does not affect anything when
+    # the system is set to capture stills
     def interfaceKitVoltageChange3(interfaceKit, voltage):
-        volt = int(voltage*10)
+        volt = int(voltage*10)  # easier to handle larger numbers
 
+        # This lovely if-else chunk decides how long the video will be
+        # in minutes, with the smallest chunk available being 1 minute
+        # and the largest being 29 minutes 'cause that's the max record length
         if (volt <= 4.9):
             output = 1
         elif (4.9 < volt <= 9.8):
@@ -490,21 +521,29 @@ def main():
         elif (39.2 < volt <= 44.1):
             output = 25
         elif (44.1 < volt):
-            output = 29         # where 30 = 29.5 'cause the cameras can't record that long
+            output = 29
 
-
+        # Update the display with the new value
         text = "L:" + str(output) + "m "
         textLCD.writeText(LCDFont.FONT_5x8, 12, 0, text)
-        textLCD.flush()
+        textLCD.flush()     # The display doesn't update without this
 
+    # This function gets called every time the value the light sensor
+    # detects changes. It doesn't do much right now
     def lightSensorChanged(interfaceKit, voltage):
         exponent = (0.02470) * (voltage * 200) + (-0.5727)
         lux = pow(math.e, exponent)
         # print("Lux = " + str(lux))
 
+    # This function gets called every time the shutter speed slider is moved
     def shutterSpeedChanged(interfaceKit, voltage):
-        output = voltage
+        output = voltage    # just in case there's an unaccounted-for edge case
 
+        # This section decides the shutter speed of the cameras based
+        # on the position of the shutter speed slider. These values were
+        # selected from a list provided by Ryan, and the intervals were decided
+        # with math. The extra spaces in "output" are there to ensure no
+        # trailing characters remain on the display when the value changes
         if (voltage <= 0.357):
             output = "10    "
         elif (0.357 < voltage <= 0.714):
@@ -534,13 +573,16 @@ def main():
         elif (4.641 < voltage):
             output = "1/2000"
 
+        # Update the output!
         text = str(output)
         textLCD.writeText(LCDFont.FONT_5x8, 0, 1, text)
-        textLCD.flush()
+        textLCD.flush()     # You must know how important this is by now
 
+    # This function gets called every time the iso slider is moved
     def isoChanged(interfaceKit, voltage):
         output = voltage
 
+        # This is very similar to the shutter speed function above
         if (voltage <= 0.714):
             output = "100   "
         elif (0.714 < voltage <= 1.428):
@@ -556,9 +598,10 @@ def main():
         elif (4.2824 < voltage):
             output = "25600 "
 
+        # Update the display
         text = str(output)
         textLCD.writeText(LCDFont.FONT_5x8, 7, 1, text)
-        textLCD.flush()
+        textLCD.flush()     # Make sure the new text appears
 
     ### new code for LCD
 
