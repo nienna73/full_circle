@@ -50,9 +50,9 @@ def main():
 
     # Create objects for toggles, sensors, rotators, and sliders on the rig
     try:
-        rotator1 = VoltageInput()
-        rotator2 = VoltageInput()
-        rotator3 = VoltageInput()
+        interval_rotator = VoltageInput()
+        total_time_rotator = VoltageInput()
+        video_length_rotator = VoltageInput()
         shutterSpeed = VoltageInput()
         iso = VoltageInput()
         lightSensor = VoltageInput()
@@ -78,7 +78,7 @@ def main():
 
 
     # Rotation Sensor Funtions
-    # Standard phidget attach handler for Rotator1
+    # Standard phidget attach handler for interval_rotator
     def inferfaceKitAttached1(e):
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -89,16 +89,16 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = rotator1.getDeviceSerialNumber()
-            channelClass = rotator1.getChannelClassName()
-            channel = rotator1.getChannel()
+            serialNumber = interval_rotator.getDeviceSerialNumber()
+            channelClass = interval_rotator.getChannelClassName()
+            channel = interval_rotator.getChannel()
 
-            deviceClass = rotator1.getDeviceClass()
+            deviceClass = interval_rotator.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = rotator1.getHubPort()
+                hubPort = interval_rotator.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -108,7 +108,7 @@ def main():
             traceback.print_exc()
             return
 
-    # Standard phidget attach handler for Rotator2
+    # Standard phidget attach handler for total_time_rotator
     def inferfaceKitAttached2(e):
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -119,16 +119,16 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = rotator2.getDeviceSerialNumber()
-            channelClass = rotator2.getChannelClassName()
-            channel = rotator2.getChannel()
+            serialNumber = total_time_rotator.getDeviceSerialNumber()
+            channelClass = total_time_rotator.getChannelClassName()
+            channel = total_time_rotator.getChannel()
 
-            deviceClass = rotator2.getDeviceClass()
+            deviceClass = total_time_rotator.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = rotator2.getHubPort()
+                hubPort = total_time_rotator.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -138,7 +138,7 @@ def main():
             traceback.print_exc()
             return
 
-    # Standard phidget attach handler for Rotator3
+    # Standard phidget attach handler for video_length_rotator
     def inferfaceKitAttached3(e):
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -149,16 +149,16 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = rotator3.getDeviceSerialNumber()
-            channelClass = rotator3.getChannelClassName()
-            channel = rotator3.getChannel()
+            serialNumber = video_length_rotator.getDeviceSerialNumber()
+            channelClass = video_length_rotator.getChannelClassName()
+            channel = video_length_rotator.getChannel()
 
-            deviceClass = rotator3.getDeviceClass()
+            deviceClass = video_length_rotator.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = rotator3.getHubPort()
+                hubPort = video_length_rotator.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -179,16 +179,16 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = rotator3.getDeviceSerialNumber()
-            channelClass = rotator3.getChannelClassName()
-            channel = rotator3.getChannel()
+            serialNumber = video_length_rotator.getDeviceSerialNumber()
+            channelClass = video_length_rotator.getChannelClassName()
+            channel = video_length_rotator.getChannel()
 
-            deviceClass = rotator3.getDeviceClass()
+            deviceClass = video_length_rotator.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = rotator3.getHubPort()
+                hubPort = video_length_rotator.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -209,16 +209,16 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = rotator3.getDeviceSerialNumber()
-            channelClass = rotator3.getChannelClassName()
-            channel = rotator3.getChannel()
+            serialNumber = video_length_rotator.getDeviceSerialNumber()
+            channelClass = video_length_rotator.getChannelClassName()
+            channel = video_length_rotator.getChannel()
 
-            deviceClass = rotator3.getDeviceClass()
+            deviceClass = video_length_rotator.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = rotator3.getHubPort()
+                hubPort = video_length_rotator.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -239,16 +239,16 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = rotator3.getDeviceSerialNumber()
-            channelClass = rotator3.getChannelClassName()
-            channel = rotator3.getChannel()
+            serialNumber = video_length_rotator.getDeviceSerialNumber()
+            channelClass = video_length_rotator.getChannelClassName()
+            channel = video_length_rotator.getChannel()
 
-            deviceClass = rotator3.getDeviceClass()
+            deviceClass = video_length_rotator.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = rotator3.getHubPort()
+                hubPort = video_length_rotator.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -270,16 +270,16 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = rotator1.getDeviceSerialNumber()
-            channelClass = rotator1.getChannelClassName()
-            channel = rotator1.getChannel()
+            serialNumber = interval_rotator.getDeviceSerialNumber()
+            channelClass = interval_rotator.getChannelClassName()
+            channel = interval_rotator.getChannel()
 
-            deviceClass = rotator1.getDeviceClass()
+            deviceClass = interval_rotator.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = rotator1.getHubPort()
+                hubPort = interval_rotator.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -289,7 +289,7 @@ def main():
             traceback.print_exc()
             return
 
-    # Standard phidget detach handler for rotator2
+    # Standard phidget detach handler for total_time_rotator
     def interfaceKitDetached2(e):
 
         try:
@@ -301,16 +301,16 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = rotator2.getDeviceSerialNumber()
-            channelClass = rotator2.getChannelClassName()
-            channel = rotator2.getChannel()
+            serialNumber = total_time_rotator.getDeviceSerialNumber()
+            channelClass = total_time_rotator.getChannelClassName()
+            channel = total_time_rotator.getChannel()
 
-            deviceClass = rotator2.getDeviceClass()
+            deviceClass = total_time_rotator.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = rotator2.getHubPort()
+                hubPort = total_time_rotator.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -320,7 +320,7 @@ def main():
             traceback.print_exc()
             return
 
-    # Standard phidget detach handler for rotator3
+    # Standard phidget detach handler for video_length_rotator
     def interfaceKitDetached3(e):
 
         try:
@@ -332,16 +332,16 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = rotator3.getDeviceSerialNumber()
-            channelClass = rotator3.getChannelClassName()
-            channel = rotator3.getChannel()
+            serialNumber = video_length_rotator.getDeviceSerialNumber()
+            channelClass = video_length_rotator.getChannelClassName()
+            channel = video_length_rotator.getChannel()
 
-            deviceClass = rotator3.getDeviceClass()
+            deviceClass = video_length_rotator.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = rotator3.getHubPort()
+                hubPort = video_length_rotator.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -363,16 +363,16 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = rotator3.getDeviceSerialNumber()
-            channelClass = rotator3.getChannelClassName()
-            channel = rotator3.getChannel()
+            serialNumber = video_length_rotator.getDeviceSerialNumber()
+            channelClass = video_length_rotator.getChannelClassName()
+            channel = video_length_rotator.getChannel()
 
-            deviceClass = rotator3.getDeviceClass()
+            deviceClass = video_length_rotator.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = rotator3.getHubPort()
+                hubPort = video_length_rotator.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -394,16 +394,16 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = rotator3.getDeviceSerialNumber()
-            channelClass = rotator3.getChannelClassName()
-            channel = rotator3.getChannel()
+            serialNumber = video_length_rotator.getDeviceSerialNumber()
+            channelClass = video_length_rotator.getChannelClassName()
+            channel = video_length_rotator.getChannel()
 
-            deviceClass = rotator3.getDeviceClass()
+            deviceClass = video_length_rotator.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = rotator3.getHubPort()
+                hubPort = video_length_rotator.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -425,16 +425,16 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = rotator3.getDeviceSerialNumber()
-            channelClass = rotator3.getChannelClassName()
-            channel = rotator3.getChannel()
+            serialNumber = video_length_rotator.getDeviceSerialNumber()
+            channelClass = video_length_rotator.getChannelClassName()
+            channel = video_length_rotator.getChannel()
 
-            deviceClass = rotator3.getDeviceClass()
+            deviceClass = video_length_rotator.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = rotator3.getHubPort()
+                hubPort = video_length_rotator.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -1032,8 +1032,8 @@ def main():
         # Get the interval between photos and
         # the total time the system should run for
         # from their respective rotators
-        interval = int(rotator1.getSensorValue() * 10)
-        total_time = int(rotator2.getSensorValue() * 10)
+        interval = int(interval_rotator.getSensorValue() * 10)
+        total_time = int(total_time_rotator.getSensorValue() * 10)
 
         # Determine if the interval is in seconds or minutes
         # by getting the value from the correct toggle
@@ -1168,10 +1168,10 @@ def main():
 
         # Get the video length, total time the program should run for,
         # and the interval between videos from the appropriate rotators
-        video_length = int(rotator3.getSensorValue() * 10) * 60
-        total_time = int(rotator2.getSensorValue() * 10)
+        video_length = int(video_length_rotator.getSensorValue() * 10) * 60
+        total_time = int(total_time_rotator.getSensorValue() * 10)
 
-        interval = int(rotator1.getSensorValue() * 10)
+        interval = int(interval_rotator.getSensorValue() * 10)
 
         # Get the shutter speed and convert it from voltage to shutter speed
         shutterSpeedVoltage = shutterSpeed.getSensorValue()
@@ -1225,7 +1225,7 @@ def main():
 
         # Get the total length the program should run for and convert it from
         # voltage to an integer
-        rawLength = rotator3.getSensorValue() * 10
+        rawLength = video_length_rotator.getSensorValue() * 10
         if (rawLength <= 4.9):
             video_length = 1
         elif (4.9 < rawLength <= 9.8):
@@ -1300,15 +1300,15 @@ def main():
         # Try to close everything by setting all their handlers to None
         # and the closing them. Catch and return any errors that occur
         try:
-            rotator1.setOnVoltageChangeHandler(None)
-            rotator1.setOnSensorChangeHandler(None)
-            rotator1.close()
-            rotator2.setOnVoltageChangeHandler(None)
-            rotator2.setOnSensorChangeHandler(None)
-            rotator2.close()
-            rotator3.setOnVoltageChangeHandler(None)
-            rotator3.setOnSensorChangeHandler(None)
-            rotator3.close()
+            interval_rotator.setOnVoltageChangeHandler(None)
+            interval_rotator.setOnSensorChangeHandler(None)
+            interval_rotator.close()
+            total_time_rotator.setOnVoltageChangeHandler(None)
+            total_time_rotator.setOnSensorChangeHandler(None)
+            total_time_rotator.close()
+            video_length_rotator.setOnVoltageChangeHandler(None)
+            video_length_rotator.setOnSensorChangeHandler(None)
+            video_length_rotator.close()
             shutterSpeed.setOnVoltageChangeHandler(None)
             shutterSpeed.setOnSensorChangeHandler(None)
             shutterSpeed.close()
@@ -1424,18 +1424,18 @@ def main():
     # Attach all the handlers to the proper phidgets,
     # catch and return any errors
     try:
-        rotator1.setOnAttachHandler(inferfaceKitAttached1)
-        rotator1.setOnDetachHandler(interfaceKitDetached1)
-        rotator1.setOnErrorHandler(interfaceKitError)
-        rotator1.setOnVoltageChangeHandler(interfaceKitVoltageChange1)
-        rotator2.setOnAttachHandler(inferfaceKitAttached2)
-        rotator2.setOnDetachHandler(interfaceKitDetached2)
-        rotator2.setOnErrorHandler(interfaceKitError)
-        rotator2.setOnVoltageChangeHandler(interfaceKitVoltageChange2)
-        rotator3.setOnAttachHandler(inferfaceKitAttached3)
-        rotator3.setOnDetachHandler(interfaceKitDetached3)
-        rotator3.setOnErrorHandler(interfaceKitError)
-        rotator3.setOnVoltageChangeHandler(interfaceKitVoltageChange3)
+        interval_rotator.setOnAttachHandler(inferfaceKitAttached1)
+        interval_rotator.setOnDetachHandler(interfaceKitDetached1)
+        interval_rotator.setOnErrorHandler(interfaceKitError)
+        interval_rotator.setOnVoltageChangeHandler(interfaceKitVoltageChange1)
+        total_time_rotator.setOnAttachHandler(inferfaceKitAttached2)
+        total_time_rotator.setOnDetachHandler(interfaceKitDetached2)
+        total_time_rotator.setOnErrorHandler(interfaceKitError)
+        total_time_rotator.setOnVoltageChangeHandler(interfaceKitVoltageChange2)
+        video_length_rotator.setOnAttachHandler(inferfaceKitAttached3)
+        video_length_rotator.setOnDetachHandler(interfaceKitDetached3)
+        video_length_rotator.setOnErrorHandler(interfaceKitError)
+        video_length_rotator.setOnVoltageChangeHandler(interfaceKitVoltageChange3)
         shutterSpeed.setOnAttachHandler(shutterSpeedAttached)
         shutterSpeed.setOnDetachHandler(shutterSpeedDetached)
         shutterSpeed.setOnErrorHandler(interfaceKitError)
@@ -1677,23 +1677,23 @@ def main():
     # Set the serial number and channel for each phidget, then open it
     # and wait for 5 seconds for it to attach before returning an error
     try:
-        rotator1.setDeviceSerialNumber(120683)
-        rotator1.setChannel(0)
-        rotator1.open()
+        interval_rotator.setDeviceSerialNumber(120683)
+        interval_rotator.setChannel(0)
+        interval_rotator.open()
         print('Wait for rotator 0 attach...')
-        rotator1.openWaitForAttachment(5000)
+        interval_rotator.openWaitForAttachment(5000)
         sleep(1)
-        rotator2.setDeviceSerialNumber(120683)
-        rotator2.setChannel(2)
-        rotator2.open()
+        total_time_rotator.setDeviceSerialNumber(120683)
+        total_time_rotator.setChannel(2)
+        total_time_rotator.open()
         print('Wait for rotator 2 attach...')
-        rotator2.openWaitForAttachment(5000)
+        total_time_rotator.openWaitForAttachment(5000)
         sleep(1)
-        rotator3.setDeviceSerialNumber(120683)
-        rotator3.setChannel(5)
-        rotator3.open()
+        video_length_rotator.setDeviceSerialNumber(120683)
+        video_length_rotator.setChannel(5)
+        video_length_rotator.open()
         print('Wait for rotator 5 attach...')
-        rotator3.openWaitForAttachment(5000)
+        video_length_rotator.openWaitForAttachment(5000)
         sleep(1)
         shutterSpeed.setDeviceSerialNumber(120683)
         shutterSpeed.setChannel(4)
@@ -1730,15 +1730,15 @@ def main():
     # Release everything! Close all the active phidgets, return an
     # error if one is found
     try:
-        rotator1.setOnVoltageChangeHandler(None)
-        rotator1.setOnSensorChangeHandler(None)
-        rotator1.close()
-        rotator2.setOnVoltageChangeHandler(None)
-        rotator2.setOnSensorChangeHandler(None)
-        rotator2.close()
-        rotator3.setOnVoltageChangeHandler(None)
-        rotator3.setOnSensorChangeHandler(None)
-        rotator3.close()
+        interval_rotator.setOnVoltageChangeHandler(None)
+        interval_rotator.setOnSensorChangeHandler(None)
+        interval_rotator.close()
+        total_time_rotator.setOnVoltageChangeHandler(None)
+        total_time_rotator.setOnSensorChangeHandler(None)
+        total_time_rotator.close()
+        video_length_rotator.setOnVoltageChangeHandler(None)
+        video_length_rotator.setOnSensorChangeHandler(None)
+        video_length_rotator.close()
         shutterSpeed.setOnVoltageChangeHandler(None)
         shutterSpeed.setOnSensorChangeHandler(None)
         shutterSpeed.close()
