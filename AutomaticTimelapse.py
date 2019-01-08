@@ -207,11 +207,9 @@ def main():
             # Open an instance of capture.py for each camera, where:
             # x is the number-th photo taken (used for the filename)
             # i is the index of the camera port in a sorted list of ports
-            # '1' and '1' are the interval to wait between taking each photo
-            # and the total number of photos to take (obsolete), respectively
             i = 0
             while i < number_of_cameras:
-                process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i), '1', '1'])
+                process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i)])
                 i = i + 1
             x += 1
 
