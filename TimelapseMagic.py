@@ -537,41 +537,8 @@ def main():
 
     # This function gets called every time the shutter speed slider is moved
     def shutterSpeedChanged(interfaceKit, voltage):
-        output = voltage    # just in case there's an unaccounted-for edge case
-
-        # This section decides the shutter speed of the cameras based
-        # on the position of the shutter speed slider. These values were
-        # selected from a list provided by Ryan, and the intervals were decided
-        # with math. The extra spaces in "output" are there to ensure no
-        # trailing characters remain on the display when the value changes
-        if (voltage <= 0.357):
-            output = "10    "
-        elif (0.357 < voltage <= 0.714):
-            output = "4     "
-        elif (0.714 < voltage <= 1.071):
-            output = "2     "
-        elif (1.071 < voltage <= 1.428):
-            output = "1     "
-        elif (1.428 < voltage <= 1.785):
-            output = "1/30  "
-        elif (1.785 < voltage <= 2.142):
-            output = "1/50  "
-        elif (2.142 < voltage <= 2.499):
-            output = "1/100 "
-        elif (2.499 < voltage <= 2.856):
-            output = "1/250 "
-        elif (2.856 < voltage <= 3.213):
-            output = "1/400 "
-        elif (3.213 < voltage <= 3.57):
-            output = "1/500 "
-        elif (3.57 < voltage <= 3.927):
-            output = "1/800 "
-        elif (3.927 < voltage <= 4.284):
-            output = "1/1000"
-        elif (4.284 < voltage <= 4.641):
-            output = "1/1600"
-        elif (4.641 < voltage):
-            output = "1/2000"
+        # Call to local function to get shutter speed
+        output = getShutterSpeed()
 
         # Update the output!
         text = str(output)
@@ -580,23 +547,8 @@ def main():
 
     # This function gets called every time the iso slider is moved
     def isoChanged(interfaceKit, voltage):
-        output = voltage
-
-        # This is very similar to the shutter speed function above
-        if (voltage <= 0.714):
-            output = "100   "
-        elif (0.714 < voltage <= 1.428):
-            output = "800   "
-        elif (0.1428 < voltage <= 2.142):
-            output = "1600  "
-        elif (2.142 < voltage <= 2.856):
-            output = "3200  "
-        elif (2.856 < voltage <= 3.57):
-            output = "6400  "
-        elif (3.57 < voltage <= 4.284):
-            output = "12800 "
-        elif (4.2824 < voltage):
-            output = "25600 "
+        # Call to local function to get iso
+        output = getIso()
 
         # Update the display
         text = str(output)
@@ -1052,57 +1004,11 @@ def main():
             # Conver the time to minutes
             total_time = total_time * 60
 
-        # Get the shutter speed from the shutter speed slider
-        # and do the necessary math to get the proper shutter speed value
-        shutterSpeedVoltage = shutter_speed.getSensorValue()
-        shutterSpeedValue = ""
-        if (shutterSpeedVoltage <= 0.357):
-            shutterSpeedValue = "10"
-        elif (0.357 < shutterSpeedVoltage <= 0.714):
-            shutterSpeedValue = "4"
-        elif (0.714 < shutterSpeedVoltage <= 1.071):
-            shutterSpeedValue = "2"
-        elif (1.071 < shutterSpeedVoltage <= 1.428):
-            shutterSpeedValue = "1"
-        elif (1.428 < shutterSpeedVoltage <= 1.785):
-            shutterSpeedValue = "1/30"
-        elif (1.785 < shutterSpeedVoltage <= 2.142):
-            shutterSpeedValue = "1/50"
-        elif (2.142 < shutterSpeedVoltage <= 2.499):
-            shutterSpeedValue = "1/100"
-        elif (2.499 < shutterSpeedVoltage <= 2.856):
-            shutterSpeedValue = "1/250"
-        elif (2.856 < shutterSpeedVoltage <= 3.213):
-            shutterSpeedValue = "1/400"
-        elif (3.213 < shutterSpeedVoltage <= 3.57):
-            shutterSpeedValue = "1/500"
-        elif (3.57 < shutterSpeedVoltage <= 3.927):
-            shutterSpeedValue = "1/800"
-        elif (3.927 < shutterSpeedVoltage <= 4.284):
-            shutterSpeedValue = "1/1000"
-        elif (4.284 < shutterSpeedVoltage <= 4.641):
-            shutterSpeedValue = "1/1600"
-        elif (4.641 < shutterSpeedVoltage):
-            shutterSpeedValue = "1/2000"
+        # Call to local function to return the shutter speed
+        shutterSpeedValue = getShutterSpeed()
 
-        # Get the iso value from the iso slider
-        # and do math to get the proper iso value
-        isoSensorValue = iso.getSensorValue()
-        isoValue = ""
-        if (isoSensorValue <= 0.714):
-            isoValue = "100"
-        elif (0.714 < isoSensorValue <= 1.428):
-            isoValue = "800"
-        elif (0.1428 < isoSensorValue <= 2.142):
-            isoValue = "1600"
-        elif (2.142 < isoSensorValue <= 2.856):
-            isoValue = "3200"
-        elif (2.856 < isoSensorValue <= 3.57):
-            isoValue = "6400"
-        elif (3.57 < isoSensorValue <= 4.284):
-            isoValue = "12800"
-        elif (4.2824 < isoSensorValue):
-            isoValue = "25600"
+        # Call to local function to get iso
+        isoValue = getIso()
 
         camera_ports = []       # this will store all relevant camera ports
 
@@ -1173,55 +1079,12 @@ def main():
 
         interval = int(interval_rotator.getSensorValue() * 10)
 
-        # Get the shutter speed and convert it from voltage to shutter speed
-        shutterSpeedVoltage = shutter_speed.getSensorValue()
-        shutterSpeedValue = ""
-        if (shutterSpeedVoltage <= 0.357):
-            shutterSpeedValue = "10"
-        elif (0.357 < shutterSpeedVoltage <= 0.714):
-            shutterSpeedValue = "4"
-        elif (0.714 < shutterSpeedVoltage <= 1.071):
-            shutterSpeedValue = "2"
-        elif (1.071 < shutterSpeedVoltage <= 1.428):
-            shutterSpeedValue = "1"
-        elif (1.428 < shutterSpeedVoltage <= 1.785):
-            shutterSpeedValue = "1/30"
-        elif (1.785 < shutterSpeedVoltage <= 2.142):
-            shutterSpeedValue = "1/50"
-        elif (2.142 < shutterSpeedVoltage <= 2.499):
-            shutterSpeedValue = "1/100"
-        elif (2.499 < shutterSpeedVoltage <= 2.856):
-            shutterSpeedValue = "1/250"
-        elif (2.856 < shutterSpeedVoltage <= 3.213):
-            shutterSpeedValue = "1/400"
-        elif (3.213 < shutterSpeedVoltage <= 3.57):
-            shutterSpeedValue = "1/500"
-        elif (3.57 < shutterSpeedVoltage <= 3.927):
-            shutterSpeedValue = "1/800"
-        elif (3.927 < shutterSpeedVoltage <= 4.284):
-            shutterSpeedValue = "1/1000"
-        elif (4.284 < shutterSpeedVoltage <= 4.641):
-            shutterSpeedValue = "1/1600"
-        elif (4.641 < shutterSpeedVoltage):
-            shutterSpeedValue = "1/2000"
+        # Call to local function to get shutter speed value
+        shutterSpeedValue = getShutterSpeed()
 
-        # Get the iso and convert it from voltage to iso
-        isoSensorValue = iso.getSensorValue()
-        isoValue = ""
-        if (isoSensorValue <= 0.714):
-            isoValue = "100"
-        elif (0.714 < isoSensorValue <= 1.428):
-            isoValue = "800"
-        elif (0.1428 < isoSensorValue <= 2.142):
-            isoValue = "1600"
-        elif (2.142 < isoSensorValue <= 2.856):
-            isoValue = "3200"
-        elif (2.856 < isoSensorValue <= 3.57):
-            isoValue = "6400"
-        elif (3.57 < isoSensorValue <= 4.284):
-            isoValue = "12800"
-        elif (4.2824 < isoSensorValue):
-            isoValue = "25600"
+        # Call to local function to get iso value
+        isoValue = getIso()
+
 
         # Get the total length the program should run for and convert it from
         # voltage to an integer
@@ -1768,5 +1631,73 @@ def main():
 
     print("Done.")
     exit(0)     # close the program
+
+    # User-defined function to convert the voltage from shutter_speed
+    # to a usable shutter speed value
+    def getShutterSpeed():
+        # Get the shutter speed and convert it from voltage to shutter speed
+
+        # This section decides the shutter speed of the cameras based
+        # on the position of the shutter speed slider. These values were
+        # selected from a list provided by Ryan, and the intervals were decided
+        # with math. The extra spaces in "output" are there to ensure no
+        # trailing characters remain on the display when the value changes
+        shutterSpeedVoltage = shutter_speed.getSensorValue()
+        shutterSpeedValue = ""
+        if (shutterSpeedVoltage <= 0.357):
+            shutterSpeedValue = "10"
+        elif (0.357 < shutterSpeedVoltage <= 0.714):
+            shutterSpeedValue = "4"
+        elif (0.714 < shutterSpeedVoltage <= 1.071):
+            shutterSpeedValue = "2"
+        elif (1.071 < shutterSpeedVoltage <= 1.428):
+            shutterSpeedValue = "1"
+        elif (1.428 < shutterSpeedVoltage <= 1.785):
+            shutterSpeedValue = "1/30"
+        elif (1.785 < shutterSpeedVoltage <= 2.142):
+            shutterSpeedValue = "1/50"
+        elif (2.142 < shutterSpeedVoltage <= 2.499):
+            shutterSpeedValue = "1/100"
+        elif (2.499 < shutterSpeedVoltage <= 2.856):
+            shutterSpeedValue = "1/250"
+        elif (2.856 < shutterSpeedVoltage <= 3.213):
+            shutterSpeedValue = "1/400"
+        elif (3.213 < shutterSpeedVoltage <= 3.57):
+            shutterSpeedValue = "1/500"
+        elif (3.57 < shutterSpeedVoltage <= 3.927):
+            shutterSpeedValue = "1/800"
+        elif (3.927 < shutterSpeedVoltage <= 4.284):
+            shutterSpeedValue = "1/1000"
+        elif (4.284 < shutterSpeedVoltage <= 4.641):
+            shutterSpeedValue = "1/1600"
+        elif (4.641 < shutterSpeedVoltage):
+            shutterSpeedValue = "1/2000"
+
+        return shutterSpeedValue
+
+    # User-defined function to get the iso value from the slider voltage
+    def getIso():
+
+        # This is very similar to the shutter speed function above
+        isoSensorValue = iso.getSensorValue()
+        isoValue = ""
+        if (isoSensorValue <= 0.714):
+            isoValue = "100"
+        elif (0.714 < isoSensorValue <= 1.428):
+            isoValue = "800"
+        elif (0.1428 < isoSensorValue <= 2.142):
+            isoValue = "1600"
+        elif (2.142 < isoSensorValue <= 2.856):
+            isoValue = "3200"
+        elif (2.856 < isoSensorValue <= 3.57):
+            isoValue = "6400"
+        elif (3.57 < isoSensorValue <= 4.284):
+            isoValue = "12800"
+        elif (4.2824 < isoSensorValue):
+            isoValue = "25600"
+
+        return isoValue
+
+
 
 main()
