@@ -58,9 +58,9 @@ def main():
         lightSensor = VoltageInput()
         runButton = DigitalInput()
         killButton = DigitalInput()
-        toggle1 = DigitalInput()
-        toggle2 = DigitalInput()
-        toggle3 = DigitalInput()
+        mode_toggle = DigitalInput()
+        interval_unit_toggle = DigitalInput()
+        total_time_unit_toggle = DigitalInput()
         relay = DigitalOutput()
     except RuntimeError as e:
         print("Runtime Exception: %s" % e.details)
@@ -453,21 +453,21 @@ def main():
         except PhidgetException as e:
             print("Phidget Exception %i: %s" % (e.code, e.details))
 
-    # Voltage change handler for toggle2
+    # Voltage change handler for interval_unit_toggle
     def interfaceKitVoltageChange1(interfaceKit, voltage):
         # This is the handler for the interval variable
 
         output = int(voltage*10)
         # If the toggle is off, the units are in seconds
-        if (toggle2.getState() == 0):
+        if (interval_unit_toggle.getState() == 0):
             units = 's'
         # If the toggle is on, the units are in minutes
-        elif (toggle2.getState() == 1):
+        elif (interval_unit_toggle.getState() == 1):
             units = 'm'
 
         # This quickest we can take photos is 4 seconds apart
         # due to download speeds
-        if (toggle2.getState() == 0 and output < 4):
+        if (interval_unit_toggle.getState() == 0 and output < 4):
             output = 4
 
         # Update the LCD display to reflect the changes made
@@ -482,10 +482,10 @@ def main():
 
         output = int(voltage*10)
         # If the toggle is off, the units are in minutes
-        if (toggle3.getState() == 0):
+        if (total_time_unit_toggle.getState() == 0):
             units = 'm'
         # If the toggle is on, the units are in hours
-        elif (toggle3.getState() == 1):
+        elif (total_time_unit_toggle.getState() == 1):
             units = 'h'
 
         # Update the LCD display to reflect the changes made
@@ -689,10 +689,10 @@ def main():
             traceback.print_exc()
             return
 
-    # Toggle1 attach handler
-    def toggle1AttachHandler(e):
+    # mode_toggle attach handler
+    def modeToggleAttachHandler(e):
 
-        ph = toggle1
+        ph = mode_toggle
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
             #www.phidgets.com/docs/Using_Multiple_Phidgets for information
@@ -722,9 +722,9 @@ def main():
             return
 
     # Toggle 2 attach handler
-    def toggle2AttachHandler(e):
+    def intervalUnitToggleAttachHandler(e):
 
-        ph = toggle2
+        ph = interval_unit_toggle
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
             #www.phidgets.com/docs/Using_Multiple_Phidgets for information
@@ -754,9 +754,9 @@ def main():
             return
 
     # Toggle 3 attach handler
-    def toggle3AttachHandler(e):
+    def totalTimeUnitToggleAttachHandler(e):
 
-        ph = toggle3
+        ph = total_time_unit_toggle
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
             #www.phidgets.com/docs/Using_Multiple_Phidgets for information
@@ -853,9 +853,9 @@ def main():
             return
 
     # Toggle 1 detach handler
-    def toggle1DetachHandler(e):
+    def modeToggleDetachHandler(e):
 
-        ph = toggle1
+        ph = mode_toggle
 
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -886,9 +886,9 @@ def main():
             return
 
     # Toggle 2 detach handler
-    def toggle2DetachHandler(e):
+    def intervalUnitToggleDetachHandler(e):
 
-        ph = toggle2
+        ph = interval_unit_toggle
 
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -919,9 +919,9 @@ def main():
             return
 
     # Toggle 3 detach handler
-    def toggle3DetachHandler(e):
+    def totalTimeUnitToggleDetachHandler(e):
 
-        ph = toggle3
+        ph = total_time_unit_toggle
 
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -971,9 +971,9 @@ def main():
     def runButtonStateChangeHandler(self, state):
         if(state == 1):
             # Run the appropriate function
-            if (toggle1.getState() == 0):
+            if (mode_toggle.getState() == 0):
                 runCapture()
-            elif (toggle1.getState() == 1):
+            elif (mode_toggle.getState() == 1):
                 runRecord()
 
     # Kill button state handler
@@ -985,7 +985,7 @@ def main():
 
 
     # State change handler for toggle 1
-    def toggle1StateChangeHandler(self, state):
+    def modeToggleStateChangeHandler(self, state):
         # Toggle 1 decides if the system will record video or capture stills
         text = str(state)
         if (state == 0):
@@ -996,7 +996,7 @@ def main():
         textLCD.flush()
 
     # Toggle 2 state handler
-    def toggle2StateChangeHandler(self, state):
+    def intervalUnitToggleStateChangeHandler(self, state):
         # This doesn't do anything, but you need it so the program
         # doesn't get upset and throw errors
         text = str(state)
@@ -1004,7 +1004,7 @@ def main():
         # textLCD.flush()
 
     # Toggle 3 state handler
-    def toggle3StateChangeHandler(self, state):
+    def totalTimeUnitToggleStateChangeHandler(self, state):
         # This doesn't do anything either, but the system
         # gets upset without it
         text = str(state)
@@ -1037,18 +1037,18 @@ def main():
 
         # Determine if the interval is in seconds or minutes
         # by getting the value from the correct toggle
-        if (toggle2.getState() == 1):
+        if (interval_unit_toggle.getState() == 1):
             # Convert the interval to minutes
             interval = interval * 60
-        elif (toggle2.getState() == 0 and interval < 4):
+        elif (interval_unit_toggle.getState() == 0 and interval < 4):
             # The smallest interval possible is 4 seconds
             interval = 4
 
         # Determine if the total time the program runs is in minutes or hours
-        if (toggle3.getState() == 1):
+        if (total_time_unit_toggle.getState() == 1):
             # Convert the time to hours
             total_time = total_time * 3600
-        elif (toggle3.getState() == 0):
+        elif (total_time_unit_toggle.getState() == 0):
             # Conver the time to minutes
             total_time = total_time * 60
 
@@ -1250,13 +1250,13 @@ def main():
         video_length = video_length * 60    # convert the video length to minutes
 
         # Determine if the interval is in seconds or minutes
-        if (toggle2.getState() == 1):
+        if (interval_unit_toggle.getState() == 1):
             interval = interval * 60    # convert to minutes
 
         # Determine if the total time is in minutes or hours
-        if (toggle3.getState() == 1):
+        if (total_time_unit_toggle.getState() == 1):
             total_time = total_time * 3600  # convert to hours
-        elif (toggle3.getState() == 0):
+        elif (total_time_unit_toggle.getState() == 0):
             total_time = total_time * 60    # convert to minutes
 
         # Determine the total number of videos to take
@@ -1322,12 +1322,12 @@ def main():
             runButton.close()
             killButton.setOnStateChangeHandler(None)
             killButton.close()
-            toggle1.setOnStateChangeHandler(None)
-            toggle1.close()
-            toggle2.setOnStateChangeHandler(None)
-            toggle2.close()
-            toggle3.setOnStateChangeHandler(None)
-            toggle3.close()
+            mode_toggle.setOnStateChangeHandler(None)
+            mode_toggle.close()
+            interval_unit_toggle.setOnStateChangeHandler(None)
+            interval_unit_toggle.close()
+            total_time_unit_toggle.setOnStateChangeHandler(None)
+            total_time_unit_toggle.close()
             textLCD.close()
             relay.close()
         except PhidgetException as e:
@@ -1464,18 +1464,18 @@ def main():
         killButton.setOnDetachHandler(killButtonDetachHandler)
         killButton.setOnErrorHandler(killButtonErrorHandler)
         killButton.setOnStateChangeHandler(killButtonStateChangeHandler)
-        toggle1.setOnAttachHandler(toggle1AttachHandler)
-        toggle1.setOnDetachHandler(toggle1DetachHandler)
-        toggle1.setOnErrorHandler(toggleErrorHandler)
-        toggle1.setOnStateChangeHandler(toggle1StateChangeHandler)
-        toggle2.setOnAttachHandler(toggle2AttachHandler)
-        toggle2.setOnDetachHandler(toggle2DetachHandler)
-        toggle2.setOnErrorHandler(toggleErrorHandler)
-        toggle2.setOnStateChangeHandler(toggle2StateChangeHandler)
-        toggle3.setOnAttachHandler(toggle3AttachHandler)
-        toggle3.setOnDetachHandler(toggle3DetachHandler)
-        toggle3.setOnErrorHandler(toggleErrorHandler)
-        toggle3.setOnStateChangeHandler(toggle3StateChangeHandler)
+        mode_toggle.setOnAttachHandler(modeToggleAttachHandler)
+        mode_toggle.setOnDetachHandler(modeToggleDetachHandler)
+        mode_toggle.setOnErrorHandler(toggleErrorHandler)
+        mode_toggle.setOnStateChangeHandler(modeToggleStateChangeHandler)
+        interval_unit_toggle.setOnAttachHandler(intervalUnitToggleAttachHandler)
+        interval_unit_toggle.setOnDetachHandler(intervalUnitToggleDetachHandler)
+        interval_unit_toggle.setOnErrorHandler(toggleErrorHandler)
+        interval_unit_toggle.setOnStateChangeHandler(intervalUnitToggleStateChangeHandler)
+        total_time_unit_toggle.setOnAttachHandler(totalTimeUnitToggleAttachHandler)
+        total_time_unit_toggle.setOnDetachHandler(totalTimeUnitToggleDetachHandler)
+        total_time_unit_toggle.setOnErrorHandler(toggleErrorHandler)
+        total_time_unit_toggle.setOnStateChangeHandler(totalTimeUnitToggleStateChangeHandler)
         relay.setOnAttachHandler(relayAttachHandler)
         relay.setOnDetachHandler(relayDetachHandler)
         relay.setOnErrorHandler(relayErrorHandler)
@@ -1556,21 +1556,21 @@ def main():
         killButton.open()
         print('Wait for button 1 attach...')
         killButton.openWaitForAttachment(5000)
-        toggle1.setDeviceSerialNumber(120683)
-        toggle1.setChannel(2)
-        toggle1.open()
+        mode_toggle.setDeviceSerialNumber(120683)
+        mode_toggle.setChannel(2)
+        mode_toggle.open()
         print('Wait for toggle 2 attach...')
-        toggle1.openWaitForAttachment(5000)
-        toggle2.setDeviceSerialNumber(120683)
-        toggle2.setChannel(3)
-        toggle2.open()
+        mode_toggle.openWaitForAttachment(5000)
+        interval_unit_toggle.setDeviceSerialNumber(120683)
+        interval_unit_toggle.setChannel(3)
+        interval_unit_toggle.open()
         print('Wait for toggle 3 attach...')
-        toggle2.openWaitForAttachment(5000)
-        toggle3.setDeviceSerialNumber(120683)
-        toggle3.setChannel(4)
-        toggle3.open()
+        interval_unit_toggle.openWaitForAttachment(5000)
+        total_time_unit_toggle.setDeviceSerialNumber(120683)
+        total_time_unit_toggle.setChannel(4)
+        total_time_unit_toggle.open()
         print('Wait for toggle 4 attach...')
-        toggle3.openWaitForAttachment(5000)
+        total_time_unit_toggle.openWaitForAttachment(5000)
         relay.setDeviceSerialNumber(120683)
         relay.setChannel(0)
         relay.open()
@@ -1752,12 +1752,12 @@ def main():
         runButton.close()
         killButton.setOnStateChangeHandler(None)
         killButton.close()
-        toggle1.setOnStateChangeHandler(None)
-        toggle1.close()
-        toggle2.setOnStateChangeHandler(None)
-        toggle2.close()
-        toggle3.setOnStateChangeHandler(None)
-        toggle3.close()
+        mode_toggle.setOnStateChangeHandler(None)
+        mode_toggle.close()
+        interval_unit_toggle.setOnStateChangeHandler(None)
+        interval_unit_toggle.close()
+        total_time_unit_toggle.setOnStateChangeHandler(None)
+        total_time_unit_toggle.close()
         textLCD.close()
 #        gps.close()
         relay.close()
