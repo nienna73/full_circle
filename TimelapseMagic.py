@@ -1033,7 +1033,7 @@ def main():
             textLCD.writeText(LCDFont.FONT_5x8, 13, 1, status)
             textLCD.flush()
             while i < number_of_cameras:
-                process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i), number_of_photos, str(interval)])
+                process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i)])
                 processes.append(process)
                 i = i + 1
 
