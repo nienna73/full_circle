@@ -53,11 +53,11 @@ def main():
         interval_rotator = VoltageInput()
         total_time_rotator = VoltageInput()
         video_length_rotator = VoltageInput()
-        shutterSpeed = VoltageInput()
+        shutter_speed = VoltageInput()
         iso = VoltageInput()
-        lightSensor = VoltageInput()
-        runButton = DigitalInput()
-        killButton = DigitalInput()
+        light_sensor = VoltageInput()
+        run_button = DigitalInput()
+        kill_button = DigitalInput()
         mode_toggle = DigitalInput()
         interval_unit_toggle = DigitalInput()
         total_time_unit_toggle = DigitalInput()
@@ -179,11 +179,11 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = video_length_rotator.getDeviceSerialNumber()
-            channelClass = video_length_rotator.getChannelClassName()
-            channel = video_length_rotator.getChannel()
+            serialNumber = light_sensor.getDeviceSerialNumber()
+            channelClass = light_sensor.getChannelClassName()
+            channel = light_sensor.getChannel()
 
-            deviceClass = video_length_rotator.getDeviceClass()
+            deviceClass = light_sensor.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
@@ -209,11 +209,11 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = video_length_rotator.getDeviceSerialNumber()
-            channelClass = video_length_rotator.getChannelClassName()
-            channel = video_length_rotator.getChannel()
+            serialNumber = shutter_speed.getDeviceSerialNumber()
+            channelClass = shutter_speed.getChannelClassName()
+            channel = shutter_speed.getChannel()
 
-            deviceClass = video_length_rotator.getDeviceClass()
+            deviceClass = shutter_speed.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
@@ -239,11 +239,11 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = video_length_rotator.getDeviceSerialNumber()
-            channelClass = video_length_rotator.getChannelClassName()
-            channel = video_length_rotator.getChannel()
+            serialNumber = iso.getDeviceSerialNumber()
+            channelClass = iso.getChannelClassName()
+            channel = iso.getChannel()
 
-            deviceClass = video_length_rotator.getDeviceClass()
+            deviceClass = iso.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
@@ -363,11 +363,11 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = video_length_rotator.getDeviceSerialNumber()
-            channelClass = video_length_rotator.getChannelClassName()
-            channel = video_length_rotator.getChannel()
+            serialNumber = light_sensor.getDeviceSerialNumber()
+            channelClass = light_sensor.getChannelClassName()
+            channel = light_sensor.getChannel()
 
-            deviceClass = video_length_rotator.getDeviceClass()
+            deviceClass = light_sensor.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
@@ -394,11 +394,11 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = video_length_rotator.getDeviceSerialNumber()
-            channelClass = video_length_rotator.getChannelClassName()
-            channel = video_length_rotator.getChannel()
+            serialNumber = shutter_speed.getDeviceSerialNumber()
+            channelClass = shutter_speed.getChannelClassName()
+            channel = shutter_speed.getChannel()
 
-            deviceClass = video_length_rotator.getDeviceClass()
+            deviceClass = shutter_speed.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
@@ -425,11 +425,11 @@ def main():
             """
             * Get device information and display it.
             """
-            serialNumber = video_length_rotator.getDeviceSerialNumber()
-            channelClass = video_length_rotator.getChannelClassName()
-            channel = video_length_rotator.getChannel()
+            serialNumber = iso.getDeviceSerialNumber()
+            channelClass = iso.getChannelClassName()
+            channel = iso.getChannel()
 
-            deviceClass = video_length_rotator.getDeviceClass()
+            deviceClass = iso.getDeviceClass()
             if (deviceClass != DeviceClass.PHIDCLASS_VINT):
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
@@ -628,7 +628,7 @@ def main():
     # Run button attach handler
     def runButtonAttachHandler(e):
 
-        ph = runButton
+        ph = run_button
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
             #www.phidgets.com/docs/Using_Multiple_Phidgets for information
@@ -660,7 +660,7 @@ def main():
     # Kill button attach handler
     def killButtonAttachHandler(e):
 
-        ph = killButton
+        ph = kill_button
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
             #www.phidgets.com/docs/Using_Multiple_Phidgets for information
@@ -789,7 +789,7 @@ def main():
     # Run button detach handler
     def runButtonDetachHandler(e):
 
-        ph = runButton
+        ph = run_button
 
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -822,7 +822,7 @@ def main():
     # Kill button detach handler
     def killButtonDetachHandler(e):
 
-        ph = killButton
+        ph = kill_button
 
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -1054,7 +1054,7 @@ def main():
 
         # Get the shutter speed from the shutter speed slider
         # and do the necessary math to get the proper shutter speed value
-        shutterSpeedVoltage = shutterSpeed.getSensorValue()
+        shutterSpeedVoltage = shutter_speed.getSensorValue()
         shutterSpeedValue = ""
         if (shutterSpeedVoltage <= 0.357):
             shutterSpeedValue = "10"
@@ -1174,7 +1174,7 @@ def main():
         interval = int(interval_rotator.getSensorValue() * 10)
 
         # Get the shutter speed and convert it from voltage to shutter speed
-        shutterSpeedVoltage = shutterSpeed.getSensorValue()
+        shutterSpeedVoltage = shutter_speed.getSensorValue()
         shutterSpeedValue = ""
         if (shutterSpeedVoltage <= 0.357):
             shutterSpeedValue = "10"
@@ -1309,19 +1309,19 @@ def main():
             video_length_rotator.setOnVoltageChangeHandler(None)
             video_length_rotator.setOnSensorChangeHandler(None)
             video_length_rotator.close()
-            shutterSpeed.setOnVoltageChangeHandler(None)
-            shutterSpeed.setOnSensorChangeHandler(None)
-            shutterSpeed.close()
+            shutter_speed.setOnVoltageChangeHandler(None)
+            shutter_speed.setOnSensorChangeHandler(None)
+            shutter_speed.close()
             iso.setOnVoltageChangeHandler(None)
             iso.setOnSensorChangeHandler(None)
             iso.close()
-            lightSensor.setOnVoltageChangeHandler(None)
-            lightSensor.setOnSensorChangeHandler(None)
-            lightSensor.close()
-            runButton.setOnStateChangeHandler(None)
-            runButton.close()
-            killButton.setOnStateChangeHandler(None)
-            killButton.close()
+            light_sensor.setOnVoltageChangeHandler(None)
+            light_sensor.setOnSensorChangeHandler(None)
+            light_sensor.close()
+            run_button.setOnStateChangeHandler(None)
+            run_button.close()
+            kill_button.setOnStateChangeHandler(None)
+            kill_button.close()
             mode_toggle.setOnStateChangeHandler(None)
             mode_toggle.close()
             interval_unit_toggle.setOnStateChangeHandler(None)
@@ -1436,18 +1436,18 @@ def main():
         video_length_rotator.setOnDetachHandler(interfaceKitDetached3)
         video_length_rotator.setOnErrorHandler(interfaceKitError)
         video_length_rotator.setOnVoltageChangeHandler(interfaceKitVoltageChange3)
-        shutterSpeed.setOnAttachHandler(shutterSpeedAttached)
-        shutterSpeed.setOnDetachHandler(shutterSpeedDetached)
-        shutterSpeed.setOnErrorHandler(interfaceKitError)
-        shutterSpeed.setOnVoltageChangeHandler(shutterSpeedChanged)
+        shutter_speed.setOnAttachHandler(shutterSpeedAttached)
+        shutter_speed.setOnDetachHandler(shutterSpeedDetached)
+        shutter_speed.setOnErrorHandler(interfaceKitError)
+        shutter_speed.setOnVoltageChangeHandler(shutterSpeedChanged)
         iso.setOnAttachHandler(isoAttached)
         iso.setOnDetachHandler(isoDetached)
         iso.setOnErrorHandler(interfaceKitError)
         iso.setOnVoltageChangeHandler(isoChanged)
-        lightSensor.setOnAttachHandler(lightSensorAttached)
-        lightSensor.setOnDetachHandler(lightSensorDetached)
-        lightSensor.setOnErrorHandler(interfaceKitError)
-        lightSensor.setOnVoltageChangeHandler(lightSensorChanged)
+        light_sensor.setOnAttachHandler(lightSensorAttached)
+        light_sensor.setOnDetachHandler(lightSensorDetached)
+        light_sensor.setOnErrorHandler(interfaceKitError)
+        light_sensor.setOnVoltageChangeHandler(lightSensorChanged)
     except PhidgetException as e:
         print("Phidget Exception %i: %s" % (e.code, e.details))
         print("Exiting....")
@@ -1456,14 +1456,14 @@ def main():
     #Setup for digital input
     # More of what's above, attaching handlers to phidgets
     try:
-        runButton.setOnAttachHandler(runButtonAttachHandler)
-        runButton.setOnDetachHandler(runButtonDetachHandler)
-        runButton.setOnErrorHandler(runButtonErrorHandler)
-        runButton.setOnStateChangeHandler(runButtonStateChangeHandler)
-        killButton.setOnAttachHandler(killButtonAttachHandler)
-        killButton.setOnDetachHandler(killButtonDetachHandler)
-        killButton.setOnErrorHandler(killButtonErrorHandler)
-        killButton.setOnStateChangeHandler(killButtonStateChangeHandler)
+        run_button.setOnAttachHandler(runButtonAttachHandler)
+        run_button.setOnDetachHandler(runButtonDetachHandler)
+        run_button.setOnErrorHandler(runButtonErrorHandler)
+        run_button.setOnStateChangeHandler(runButtonStateChangeHandler)
+        kill_button.setOnAttachHandler(killButtonAttachHandler)
+        kill_button.setOnDetachHandler(killButtonDetachHandler)
+        kill_button.setOnErrorHandler(killButtonErrorHandler)
+        kill_button.setOnStateChangeHandler(killButtonStateChangeHandler)
         mode_toggle.setOnAttachHandler(modeToggleAttachHandler)
         mode_toggle.setOnDetachHandler(modeToggleDetachHandler)
         mode_toggle.setOnErrorHandler(toggleErrorHandler)
@@ -1546,16 +1546,16 @@ def main():
     # gets plugged into that port, it will behave like the thing that's
     # supposed to be plugged into that port, or there will be an error
     try:
-        runButton.setDeviceSerialNumber(120683)
-        runButton.setChannel(0)
-        runButton.open()
+        run_button.setDeviceSerialNumber(120683)
+        run_button.setChannel(0)
+        run_button.open()
         print('Wait for button 0 attach...')
-        runButton.openWaitForAttachment(5000)
-        killButton.setDeviceSerialNumber(120683)
-        killButton.setChannel(1)
-        killButton.open()
+        run_button.openWaitForAttachment(5000)
+        kill_button.setDeviceSerialNumber(120683)
+        kill_button.setChannel(1)
+        kill_button.open()
         print('Wait for button 1 attach...')
-        killButton.openWaitForAttachment(5000)
+        kill_button.openWaitForAttachment(5000)
         mode_toggle.setDeviceSerialNumber(120683)
         mode_toggle.setChannel(2)
         mode_toggle.open()
@@ -1695,22 +1695,22 @@ def main():
         print('Wait for rotator 5 attach...')
         video_length_rotator.openWaitForAttachment(5000)
         sleep(1)
-        shutterSpeed.setDeviceSerialNumber(120683)
-        shutterSpeed.setChannel(4)
-        shutterSpeed.open()
+        shutter_speed.setDeviceSerialNumber(120683)
+        shutter_speed.setChannel(4)
+        shutter_speed.open()
         print('Wait for shutter speed 4 attach...')
-        shutterSpeed.openWaitForAttachment(5000)
+        shutter_speed.openWaitForAttachment(5000)
         sleep(1)
         iso.setDeviceSerialNumber(120683)
         iso.setChannel(3)
         iso.open()
         print('Wait for iso 3 attach...')
         iso.openWaitForAttachment(5000)
-        lightSensor.setDeviceSerialNumber(120683)
-        lightSensor.setChannel(6)
-        lightSensor.open()
+        light_sensor.setDeviceSerialNumber(120683)
+        light_sensor.setChannel(6)
+        light_sensor.open()
         print('Wait for light sensor 6 attach...')
-        lightSensor.openWaitForAttachment(5000)
+        light_sensor.openWaitForAttachment(5000)
         sleep(1)
     except PhidgetException as e:
         print("Phidget Exception %i: %s" % (e.code, e.details))
@@ -1739,19 +1739,19 @@ def main():
         video_length_rotator.setOnVoltageChangeHandler(None)
         video_length_rotator.setOnSensorChangeHandler(None)
         video_length_rotator.close()
-        shutterSpeed.setOnVoltageChangeHandler(None)
-        shutterSpeed.setOnSensorChangeHandler(None)
-        shutterSpeed.close()
+        shutter_speed.setOnVoltageChangeHandler(None)
+        shutter_speed.setOnSensorChangeHandler(None)
+        shutter_speed.close()
         iso.setOnVoltageChangeHandler(None)
         iso.setOnSensorChangeHandler(None)
         iso.close()
-        lightSensor.setOnVoltageChangeHandler(None)
-        lightSensor.setOnSensorChangeHandler(None)
-        lightSensor.close()
-        runButton.setOnStateChangeHandler(None)
-        runButton.close()
-        killButton.setOnStateChangeHandler(None)
-        killButton.close()
+        light_sensor.setOnVoltageChangeHandler(None)
+        light_sensor.setOnSensorChangeHandler(None)
+        light_sensor.close()
+        run_button.setOnStateChangeHandler(None)
+        run_button.close()
+        kill_button.setOnStateChangeHandler(None)
+        kill_button.close()
         mode_toggle.setOnStateChangeHandler(None)
         mode_toggle.close()
         interval_unit_toggle.setOnStateChangeHandler(None)
