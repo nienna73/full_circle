@@ -497,31 +497,8 @@ def main():
     # This function is responsive, but does not affect anything when
     # the system is set to capture stills
     def interfaceKitVoltageChange3(interfaceKit, voltage):
-        volt = int(voltage*10)  # easier to handle larger numbers
-
-        # This lovely if-else chunk decides how long the video will be
-        # in minutes, with the smallest chunk available being 1 minute
-        # and the largest being 29 minutes 'cause that's the max record length
-        if (volt <= 4.9):
-            output = 1
-        elif (4.9 < volt <= 9.8):
-            output = 2
-        elif (9.8 < volt <= 14.7):
-            output = 3
-        elif (14.7 < volt <= 19.6):
-            output = 4
-        elif (19.6 < volt <= 24.5):
-            output = 5
-        elif (24.5 < volt <= 29.4):
-            output = 10
-        elif (29.4 < volt <= 34.3):
-            output = 15
-        elif (34.3 < volt <= 39.2):
-            output = 20
-        elif (39.2 < volt <= 44.1):
-            output = 25
-        elif (44.1 < volt):
-            output = 29
+        # Call to local function to get video length
+        volt = getVideoLength()
 
         # Update the display with the new value
         text = "L:" + str(output) + "m "
@@ -1010,18 +987,10 @@ def main():
         # Call to local function to get iso
         isoValue = getIso()
 
-        camera_ports = []       # this will store all relevant camera ports
+        # Call to local funtion to locate the cameras
+        # and update their settings
+        camera_ports = locateAndUpdateCameras(shutterSpeedValue, isoValue)
 
-        # Detect all connected cameras and split the output
-        ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
-        ports_strings_split = ports_strings.split()
-
-        # Decode the output and find all entries with the format "usb:xxx,xxx"
-        # then add those entries to the list of camera ports
-        for item in ports_strings_split:
-            item = item.decode('utf-8')
-            if item[0] == 'u':
-                camera_ports.append(item)
 
         # These are for use in the while loops below
         number_of_cameras = len(camera_ports)
@@ -1035,11 +1004,6 @@ def main():
         textLCD.flush()
 
         camera_ports.sort(reverse = True)   # sorted so they capture in the correct order
-
-        # Update the shutter speed and iso of each camera, one at a time
-        for port in camera_ports:
-            print(port)
-            subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + shutterSpeedValue, "--set-config-value", "iso=" + isoValue])
 
         # So long as we haven't taken the desired number of photos,
         # keep running this loop and taking photos
@@ -1072,11 +1036,9 @@ def main():
     def runRecord():
         print('record')
 
-        # Get the video length, total time the program should run for,
+        # Get the total time the program should run for
         # and the interval between videos from the appropriate rotators
-        video_length = int(video_length_rotator.getSensorValue() * 10) * 60
         total_time = int(total_time_rotator.getSensorValue() * 10)
-
         interval = int(interval_rotator.getSensorValue() * 10)
 
         # Call to local function to get shutter speed value
@@ -1086,31 +1048,7 @@ def main():
         isoValue = getIso()
 
 
-        # Get the total length the program should run for and convert it from
-        # voltage to an integer
-        rawLength = video_length_rotator.getSensorValue() * 10
-        if (rawLength <= 4.9):
-            video_length = 1
-        elif (4.9 < rawLength <= 9.8):
-            video_length = 2
-        elif (9.8 < rawLength <= 14.7):
-            video_length = 3
-        elif (14.7 < rawLength <= 19.6):
-            video_length = 4
-        elif (19.6 < rawLength <= 24.5):
-            video_length = 5
-        elif (24.5 < rawLength <= 29.4):
-            video_length = 10
-        elif (29.4 < rawLength <= 34.3):
-            video_length = 15
-        elif (34.3 < rawLength <= 39.2):
-            video_length = 20
-        elif (39.2 < rawLength <= 44.1):
-            video_length = 25
-        elif (44.1 < rawLength):
-            video_length = 29
-
-        video_length = video_length * 60    # convert the video length to minutes
+        video_length = getVideoLength()
 
         # Determine if the interval is in seconds or minutes
         if (interval_unit_toggle.getState() == 1):
@@ -1125,27 +1063,9 @@ def main():
         # Determine the total number of videos to take
         number_of_videos = int(math.ceil(total_time / interval))
 
-
-        camera_ports = []       # all relevant camera ports
-
-        # Detect all the cameras
-        ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
-        ports_strings_split = ports_strings.split()
-
-        # Find all the ports of format "usb:xxx,xxx"
-        for item in ports_strings_split:
-            item = item.decode('utf-8')
-            if item[0] == 'u':
-                camera_ports.append(item)
-
-        # Inform the user to wait while we update the settings
-        textLCD.writeText(LCDFont.FONT_5x8, 15, 1, 'WAIT')
-        textLCD.flush()
-
-        # Update the shutter speed and iso on each camera
-        for port in camera_ports:
-            print(port)
-            subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + shutterSpeedValue, "--set-config-value", "iso=" + isoValue])
+        # Call to local function to locate and update
+        # the cameras and their settings
+        camera_ports = locateAndUpdateCameras(shutterSpeedValue, isoValue)
 
         # Inform the user that the system is running
         textLCD.writeText(LCDFont.FONT_5x8, 15, 1, 'ON  ')
@@ -1163,36 +1083,7 @@ def main():
         # Try to close everything by setting all their handlers to None
         # and the closing them. Catch and return any errors that occur
         try:
-            interval_rotator.setOnVoltageChangeHandler(None)
-            interval_rotator.setOnSensorChangeHandler(None)
-            interval_rotator.close()
-            total_time_rotator.setOnVoltageChangeHandler(None)
-            total_time_rotator.setOnSensorChangeHandler(None)
-            total_time_rotator.close()
-            video_length_rotator.setOnVoltageChangeHandler(None)
-            video_length_rotator.setOnSensorChangeHandler(None)
-            video_length_rotator.close()
-            shutter_speed.setOnVoltageChangeHandler(None)
-            shutter_speed.setOnSensorChangeHandler(None)
-            shutter_speed.close()
-            iso.setOnVoltageChangeHandler(None)
-            iso.setOnSensorChangeHandler(None)
-            iso.close()
-            light_sensor.setOnVoltageChangeHandler(None)
-            light_sensor.setOnSensorChangeHandler(None)
-            light_sensor.close()
-            run_button.setOnStateChangeHandler(None)
-            run_button.close()
-            kill_button.setOnStateChangeHandler(None)
-            kill_button.close()
-            mode_toggle.setOnStateChangeHandler(None)
-            mode_toggle.close()
-            interval_unit_toggle.setOnStateChangeHandler(None)
-            interval_unit_toggle.close()
-            total_time_unit_toggle.setOnStateChangeHandler(None)
-            total_time_unit_toggle.close()
-            textLCD.close()
-            relay.close()
+            closeAllPhidgets()
         except PhidgetException as e:
             print("Phidget Exception %i: %s" % (e.code, e.details))
             print("Exiting....")
@@ -1593,37 +1484,7 @@ def main():
     # Release everything! Close all the active phidgets, return an
     # error if one is found
     try:
-        interval_rotator.setOnVoltageChangeHandler(None)
-        interval_rotator.setOnSensorChangeHandler(None)
-        interval_rotator.close()
-        total_time_rotator.setOnVoltageChangeHandler(None)
-        total_time_rotator.setOnSensorChangeHandler(None)
-        total_time_rotator.close()
-        video_length_rotator.setOnVoltageChangeHandler(None)
-        video_length_rotator.setOnSensorChangeHandler(None)
-        video_length_rotator.close()
-        shutter_speed.setOnVoltageChangeHandler(None)
-        shutter_speed.setOnSensorChangeHandler(None)
-        shutter_speed.close()
-        iso.setOnVoltageChangeHandler(None)
-        iso.setOnSensorChangeHandler(None)
-        iso.close()
-        light_sensor.setOnVoltageChangeHandler(None)
-        light_sensor.setOnSensorChangeHandler(None)
-        light_sensor.close()
-        run_button.setOnStateChangeHandler(None)
-        run_button.close()
-        kill_button.setOnStateChangeHandler(None)
-        kill_button.close()
-        mode_toggle.setOnStateChangeHandler(None)
-        mode_toggle.close()
-        interval_unit_toggle.setOnStateChangeHandler(None)
-        interval_unit_toggle.close()
-        total_time_unit_toggle.setOnStateChangeHandler(None)
-        total_time_unit_toggle.close()
-        textLCD.close()
-#        gps.close()
-        relay.close()
+        closeAllPhidgets()
     except PhidgetException as e:
         print("Phidget Exception %i: %s" % (e.code, e.details))
         print("Exiting....")
@@ -1634,6 +1495,7 @@ def main():
 
     # User-defined function to convert the voltage from shutter_speed
     # to a usable shutter speed value
+    # It returns the shutter speed
     def getShutterSpeed():
         # Get the shutter speed and convert it from voltage to shutter speed
 
@@ -1676,6 +1538,7 @@ def main():
         return shutterSpeedValue
 
     # User-defined function to get the iso value from the slider voltage
+    # It returns the iso
     def getIso():
 
         # This is very similar to the shutter speed function above
@@ -1697,6 +1560,97 @@ def main():
             isoValue = "25600"
 
         return isoValue
+
+    # User-defined function to get the video length from the raw voltage input
+    # It returns the video length in minutes
+    def getVideoLength():
+        # Get the total length the program should run for and convert it from
+        # voltage to an integer
+        rawLength = video_length_rotator.getSensorValue() * 10
+        if (rawLength <= 4.9):
+            length = 1
+        elif (4.9 < rawLength <= 9.8):
+            length = 2
+        elif (9.8 < rawLength <= 14.7):
+            length = 3
+        elif (14.7 < rawLength <= 19.6):
+            length = 4
+        elif (19.6 < rawLength <= 24.5):
+            length = 5
+        elif (24.5 < rawLength <= 29.4):
+            length = 10
+        elif (29.4 < rawLength <= 34.3):
+            length = 15
+        elif (34.3 < rawLength <= 39.2):
+            length = 20
+        elif (39.2 < rawLength <= 44.1):
+            length = 25
+        elif (44.1 < rawLength):
+            length = 29
+
+        length = length * 60    # convert the video length to minutes
+
+        return length
+
+    # User-defined function to locate and update the settings on all cameras
+    # It returns a list of camera ports
+    def locateAndUpdateCameras(s_speed, i_value):
+        cameras = []    # to hold ports, to be returned
+        # Detect all the cameras
+        ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
+        ports_strings_split = ports_strings.split()
+
+        # Find all the ports of format "usb:xxx,xxx"
+        for item in ports_strings_split:
+            item = item.decode('utf-8')
+            if item[0] == 'u':
+                cameras.append(item)
+
+        # Inform the user to wait while we update the settings
+        textLCD.writeText(LCDFont.FONT_5x8, 15, 1, 'WAIT')
+        textLCD.flush()
+
+        # Update the shutter speed and iso on each camera
+        for port in camera_ports:
+            print(port)
+            subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + s_speed, "--set-config-value", "iso=" + i_value])
+
+        return cameras
+
+    # User-defined function to close all phidgets
+    def closeAllPhidgets():
+        interval_rotator.setOnVoltageChangeHandler(None)
+        interval_rotator.setOnSensorChangeHandler(None)
+        interval_rotator.close()
+        total_time_rotator.setOnVoltageChangeHandler(None)
+        total_time_rotator.setOnSensorChangeHandler(None)
+        total_time_rotator.close()
+        video_length_rotator.setOnVoltageChangeHandler(None)
+        video_length_rotator.setOnSensorChangeHandler(None)
+        video_length_rotator.close()
+        shutter_speed.setOnVoltageChangeHandler(None)
+        shutter_speed.setOnSensorChangeHandler(None)
+        shutter_speed.close()
+        iso.setOnVoltageChangeHandler(None)
+        iso.setOnSensorChangeHandler(None)
+        iso.close()
+        light_sensor.setOnVoltageChangeHandler(None)
+        light_sensor.setOnSensorChangeHandler(None)
+        light_sensor.close()
+        run_button.setOnStateChangeHandler(None)
+        run_button.close()
+        kill_button.setOnStateChangeHandler(None)
+        kill_button.close()
+        mode_toggle.setOnStateChangeHandler(None)
+        mode_toggle.close()
+        interval_unit_toggle.setOnStateChangeHandler(None)
+        interval_unit_toggle.close()
+        total_time_unit_toggle.setOnStateChangeHandler(None)
+        total_time_unit_toggle.close()
+        textLCD.close()
+        relay.close()
+        #gps.close()
+
 
 
 
