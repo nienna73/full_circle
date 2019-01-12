@@ -1906,7 +1906,7 @@ def main():
         video_length_rotator.openWaitForAttachment(5000)
         sleep(1)
         video_delay_rotator.setDeviceSerialNumber(120683)
-        video_delay_rotator.setChannel(5)
+        video_delay_rotator.setChannel(1)
         video_delay_rotator.open()
         print('Wait for rotator 5 attach...')
         video_delay_rotator.openWaitForAttachment(5000)
