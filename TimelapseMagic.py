@@ -151,6 +151,44 @@ def main():
 
         return length
 
+    # User-defined function to get the video delay from the raw voltage input
+    # It returns the video delay as a string
+    def getVideoDelayStr():
+        # Get the total length the program should run for and convert it from
+        # voltage to an integer
+        rawLength = video_delay_rotator.getSensorValue() * 10
+        if (rawLength <= 9.9):
+            length = '10s'
+        elif (9.9 < rawLength <= 19.9):
+            length = '30s'
+        elif (19.9 < rawLength <= 29.9):
+            length = '1m'
+        elif (29.9 < rawLength <= 39.9):
+            length = '2m'
+        elif (39.9 < rawLength):
+            length = '5m'
+
+        return length
+
+    # User-defined function to get the video delay from the raw voltage input
+    # It returns the video delay as an integer in seconds
+    def getVideoDelayInt():
+        # Get the total length the program should run for and convert it from
+        # voltage to an integer
+        rawLength = video_delay_rotator.getSensorValue() * 10
+        if (rawLength <= 9.9):
+            length = 10
+        elif (9.9 < rawLength <= 19.9):
+            length = 30
+        elif (19.9 < rawLength <= 29.9):
+            length = 60
+        elif (29.9 < rawLength <= 39.9):
+            length = 120
+        elif (39.9 < rawLength):
+            length = 300
+
+        return length
+
     # User-defined function to locate and update the settings on all cameras
     # It returns a list of camera ports
     def locateAndUpdateCameras(s_speed, i_value):
@@ -187,6 +225,9 @@ def main():
         video_length_rotator.setOnVoltageChangeHandler(None)
         video_length_rotator.setOnSensorChangeHandler(None)
         video_length_rotator.close()
+        video_delay_rotator.setOnVoltageChangeHandler(None)
+        video_delay_rotator.setOnSensorChangeHandler(None)
+        video_delay_rotator.close()
         shutter_speed.setOnVoltageChangeHandler(None)
         shutter_speed.setOnSensorChangeHandler(None)
         shutter_speed.close()
@@ -219,6 +260,7 @@ def main():
         interval_rotator = VoltageInput()
         total_time_rotator = VoltageInput()
         video_length_rotator = VoltageInput()
+        video_delay_rotator = VoltageInput()
         shutter_speed = VoltageInput()
         iso = VoltageInput()
         light_sensor = VoltageInput()
@@ -548,6 +590,99 @@ def main():
 
 #####################################################################################################################################
 
+### Start video delay rotator functions
+
+    # Standard phidget attach handler for video_length_rotator
+    def videoDelayRotatorAttached(e):
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nAttach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = video_delay_rotator.getDeviceSerialNumber()
+            channelClass = video_delay_rotator.getChannelClassName()
+            channel = video_delay_rotator.getChannel()
+
+            deviceClass = video_delay_rotator.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = video_delay_rotator.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Attach Event:")
+            #DisplayError(e)
+            traceback.print_exc()
+            return
+
+
+    # Standard phidget detach handler for video_delay_rotator
+    def videoDelayRotatorDetached(e):
+
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nDetach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = video_delay_rotator.getDeviceSerialNumber()
+            channelClass = video_delay_rotator.getChannelClassName()
+            channel = video_delay_rotator.getChannel()
+
+            deviceClass = video_delay_rotator.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = video_delay_rotator.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Detach Event:")
+            #DisplayError(e)
+            traceback.print_exc()
+            return
+
+
+    # This is the phidget handler for the length of video
+    # This function is responsive, but does not affect anything when
+    # the system is set to capture stills
+    def videoDelayRotatorVoltageChange(interfaceKit, voltage):
+        # Call to local function to get video length
+        output = getVideoDelayStr()
+
+        # Update the display with the new value
+        text = "D:" + str(output)
+        textLCD.writeText(LCDFont.FONT_5x8, 12, 1, text)
+        textLCD.flush()     # The display doesn't update without this
+
+    # Attach all the handlers to the proper phidgets,
+    # catch and return any errors
+    try:
+        video_delay_rotator.setOnAttachHandler(videoDelayRotatorAttached)
+        video_delay_rotator.setOnDetachHandler(videoDelayRotatorDetached)
+        video_delay_rotator.setOnErrorHandler(interfaceKitError)
+        video_delay_rotator.setOnVoltageChangeHandler(videoDelayRotatorVoltageChange)
+    except PhidgetException as e:
+        print("Phidget Exception %i: %s" % (e.code, e.details))
+        print("Exiting....")
+        exit(1)
+
+### End video delay rotator functions
+
+#####################################################################################################################################
+
 ### Start light sensor functions
 
     # Standard phidget attach handler for the light sensor
@@ -570,7 +705,7 @@ def main():
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = video_length_rotator.getHubPort()
+                hubPort = light_sensor.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -602,7 +737,7 @@ def main():
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = video_length_rotator.getHubPort()
+                hubPort = light_sensor.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -658,7 +793,7 @@ def main():
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = video_length_rotator.getHubPort()
+                hubPort = shutter_speed.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -689,7 +824,7 @@ def main():
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = video_length_rotator.getHubPort()
+                hubPort = shutter_speed.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -747,7 +882,7 @@ def main():
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = video_length_rotator.getHubPort()
+                hubPort = iso.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -779,7 +914,7 @@ def main():
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Channel " + str(channel) + "\n")
             else:
-                hubPort = video_length_rotator.getHubPort()
+                hubPort = iso.getHubPort()
                 print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
                       "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
 
@@ -1695,6 +1830,11 @@ def main():
         # Call to local function to get video length
         video_length = getVideoLength()
 
+        # Call to local function to get video delay
+        video_delay = getVideoDelayInt()
+
+        time.sleep(video_delay)
+
         # Determine if the interval is in seconds or minutes
         if (interval_unit_toggle.getState() == 1):
             interval = interval * 60    # convert to minutes
@@ -1764,6 +1904,12 @@ def main():
         video_length_rotator.open()
         print('Wait for rotator 5 attach...')
         video_length_rotator.openWaitForAttachment(5000)
+        sleep(1)
+        video_delay_rotator.setDeviceSerialNumber(120683)
+        video_delay_rotator.setChannel(5)
+        video_delay_rotator.open()
+        print('Wait for rotator 5 attach...')
+        video_delay_rotator.openWaitForAttachment(5000)
         sleep(1)
         shutter_speed.setDeviceSerialNumber(120683)
         shutter_speed.setChannel(4)

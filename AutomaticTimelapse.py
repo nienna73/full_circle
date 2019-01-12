@@ -236,7 +236,7 @@ def main():
             os.chdir("../")                 # Change back a directory to prevent
                                             # creating multiple nested ones
 
-            time.sleep(6)
+            # time.sleep(6)
 
 
     # Close the relay

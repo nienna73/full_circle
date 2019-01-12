@@ -51,19 +51,25 @@ def check_shutter_and_iso(old_files, path):
             old_files.append(file)      # add anything new we see to the list
             if ".jpg" in file[1].lower() or ".arw" in file[1].lower():
 
-                # Check the ISO for the file
-                iso = subprocess.check_output(["exiftool", "-iso", path+'/'+file[1]])
-                # Decode it to remove strange characters
-                iso = iso.decode('utf-8')
-                # Split it on ':' to access the integer value of ISO
-                iso = iso.split(':')
-                # Take the second list entry and strip unnecessary spaces from it
-                iso = iso[1].strip()
+                try:
 
-                # Repeat the steps above for shutter speed
-                shutter_speed = subprocess.check_output(["exiftool", "-shutterspeed", path+'/'+file[1]]).decode('utf-8').split(':')[1].strip()
+                    # Check the ISO for the file
+                    iso = subprocess.check_output(["exiftool", "-iso", path+'/'+file[1]])
+                    # Decode it to remove strange characters
+                    iso = iso.decode('utf-8')
+                    # Split it on ':' to access the integer value of ISO
+                    iso = iso.split(':')
+                    # Take the second list entry and strip unnecessary spaces from it
+                    iso = iso[1].strip()
 
-                # Return the ISO and shutter speed in dictionary format for easy access
-                return {'iso':iso, 'shutter':shutter_speed, 'files':old_files}
+                    # Repeat the steps above for shutter speed
+                    shutter_speed = subprocess.check_output(["exiftool", "-shutterspeed", path+'/'+file[1]]).decode('utf-8').split(':')[1].strip()
+
+                    # Return the ISO and shutter speed in dictionary format for easy access
+                    return {'iso':iso, 'shutter':shutter_speed, 'files':old_files}
+
+                except:
+                    # Return the ISO and shutter speed in dictionary format for easy access
+                    return {'iso':iso, 'shutter':shutter_speed, 'files':old_files}
 
     return {'iso':iso, 'shutter':shutter_speed, 'files':old_files}
