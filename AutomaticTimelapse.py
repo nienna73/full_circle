@@ -187,56 +187,60 @@ def main():
             print(iso)
             print(shutter)
 
-            # Try to open the directory where the photos are stored,
-            # if it doesn't exist, create it then navigate to it
             try:
-                os.chdir(str(dir_name))
+                # Try to open the directory where the photos are stored,
+                # if it doesn't exist, create it then navigate to it
+                try:
+                    os.chdir(str(dir_name))
+                except:
+                    make_dir = subprocess.Popen(["mkdir", str(dir_name)])
+                    make_dir.wait()
+                    os.chdir(str(dir_name))
+
+                camera_ports = []       # stores relevant ports
+
+                # Locate all cameras and split results into readable strings
+                ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
+                ports_strings_split = ports_strings.split()
+
+
+                # Locate all ports of format usb:xxx,xxx
+                # as they're needed for gphoto2
+                for item in ports_strings_split:
+                    item = item.decode('utf-8')
+                    if item[0] == 'u':
+                        camera_ports.append(item)
+
+                # Set the ISO and shutter speed of each camera
+                number_of_cameras = len(camera_ports)
+                for port in camera_ports:
+                    print(port)
+                    subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter), "--set-config-value", "iso=" + str(iso)])
+                    # subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter)])
+
+                # Open an instance of capture.py for each camera, where:
+                # x is the number-th photo taken (used for the filename)
+                # i is the index of the camera port in a sorted list of ports
+                i = 0
+                while i < number_of_cameras:
+                    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i)])
+                    i = i + 1
+
+
+                # Trigger the relay for simultaneous image capture
+                # relay.setDutyCycle(1.0)
+                # time.sleep(1)
+                # relay.setDutyCycle(0.0)
+                filenames = results['files']        # Update our records of what's being
+                                                # held at 'path' so we don't
+                                                # take the same picture more than once
+                x += 1
+                os.chdir("../")                 # Change back a directory to prevent
+                                                # creating multiple nested ones
+
+                # time.sleep(6)
             except:
-                make_dir = subprocess.Popen(["mkdir", str(dir_name)])
-                make_dir.wait()
-                os.chdir(str(dir_name))
-
-            camera_ports = []       # stores relevant ports
-
-            # Locate all cameras and split results into readable strings
-            ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
-            ports_strings_split = ports_strings.split()
-
-
-            # Locate all ports of format usb:xxx,xxx
-            # as they're needed for gphoto2
-            for item in ports_strings_split:
-                item = item.decode('utf-8')
-                if item[0] == 'u':
-                    camera_ports.append(item)
-
-            # Set the ISO and shutter speed of each camera
-            number_of_cameras = len(camera_ports)
-            for port in camera_ports:
-                print(port)
-                subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter), "--set-config-value", "iso=" + str(iso)])
-                # subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter)])
-
-            # Open an instance of capture.py for each camera, where:
-            # x is the number-th photo taken (used for the filename)
-            # i is the index of the camera port in a sorted list of ports
-            i = 0
-            while i < number_of_cameras:
-                process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i)])
-                i = i + 1
-            x += 1
-
-            # Trigger the relay for simultaneous image capture
-            # relay.setDutyCycle(1.0)
-            # time.sleep(1)
-            # relay.setDutyCycle(0.0)
-            filenames = results['files']        # Update our records of what's being
-                                            # held at 'path' so we don't
-                                            # take the same picture more than once
-            os.chdir("../")                 # Change back a directory to prevent
-                                            # creating multiple nested ones
-
-            # time.sleep(6)
+                time.sleep(1)
 
 
     # Close the relay
