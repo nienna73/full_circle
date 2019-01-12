@@ -169,7 +169,7 @@ def main():
         textLCD.flush()
 
         # Update the shutter speed and iso on each camera
-        for port in camera_ports:
+        for port in cameras:
             print(port)
             subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + s_speed, "--set-config-value", "iso=" + i_value])
 
@@ -240,6 +240,19 @@ def main():
         print("Exiting....")
         exit(1)
 
+
+### Error handler for the phidgets below
+
+    # Standard interface kit error handler
+    # Shared by all the interface kits
+    def interfaceKitError(e):
+        try:
+            source = e.device
+            print("InterfaceKit %i: Phidget Error %i: %s" % (source.getSerialNum(), e.eCode, e.description))
+        except PhidgetException as e:
+            print("Phidget Exception %i: %s" % (e.code, e.details))
+
+#####################################################################################################################################
 
 ### Start interval rotator functions
     # Standard phidget attach handler for interval_rotator
@@ -799,18 +812,6 @@ def main():
 
 #####################################################################################################################################
 
-### Error handler for all phidgets above
-
-    # Standard interface kit error handler
-    # Shared by all the interface kits
-    def interfaceKitError(e):
-        try:
-            source = e.device
-            print("InterfaceKit %i: Phidget Error %i: %s" % (source.getSerialNum(), e.eCode, e.description))
-        except PhidgetException as e:
-            print("Phidget Exception %i: %s" % (e.code, e.details))
-
-#####################################################################################################################################
 
 ### Start LCD functions
 
@@ -1142,6 +1143,16 @@ def main():
 
 #####################################################################################################################################
 
+### Error handler for all the toggles
+
+
+    # Toggle error handler, shared by all toggles
+    def toggleErrorHandler(button, errorCode, errorString):
+
+        sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
+
+#####################################################################################################################################
+
 ### Start interval unit toggle functions
 
     # interval_unit_toggle attach handler
@@ -1319,16 +1330,6 @@ def main():
         exit(1)
 
 ### End total time unit toggle functions
-
-#####################################################################################################################################
-
-### Error handler for all the toggles
-
-
-    # Toggle error handler, shared by all toggles
-    def toggleErrorHandler(button, errorCode, errorString):
-
-        sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
 
 #####################################################################################################################################
 
@@ -1602,7 +1603,6 @@ def main():
             # Open the capture program for each camera
             while i < number_of_cameras:
                 process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i)])
-                processes.append(process)
                 i = i + 1
 
             # Trigger the relay so all cameras capture at the same time
