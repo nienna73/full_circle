@@ -48,7 +48,8 @@ from Phidget22.Devices.VoltageInput import *
 
 def main():
 
-    ### Start User-Defined functions
+### Start User-Defined functions
+
     # These need to be at the beginning of the file to prevent reference errors
 
     # User-defined function to convert the voltage from shutter_speed
@@ -209,8 +210,9 @@ def main():
         relay.close()
         #gps.close()
 
-    ### End User-Defined functions
+### End User-Defined functions
 
+#####################################################################################################################################
 
     # Create objects for toggles, sensors, rotators, and sliders on the rig
     try:
@@ -240,6 +242,7 @@ def main():
         print("Exiting....")
         exit(1)
 
+#####################################################################################################################################
 
 ### Error handler for the phidgets below
 
@@ -256,7 +259,7 @@ def main():
 
 ### Start interval rotator functions
     # Standard phidget attach handler for interval_rotator
-    def inferfaceKitAttached1(e):
+    def intervalRotatorAttached(e):
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
             #www.phidgets.com/docs/Using_Multiple_Phidgets for information
@@ -285,8 +288,8 @@ def main():
             traceback.print_exc()
             return
 
-    # Standard phidget detach handler for rotator 1
-    def interfaceKitDetached1(e):
+    # Standard phidget detach handler for interval rotator
+    def intervalRotatorDetached(e):
 
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -317,7 +320,7 @@ def main():
             return
 
     # Voltage change handler for interval_unit_toggle
-    def interfaceKitVoltageChange1(interfaceKit, voltage):
+    def intervalRotatorVoltageChange(interfaceKit, voltage):
         # This is the handler for the interval variable
 
         output = int(voltage*10)
@@ -341,10 +344,10 @@ def main():
     # Attach all the handlers to the proper phidgets,
     # catch and return any errors
     try:
-        interval_rotator.setOnAttachHandler(inferfaceKitAttached1)
-        interval_rotator.setOnDetachHandler(interfaceKitDetached1)
+        interval_rotator.setOnAttachHandler(intervalRotatorAttached)
+        interval_rotator.setOnDetachHandler(intervalRotatorDetached)
         interval_rotator.setOnErrorHandler(interfaceKitError)
-        interval_rotator.setOnVoltageChangeHandler(interfaceKitVoltageChange1)
+        interval_rotator.setOnVoltageChangeHandler(intervalRotatorVoltageChange)
     except PhidgetException as e:
         print("Phidget Exception %i: %s" % (e.code, e.details))
         print("Exiting....")
@@ -357,7 +360,7 @@ def main():
 ### Start total time rotator functions
 
     # Standard phidget attach handler for total_time_rotator
-    def inferfaceKitAttached2(e):
+    def totalTimeRotatorAttached(e):
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
             #www.phidgets.com/docs/Using_Multiple_Phidgets for information
@@ -387,7 +390,7 @@ def main():
             return
 
     # Standard phidget detach handler for total_time_rotator
-    def interfaceKitDetached2(e):
+    def totalTimeRotatorDetached(e):
 
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -419,7 +422,7 @@ def main():
 
 
     # This is the handler for when the total time rotator is changed
-    def interfaceKitVoltageChange2(interfaceKit, voltage):
+    def totalTimeRotatorVoltageChange(interfaceKit, voltage):
         # This affects the total time the program runs for,
         # whether that's for video or stills
 
@@ -439,10 +442,10 @@ def main():
     # Attach all the handlers to the proper phidgets,
     # catch and return any errors
     try:
-        total_time_rotator.setOnAttachHandler(inferfaceKitAttached2)
-        total_time_rotator.setOnDetachHandler(interfaceKitDetached2)
+        total_time_rotator.setOnAttachHandler(totalTimeRotatorAttached)
+        total_time_rotator.setOnDetachHandler(totalTimeRotatorDetached)
         total_time_rotator.setOnErrorHandler(interfaceKitError)
-        total_time_rotator.setOnVoltageChangeHandler(interfaceKitVoltageChange2)
+        total_time_rotator.setOnVoltageChangeHandler(totalTimeRotatorVoltageChange)
     except PhidgetException as e:
         print("Phidget Exception %i: %s" % (e.code, e.details))
         print("Exiting....")
@@ -455,7 +458,7 @@ def main():
 ### Start video length rotator functions
 
     # Standard phidget attach handler for video_length_rotator
-    def inferfaceKitAttached3(e):
+    def videoLengthRotatorAttached(e):
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
             #www.phidgets.com/docs/Using_Multiple_Phidgets for information
@@ -486,7 +489,7 @@ def main():
 
 
     # Standard phidget detach handler for video_length_rotator
-    def interfaceKitDetached3(e):
+    def videoLengthRotatorDetached(e):
 
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -520,7 +523,7 @@ def main():
     # This is the phidget handler for the length of video
     # This function is responsive, but does not affect anything when
     # the system is set to capture stills
-    def interfaceKitVoltageChange3(interfaceKit, voltage):
+    def videoLengthRotatorVoltageChange(interfaceKit, voltage):
         # Call to local function to get video length
         output = getVideoLength()
 
@@ -532,10 +535,10 @@ def main():
     # Attach all the handlers to the proper phidgets,
     # catch and return any errors
     try:
-        video_length_rotator.setOnAttachHandler(inferfaceKitAttached3)
-        video_length_rotator.setOnDetachHandler(interfaceKitDetached3)
+        video_length_rotator.setOnAttachHandler(videoLengthRotatorAttached)
+        video_length_rotator.setOnDetachHandler(videoLengthRotatorDetached)
         video_length_rotator.setOnErrorHandler(interfaceKitError)
-        video_length_rotator.setOnVoltageChangeHandler(interfaceKitVoltageChange3)
+        video_length_rotator.setOnVoltageChangeHandler(videoLengthRotatorVoltageChange)
     except PhidgetException as e:
         print("Phidget Exception %i: %s" % (e.code, e.details))
         print("Exiting....")
@@ -665,7 +668,7 @@ def main():
             traceback.print_exc()
             return
 
-    # Standard phidget detach handler for the shutter speed slider
+    # Standard phidget detach handler for the shutter speed rotator
     def shutterSpeedDetached(e):
 
         try:
@@ -696,7 +699,7 @@ def main():
             traceback.print_exc()
             return
 
-    # This function gets called every time the shutter speed slider is moved
+    # This function gets called every time the shutter speed rotator is moved
     def shutterSpeedChanged(interfaceKit, voltage):
         # Call to local function to get shutter speed
         output = getShutterSpeed()
@@ -724,7 +727,7 @@ def main():
 
 ### Start ISO functions
 
-    # Standard phidget attach handler for the iso slider
+    # Standard phidget attach handler for the iso rotator
     def isoAttached(e):
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -755,7 +758,7 @@ def main():
             return
 
 
-    # Standard phidget detach handler for the iso slider
+    # Standard phidget detach handler for the iso rotator
     def isoDetached(e):
 
         try:
@@ -786,7 +789,7 @@ def main():
             traceback.print_exc()
             return
 
-    # This function gets called every time the iso slider is moved
+    # This function gets called every time the iso rotator is moved
     def isoChanged(interfaceKit, voltage):
         # Call to local function to get iso
         output = getIso()
@@ -1101,7 +1104,6 @@ def main():
             traceback.print_exc()
             return
 
-
     # mode_toggle detach handler
     def modeToggleDetachHandler(e):
 
@@ -1177,7 +1179,6 @@ def main():
 
     # Toggle error handler, shared by all toggles
     def toggleErrorHandler(button, errorCode, errorString):
-
         sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
 
 #####################################################################################################################################
@@ -1216,8 +1217,7 @@ def main():
             traceback.print_exc()
             return
 
-
-    # Toggle 2 detach handler
+    # interval_unit_toggle detach handler
     def intervalUnitToggleDetachHandler(e):
 
         ph = interval_unit_toggle
@@ -1249,7 +1249,6 @@ def main():
             #DisplayError(e)
             traceback.print_exc()
             return
-
 
     # interval_unit_toggle state handler
     def intervalUnitToggleStateChangeHandler(self, state):
@@ -1490,7 +1489,8 @@ def main():
 
 ### Start GPS functions
 
-    # Standard Phidget attach handler for the gps
+#    # Standard Phidget attach handler for the gps
+
 #    def gpsAttachHandler(self):
 
 #        ph = gps
@@ -1584,7 +1584,6 @@ def main():
 ### End GPS functions
 
 #####################################################################################################################################
-
 
 
     # User-define function to capture stills
@@ -1741,19 +1740,12 @@ def main():
         os.killpg(os.getpgid(process.pid), signal.SIGTERM)
 
 
-    # Set the serial number and port for all phidgets, give them each
-    # 5 seconds to be found before returning an error
-    # The serial number for the 8/8/8, to which everything is attached,
-    # is 120683. The channel mentioned for everything is either
-    # a digital or analog port that it's plugged in to. If something else
-    # gets plugged into that port, it will behave like the thing that's
-    # supposed to be plugged into that port, or there will be an error
-
     textLCD.setBacklight(1)     # Give it some light! (also very important)
 
 
     # Set the serial number and channel for each phidget, then open it
     # and wait for 5 seconds for it to attach before returning an error
+    # So far, I haven't been able to move this code to somewhere more sensible
     try:
         interval_rotator.setDeviceSerialNumber(120683)
         interval_rotator.setChannel(0)
