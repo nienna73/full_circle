@@ -48,6 +48,170 @@ from Phidget22.Devices.VoltageInput import *
 
 def main():
 
+    ### Start User-Defined functions
+    # These need to be at the beginning of the file to prevent reference errors
+
+    # User-defined function to convert the voltage from shutter_speed
+    # to a usable shutter speed value
+    # It returns the shutter speed
+    def getShutterSpeed():
+        # Get the shutter speed and convert it from voltage to shutter speed
+
+        # This section decides the shutter speed of the cameras based
+        # on the position of the shutter speed slider. These values were
+        # selected from a list provided by Ryan, and the intervals were decided
+        # with math. The extra spaces in "output" are there to ensure no
+        # trailing characters remain on the display when the value changes
+        shutterSpeedVoltage = shutter_speed.getSensorValue()
+        shutterSpeedValue = ""
+        if (shutterSpeedVoltage <= 0.357):
+            shutterSpeedValue = "10"
+        elif (0.357 < shutterSpeedVoltage <= 0.714):
+            shutterSpeedValue = "4"
+        elif (0.714 < shutterSpeedVoltage <= 1.071):
+            shutterSpeedValue = "2"
+        elif (1.071 < shutterSpeedVoltage <= 1.428):
+            shutterSpeedValue = "1"
+        elif (1.428 < shutterSpeedVoltage <= 1.785):
+            shutterSpeedValue = "1/30"
+        elif (1.785 < shutterSpeedVoltage <= 2.142):
+            shutterSpeedValue = "1/50"
+        elif (2.142 < shutterSpeedVoltage <= 2.499):
+            shutterSpeedValue = "1/100"
+        elif (2.499 < shutterSpeedVoltage <= 2.856):
+            shutterSpeedValue = "1/250"
+        elif (2.856 < shutterSpeedVoltage <= 3.213):
+            shutterSpeedValue = "1/400"
+        elif (3.213 < shutterSpeedVoltage <= 3.57):
+            shutterSpeedValue = "1/500"
+        elif (3.57 < shutterSpeedVoltage <= 3.927):
+            shutterSpeedValue = "1/800"
+        elif (3.927 < shutterSpeedVoltage <= 4.284):
+            shutterSpeedValue = "1/1000"
+        elif (4.284 < shutterSpeedVoltage <= 4.641):
+            shutterSpeedValue = "1/1600"
+        elif (4.641 < shutterSpeedVoltage):
+            shutterSpeedValue = "1/2000"
+
+        return shutterSpeedValue
+
+    # User-defined function to get the iso value from the slider voltage
+    # It returns the iso
+    def getIso():
+
+        # This is very similar to the shutter speed function above
+        isoSensorValue = iso.getSensorValue()
+        isoValue = ""
+        if (isoSensorValue <= 0.714):
+            isoValue = "100"
+        elif (0.714 < isoSensorValue <= 1.428):
+            isoValue = "800"
+        elif (0.1428 < isoSensorValue <= 2.142):
+            isoValue = "1600"
+        elif (2.142 < isoSensorValue <= 2.856):
+            isoValue = "3200"
+        elif (2.856 < isoSensorValue <= 3.57):
+            isoValue = "6400"
+        elif (3.57 < isoSensorValue <= 4.284):
+            isoValue = "12800"
+        elif (4.2824 < isoSensorValue):
+            isoValue = "25600"
+
+        return isoValue
+
+    # User-defined function to get the video length from the raw voltage input
+    # It returns the video length in minutes
+    def getVideoLength():
+        # Get the total length the program should run for and convert it from
+        # voltage to an integer
+        rawLength = video_length_rotator.getSensorValue() * 10
+        if (rawLength <= 4.9):
+            length = 1
+        elif (4.9 < rawLength <= 9.8):
+            length = 2
+        elif (9.8 < rawLength <= 14.7):
+            length = 3
+        elif (14.7 < rawLength <= 19.6):
+            length = 4
+        elif (19.6 < rawLength <= 24.5):
+            length = 5
+        elif (24.5 < rawLength <= 29.4):
+            length = 10
+        elif (29.4 < rawLength <= 34.3):
+            length = 15
+        elif (34.3 < rawLength <= 39.2):
+            length = 20
+        elif (39.2 < rawLength <= 44.1):
+            length = 25
+        elif (44.1 < rawLength):
+            length = 29
+
+        length = length * 60    # convert the video length to minutes
+
+        return length
+
+    # User-defined function to locate and update the settings on all cameras
+    # It returns a list of camera ports
+    def locateAndUpdateCameras(s_speed, i_value):
+        cameras = []    # to hold ports, to be returned
+        # Detect all the cameras
+        ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
+        ports_strings_split = ports_strings.split()
+
+        # Find all the ports of format "usb:xxx,xxx"
+        for item in ports_strings_split:
+            item = item.decode('utf-8')
+            if item[0] == 'u':
+                cameras.append(item)
+
+        # Inform the user to wait while we update the settings
+        textLCD.writeText(LCDFont.FONT_5x8, 15, 1, 'WAIT')
+        textLCD.flush()
+
+        # Update the shutter speed and iso on each camera
+        for port in camera_ports:
+            print(port)
+            subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + s_speed, "--set-config-value", "iso=" + i_value])
+
+        return cameras
+
+    # User-defined function to close all phidgets
+    def closeAllPhidgets():
+        interval_rotator.setOnVoltageChangeHandler(None)
+        interval_rotator.setOnSensorChangeHandler(None)
+        interval_rotator.close()
+        total_time_rotator.setOnVoltageChangeHandler(None)
+        total_time_rotator.setOnSensorChangeHandler(None)
+        total_time_rotator.close()
+        video_length_rotator.setOnVoltageChangeHandler(None)
+        video_length_rotator.setOnSensorChangeHandler(None)
+        video_length_rotator.close()
+        shutter_speed.setOnVoltageChangeHandler(None)
+        shutter_speed.setOnSensorChangeHandler(None)
+        shutter_speed.close()
+        iso.setOnVoltageChangeHandler(None)
+        iso.setOnSensorChangeHandler(None)
+        iso.close()
+        light_sensor.setOnVoltageChangeHandler(None)
+        light_sensor.setOnSensorChangeHandler(None)
+        light_sensor.close()
+        run_button.setOnStateChangeHandler(None)
+        run_button.close()
+        kill_button.setOnStateChangeHandler(None)
+        kill_button.close()
+        mode_toggle.setOnStateChangeHandler(None)
+        mode_toggle.close()
+        interval_unit_toggle.setOnStateChangeHandler(None)
+        interval_unit_toggle.close()
+        total_time_unit_toggle.setOnStateChangeHandler(None)
+        total_time_unit_toggle.close()
+        textLCD.close()
+        relay.close()
+        #gps.close()
+
+    ### End User-Defined functions 
+
+
     # Create objects for toggles, sensors, rotators, and sliders on the rig
     try:
         interval_rotator = VoltageInput()
@@ -498,7 +662,7 @@ def main():
     # the system is set to capture stills
     def interfaceKitVoltageChange3(interfaceKit, voltage):
         # Call to local function to get video length
-        volt = getVideoLength()
+        output = getVideoLength()
 
         # Update the display with the new value
         text = "L:" + str(output) + "m "
@@ -1047,7 +1211,7 @@ def main():
         # Call to local function to get iso value
         isoValue = getIso()
 
-
+        # Call to local function to get video length
         video_length = getVideoLength()
 
         # Determine if the interval is in seconds or minutes
@@ -1492,166 +1656,6 @@ def main():
 
     print("Done.")
     exit(0)     # close the program
-
-    # User-defined function to convert the voltage from shutter_speed
-    # to a usable shutter speed value
-    # It returns the shutter speed
-    def getShutterSpeed():
-        # Get the shutter speed and convert it from voltage to shutter speed
-
-        # This section decides the shutter speed of the cameras based
-        # on the position of the shutter speed slider. These values were
-        # selected from a list provided by Ryan, and the intervals were decided
-        # with math. The extra spaces in "output" are there to ensure no
-        # trailing characters remain on the display when the value changes
-        shutterSpeedVoltage = shutter_speed.getSensorValue()
-        shutterSpeedValue = ""
-        if (shutterSpeedVoltage <= 0.357):
-            shutterSpeedValue = "10"
-        elif (0.357 < shutterSpeedVoltage <= 0.714):
-            shutterSpeedValue = "4"
-        elif (0.714 < shutterSpeedVoltage <= 1.071):
-            shutterSpeedValue = "2"
-        elif (1.071 < shutterSpeedVoltage <= 1.428):
-            shutterSpeedValue = "1"
-        elif (1.428 < shutterSpeedVoltage <= 1.785):
-            shutterSpeedValue = "1/30"
-        elif (1.785 < shutterSpeedVoltage <= 2.142):
-            shutterSpeedValue = "1/50"
-        elif (2.142 < shutterSpeedVoltage <= 2.499):
-            shutterSpeedValue = "1/100"
-        elif (2.499 < shutterSpeedVoltage <= 2.856):
-            shutterSpeedValue = "1/250"
-        elif (2.856 < shutterSpeedVoltage <= 3.213):
-            shutterSpeedValue = "1/400"
-        elif (3.213 < shutterSpeedVoltage <= 3.57):
-            shutterSpeedValue = "1/500"
-        elif (3.57 < shutterSpeedVoltage <= 3.927):
-            shutterSpeedValue = "1/800"
-        elif (3.927 < shutterSpeedVoltage <= 4.284):
-            shutterSpeedValue = "1/1000"
-        elif (4.284 < shutterSpeedVoltage <= 4.641):
-            shutterSpeedValue = "1/1600"
-        elif (4.641 < shutterSpeedVoltage):
-            shutterSpeedValue = "1/2000"
-
-        return shutterSpeedValue
-
-    # User-defined function to get the iso value from the slider voltage
-    # It returns the iso
-    def getIso():
-
-        # This is very similar to the shutter speed function above
-        isoSensorValue = iso.getSensorValue()
-        isoValue = ""
-        if (isoSensorValue <= 0.714):
-            isoValue = "100"
-        elif (0.714 < isoSensorValue <= 1.428):
-            isoValue = "800"
-        elif (0.1428 < isoSensorValue <= 2.142):
-            isoValue = "1600"
-        elif (2.142 < isoSensorValue <= 2.856):
-            isoValue = "3200"
-        elif (2.856 < isoSensorValue <= 3.57):
-            isoValue = "6400"
-        elif (3.57 < isoSensorValue <= 4.284):
-            isoValue = "12800"
-        elif (4.2824 < isoSensorValue):
-            isoValue = "25600"
-
-        return isoValue
-
-    # User-defined function to get the video length from the raw voltage input
-    # It returns the video length in minutes
-    def getVideoLength():
-        # Get the total length the program should run for and convert it from
-        # voltage to an integer
-        rawLength = video_length_rotator.getSensorValue() * 10
-        if (rawLength <= 4.9):
-            length = 1
-        elif (4.9 < rawLength <= 9.8):
-            length = 2
-        elif (9.8 < rawLength <= 14.7):
-            length = 3
-        elif (14.7 < rawLength <= 19.6):
-            length = 4
-        elif (19.6 < rawLength <= 24.5):
-            length = 5
-        elif (24.5 < rawLength <= 29.4):
-            length = 10
-        elif (29.4 < rawLength <= 34.3):
-            length = 15
-        elif (34.3 < rawLength <= 39.2):
-            length = 20
-        elif (39.2 < rawLength <= 44.1):
-            length = 25
-        elif (44.1 < rawLength):
-            length = 29
-
-        length = length * 60    # convert the video length to minutes
-
-        return length
-
-    # User-defined function to locate and update the settings on all cameras
-    # It returns a list of camera ports
-    def locateAndUpdateCameras(s_speed, i_value):
-        cameras = []    # to hold ports, to be returned
-        # Detect all the cameras
-        ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
-        ports_strings_split = ports_strings.split()
-
-        # Find all the ports of format "usb:xxx,xxx"
-        for item in ports_strings_split:
-            item = item.decode('utf-8')
-            if item[0] == 'u':
-                cameras.append(item)
-
-        # Inform the user to wait while we update the settings
-        textLCD.writeText(LCDFont.FONT_5x8, 15, 1, 'WAIT')
-        textLCD.flush()
-
-        # Update the shutter speed and iso on each camera
-        for port in camera_ports:
-            print(port)
-            subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + s_speed, "--set-config-value", "iso=" + i_value])
-
-        return cameras
-
-    # User-defined function to close all phidgets
-    def closeAllPhidgets():
-        interval_rotator.setOnVoltageChangeHandler(None)
-        interval_rotator.setOnSensorChangeHandler(None)
-        interval_rotator.close()
-        total_time_rotator.setOnVoltageChangeHandler(None)
-        total_time_rotator.setOnSensorChangeHandler(None)
-        total_time_rotator.close()
-        video_length_rotator.setOnVoltageChangeHandler(None)
-        video_length_rotator.setOnSensorChangeHandler(None)
-        video_length_rotator.close()
-        shutter_speed.setOnVoltageChangeHandler(None)
-        shutter_speed.setOnSensorChangeHandler(None)
-        shutter_speed.close()
-        iso.setOnVoltageChangeHandler(None)
-        iso.setOnSensorChangeHandler(None)
-        iso.close()
-        light_sensor.setOnVoltageChangeHandler(None)
-        light_sensor.setOnSensorChangeHandler(None)
-        light_sensor.close()
-        run_button.setOnStateChangeHandler(None)
-        run_button.close()
-        kill_button.setOnStateChangeHandler(None)
-        kill_button.close()
-        mode_toggle.setOnStateChangeHandler(None)
-        mode_toggle.close()
-        interval_unit_toggle.setOnStateChangeHandler(None)
-        interval_unit_toggle.close()
-        total_time_unit_toggle.setOnStateChangeHandler(None)
-        total_time_unit_toggle.close()
-        textLCD.close()
-        relay.close()
-        #gps.close()
-
-
 
 
 main()
