@@ -158,13 +158,25 @@ def main():
     path = "/home/ryan/watchfile"       # This is where the program will look
                                         # for new images
 
-    files = os.listdir(path)            # The current contents of the folder
-                                        # at 'path'
+    # Get, treat, and sort the files in the directory
+    files = subprocess.check_output((["ls", "-al", path]))
+    files = files.decode('utf-8')
+    files = files.splitlines()
+
+    filenames = []
+
+    for item in files:
+        item = item.split()
+        if len(item) > 2:
+            entry = [item[7], item[8]]
+            filenames.append(entry)
+    filenames.sort()
+
     x = 0                               # Used to name images taken,
                                         # keeps track of how many images were taken
     while True:
         # Call to local import
-        results = check_shutter_and_iso(files, path)
+        results = check_shutter_and_iso(filenames, path)
 
         iso = results['iso']
         shutter = results['shutter']
@@ -203,6 +215,7 @@ def main():
             for port in camera_ports:
                 print(port)
                 subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter), "--set-config-value", "iso=" + str(iso)])
+                # subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter)])
 
             # Open an instance of capture.py for each camera, where:
             # x is the number-th photo taken (used for the filename)
@@ -217,11 +230,13 @@ def main():
             # relay.setDutyCycle(1.0)
             # time.sleep(1)
             # relay.setDutyCycle(0.0)
-            files = os.listdir(path)        # Update our records of what's being
+            filenames = results['files']        # Update our records of what's being
                                             # held at 'path' so we don't
                                             # take the same picture more than once
             os.chdir("../")                 # Change back a directory to prevent
                                             # creating multiple nested ones
+
+            time.sleep(6)
 
 
     # Close the relay
