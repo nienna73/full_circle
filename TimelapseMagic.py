@@ -949,6 +949,15 @@ def main():
         print("Exiting....")
         exit(1)
 
+        try:
+            run_button.setDeviceSerialNumber(120683)
+            run_button.setChannel(0)
+            run_button.open()
+            print('Wait for button 0 attach...')
+        except PhidgetException as e:
+            PrintOpenErrorMessage(e, ch)
+            raise EndProgramSignal("Program Terminated: Run Button Open Failed")
+
 ### End run button functions
 
 #####################################################################################################################################
@@ -1044,6 +1053,16 @@ def main():
         print("Exiting....")
         exit(1)
 
+    try:
+        kill_button.setDeviceSerialNumber(120683)
+        kill_button.setChannel(1)
+        kill_button.open()
+        print('Wait for button 1 attach...')
+        kill_button.openWaitForAttachment(5000)
+    except PhidgetException as e:
+        PrintOpenErrorMessage(e, ch)
+        raise EndProgramSignal("Program Terminated: Kill Button Open Failed")
+
 ### End kill button functions
 
 #####################################################################################################################################
@@ -1138,6 +1157,16 @@ def main():
         print("Phidget Exception %i: %s" % (e.code, e.details))
         print("Exiting....")
         exit(1)
+
+    try:
+        mode_toggle.setDeviceSerialNumber(120683)
+        mode_toggle.setChannel(2)
+        mode_toggle.open()
+        print('Wait for toggle 2 attach...')
+        mode_toggle.openWaitForAttachment(5000)
+    except PhidgetException as e:
+        PrintOpenErrorMessage(e, ch)
+        raise EndProgramSignal("Program Terminated: Mode Toggle Open Failed")
 
 ### End mode toggle functions
 
@@ -1240,6 +1269,17 @@ def main():
         print("Exiting....")
         exit(1)
 
+    try:
+        interval_unit_toggle.setDeviceSerialNumber(120683)
+        interval_unit_toggle.setChannel(3)
+        interval_unit_toggle.open()
+        print('Wait for toggle 3 attach...')
+        interval_unit_toggle.openWaitForAttachment(5000)
+        relay.openWaitForAttachment(5000)
+    except PhidgetException as e:
+        PrintOpenErrorMessage(e, ch)
+        raise EndProgramSignal("Program Terminated: Interval Unit Open Failed")
+
 ### End interval unit toggle functions
 
 #####################################################################################################################################
@@ -1328,6 +1368,16 @@ def main():
         print("Phidget Exception %i: %s" % (e.code, e.details))
         print("Exiting....")
         exit(1)
+
+    try:
+        total_time_unit_toggle.setDeviceSerialNumber(120683)
+        total_time_unit_toggle.setChannel(4)
+        total_time_unit_toggle.open()
+        print('Wait for toggle 4 attach...')
+        total_time_unit_toggle.openWaitForAttachment(5000)
+    except PhidgetException as e:
+        PrintOpenErrorMessage(e, ch)
+        raise EndProgramSignal("Program Terminated: Total Time Unit Open Failed")
 
 ### End total time unit toggle functions
 
@@ -1423,6 +1473,16 @@ def main():
         print("Phidget Exception %i: %s" % (e.code, e.details))
         print("Exiting....")
         exit(1)
+
+    try:
+        relay.setDeviceSerialNumber(120683)
+        relay.setChannel(0)
+        relay.open()
+        print('Wait for relay attach...')
+        relay.openWaitForAttachment(5000)
+    except PhidgetException as e:
+        PrintOpenErrorMessage(e, ch)
+        raise EndProgramSignal("Program Terminated: Relay Open Failed")
 
 ### End relay functions
 
@@ -1688,40 +1748,6 @@ def main():
     # a digital or analog port that it's plugged in to. If something else
     # gets plugged into that port, it will behave like the thing that's
     # supposed to be plugged into that port, or there will be an error
-    try:
-        run_button.setDeviceSerialNumber(120683)
-        run_button.setChannel(0)
-        run_button.open()
-        print('Wait for button 0 attach...')
-        run_button.openWaitForAttachment(5000)
-        kill_button.setDeviceSerialNumber(120683)
-        kill_button.setChannel(1)
-        kill_button.open()
-        print('Wait for button 1 attach...')
-        kill_button.openWaitForAttachment(5000)
-        mode_toggle.setDeviceSerialNumber(120683)
-        mode_toggle.setChannel(2)
-        mode_toggle.open()
-        print('Wait for toggle 2 attach...')
-        mode_toggle.openWaitForAttachment(5000)
-        interval_unit_toggle.setDeviceSerialNumber(120683)
-        interval_unit_toggle.setChannel(3)
-        interval_unit_toggle.open()
-        print('Wait for toggle 3 attach...')
-        interval_unit_toggle.openWaitForAttachment(5000)
-        total_time_unit_toggle.setDeviceSerialNumber(120683)
-        total_time_unit_toggle.setChannel(4)
-        total_time_unit_toggle.open()
-        print('Wait for toggle 4 attach...')
-        total_time_unit_toggle.openWaitForAttachment(5000)
-        relay.setDeviceSerialNumber(120683)
-        relay.setChannel(0)
-        relay.open()
-        print('Wait for relay attach...')
-        relay.openWaitForAttachment(5000)
-    except PhidgetException as e:
-        PrintOpenErrorMessage(e, ch)
-        raise EndProgramSignal("Program Terminated: Digital Input Open Failed")
 
     textLCD.setBacklight(1)     # Give it some light! (also very important)
 
