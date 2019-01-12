@@ -162,11 +162,11 @@ def main():
         elif (9.9 < rawLength <= 19.9):
             length = '30s'
         elif (19.9 < rawLength <= 29.9):
-            length = '1m'
+            length = '1m '
         elif (29.9 < rawLength <= 39.9):
-            length = '2m'
+            length = '2m '
         elif (39.9 < rawLength):
-            length = '5m'
+            length = '5m '
 
         return length
 
@@ -664,7 +664,7 @@ def main():
 
         # Update the display with the new value
         text = "D:" + str(output)
-        textLCD.writeText(LCDFont.FONT_5x8, 12, 1, text)
+        textLCD.writeText(LCDFont.FONT_5x8, 13, 1, text)
         textLCD.flush()     # The display doesn't update without this
 
     # Attach all the handlers to the proper phidgets,
@@ -1834,6 +1834,9 @@ def main():
         video_delay = getVideoDelayInt()
 
         time.sleep(video_delay)
+
+        textLCD.writeText(LCDFont.FONT_5x8, 13, 1, "     ")
+        textLCD.flush()     # The display doesn't update without this
 
         # Determine if the interval is in seconds or minutes
         if (interval_unit_toggle.getState() == 1):
