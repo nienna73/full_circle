@@ -157,7 +157,9 @@ def main():
         # Get the total length the program should run for and convert it from
         # voltage to an integer
         rawLength = video_delay_rotator.getSensorValue() * 10
-        if (rawLength <= 9.9):
+        if (rawLength <= 1.0):
+            length = '0'
+        elif (1.0 < rawLength <= 9.9):
             length = '10s'
         elif (9.9 < rawLength <= 19.9):
             length = '30s'
@@ -176,7 +178,9 @@ def main():
         # Get the total length the program should run for and convert it from
         # voltage to an integer
         rawLength = video_delay_rotator.getSensorValue() * 10
-        if (rawLength <= 9.9):
+        if (rawLength <= 1.0):
+            length = 0
+        elif (1.0 < rawLength <= 9.9):
             length = 10
         elif (9.9 < rawLength <= 19.9):
             length = 30

@@ -231,8 +231,8 @@ def main():
                 # relay.setDutyCycle(1.0)
                 # time.sleep(1)
                 # relay.setDutyCycle(0.0)
-                filenames = results['files']        # Update our records of what's being
-                                                # held at 'path' so we don't
+                filenames = results['files']    # Update our records with the filename
+                                                # of the picture we just used so we don't 
                                                 # take the same picture more than once
                 x += 1
                 os.chdir("../")                 # Change back a directory to prevent
