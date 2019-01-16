@@ -232,13 +232,18 @@ def main():
                 # time.sleep(1)
                 # relay.setDutyCycle(0.0)
                 filenames = results['files']    # Update our records with the filename
-                                                # of the picture we just used so we don't 
+                                                # of the picture we just used so we don't
                                                 # take the same picture more than once
                 x += 1
                 os.chdir("../")                 # Change back a directory to prevent
                                                 # creating multiple nested ones
 
-                # time.sleep(6)
+                delay = 0
+                if '/' in shutter:
+                    delay = 1
+                else: 
+                    delay = shutter
+                time.sleep(delay)
             except:
                 time.sleep(1)
 

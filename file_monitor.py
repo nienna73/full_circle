@@ -52,7 +52,8 @@ def check_shutter_and_iso(old_files, path):
             if ".jpg" in file[1].lower() or ".arw" in file[1].lower():
 
                 try:
-
+                    #Ryan added 5-seond delay to prevent "file is empty" error from exiftool reading jpg before it was done copying
+                    time.sleep(5)
                     # Check the ISO for the file
                     iso = subprocess.check_output(["exiftool", "-iso", path+'/'+file[1]])
                     # Decode it to remove strange characters
