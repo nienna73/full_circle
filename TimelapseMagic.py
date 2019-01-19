@@ -259,6 +259,7 @@ def main():
 
 #####################################################################################################################################
 
+
     # Create objects for toggles, sensors, rotators, and sliders on the rig
     try:
         interval_rotator = VoltageInput()
@@ -287,6 +288,62 @@ def main():
         print("Runtime Exception: %s" % e.details)
         print("Exiting....")
         exit(1)
+
+#####################################################################################################################################
+
+### Start LCD functions
+
+    # Standard attach handler for the LCD
+    def LCDAttached(self):
+        try:
+            attached = self
+            print("\nAttach Event Detected (Information Below)")
+            print("===========================================")
+            print("Library Version: %s" % attached.getLibraryVersion())
+            print("Serial Number: %d" % attached.getDeviceSerialNumber())
+            print("Channel: %d" % attached.getChannel())
+            print("Channel Class: %s" % attached.getChannelClass())
+            print("Channel Name: %s" % attached.getChannelName())
+            print("Device ID: %d" % attached.getDeviceID())
+            print("Device Version: %d" % attached.getDeviceVersion())
+            print("Device Name: %s" % attached.getDeviceName())
+            print("Device Class: %d" % attached.getDeviceClass())
+            print("\n")
+
+        except PhidgetException as e:
+            print("Phidget Exception %i: %s" % (e.code, e.details))
+            print("Press Enter to Exit...\n")
+            readin = sys.stdin.read(1)
+            exit(1)
+
+    # Standard detach handler for the LCD
+    def LCDDetached(self):
+        detached = self
+        try:
+            print("\nDetach event on Port %d Channel %d" % (detached.getHubPort(), detached.getChannel()))
+        except PhidgetException as e:
+            print("Phidget Exception %i: %s" % (e.code, e.details))
+            print("Press Enter to Exit...\n")
+            readin = sys.stdin.read(1)
+            exit(1)
+
+    # Standard error handler for the LCD
+    def ErrorEvent(self, eCode, description):
+        print("Error %i : %s" % (eCode, description))
+
+    # Attach all the handlers to the proper phidgets,
+    # catch and return any errors
+    try:
+        textLCD.setOnAttachHandler(LCDAttached)
+        textLCD.setOnDetachHandler(LCDDetached)
+        textLCD.setOnErrorHandler(ErrorEvent)
+        textLCD.openWaitForAttachment(5000)
+    except PhidgetException as e:
+        print("Phidget Exception %i: %s" % (e.code, e.details))
+        print("Exiting....")
+        exit(1)
+
+### End LCD functions
 
 #####################################################################################################################################
 
@@ -954,51 +1011,6 @@ def main():
 
 #####################################################################################################################################
 
-
-### Start LCD functions
-
-    # Standard attach handler for the LCD
-    def LCDAttached(self):
-        try:
-            attached = self
-            print("\nAttach Event Detected (Information Below)")
-            print("===========================================")
-            print("Library Version: %s" % attached.getLibraryVersion())
-            print("Serial Number: %d" % attached.getDeviceSerialNumber())
-            print("Channel: %d" % attached.getChannel())
-            print("Channel Class: %s" % attached.getChannelClass())
-            print("Channel Name: %s" % attached.getChannelName())
-            print("Device ID: %d" % attached.getDeviceID())
-            print("Device Version: %d" % attached.getDeviceVersion())
-            print("Device Name: %s" % attached.getDeviceName())
-            print("Device Class: %d" % attached.getDeviceClass())
-            print("\n")
-
-        except PhidgetException as e:
-            print("Phidget Exception %i: %s" % (e.code, e.details))
-            print("Press Enter to Exit...\n")
-            readin = sys.stdin.read(1)
-            exit(1)
-
-    # Standard detach handler for the LCD
-    def LCDDetached(self):
-        detached = self
-        try:
-            print("\nDetach event on Port %d Channel %d" % (detached.getHubPort(), detached.getChannel()))
-        except PhidgetException as e:
-            print("Phidget Exception %i: %s" % (e.code, e.details))
-            print("Press Enter to Exit...\n")
-            readin = sys.stdin.read(1)
-            exit(1)
-
-    # Standard error handler for the LCD
-    def ErrorEvent(self, eCode, description):
-        print("Error %i : %s" % (eCode, description))
-
-### End LCD functions
-
-#####################################################################################################################################
-
 ### Start run button functions
 
     # Run button attach handler
@@ -1091,14 +1103,14 @@ def main():
         print("Exiting....")
         exit(1)
 
-        try:
-            run_button.setDeviceSerialNumber(120683)
-            run_button.setChannel(0)
-            run_button.open()
-            print('Wait for button 0 attach...')
-        except PhidgetException as e:
-            PrintOpenErrorMessage(e, ch)
-            raise EndProgramSignal("Program Terminated: Run Button Open Failed")
+    try:
+        run_button.setDeviceSerialNumber(120683)
+        run_button.setChannel(0)
+        run_button.open()
+        print('Wait for run button, port 0 attach...')
+    except PhidgetException as e:
+        PrintOpenErrorMessage(e, ch)
+        raise EndProgramSignal("Program Terminated: Run Button Open Failed")
 
 ### End run button functions
 
@@ -1199,7 +1211,7 @@ def main():
         kill_button.setDeviceSerialNumber(120683)
         kill_button.setChannel(1)
         kill_button.open()
-        print('Wait for button 1 attach...')
+        print('Wait for kill button, port 1 attach...')
         kill_button.openWaitForAttachment(5000)
     except PhidgetException as e:
         PrintOpenErrorMessage(e, ch)
@@ -1281,19 +1293,19 @@ def main():
         # Toggle 1 decides if the system will record video or capture stills
         text = str(state)
         if (state == 0):
-            text = "CAP"
+            text = "C"
         elif (state == 1):
-            text = "REC"
+            text = "R"
         textLCD.writeText(LCDFont.FONT_5x8, 19, 0, text)
         textLCD.flush()
 
-    # Attach the handlers to the LCD, catch and return any errors
+    # Attach the handlers to the mode toggle, catch and return any errors
     try:
-        textLCD.setOnAttachHandler(LCDAttached)
-        textLCD.setOnDetachHandler(LCDDetached)
-        textLCD.setOnErrorHandler(ErrorEvent)
-        print("Waiting for the Phidget LCD Object to be attached...")
-        textLCD.openWaitForAttachment(5000)
+        mode_toggle.setOnAttachHandler(modeToggleAttachHandler)
+        mode_toggle.setOnDetachHandler(modeToggleDetachHandler)
+        mode_toggle.setOnErrorHandler(ErrorEvent)
+        mode_toggle.setOnStateChangeHandler(modeToggleStateChangeHandler)
+        mode_toggle.openWaitForAttachment(5000)
     except PhidgetException as e:
         print("Phidget Exception %i: %s" % (e.code, e.details))
         print("Exiting....")
@@ -1303,7 +1315,7 @@ def main():
         mode_toggle.setDeviceSerialNumber(120683)
         mode_toggle.setChannel(2)
         mode_toggle.open()
-        print('Wait for toggle 2 attach...')
+        print('Wait for mode toggle, port 2 attach...')
         mode_toggle.openWaitForAttachment(5000)
     except PhidgetException as e:
         PrintOpenErrorMessage(e, ch)
@@ -1411,9 +1423,8 @@ def main():
         interval_unit_toggle.setDeviceSerialNumber(120683)
         interval_unit_toggle.setChannel(3)
         interval_unit_toggle.open()
-        print('Wait for toggle 3 attach...')
+        print('Wait for interval unit toggle, port 3 attach...')
         interval_unit_toggle.openWaitForAttachment(5000)
-        relay.openWaitForAttachment(5000)
     except PhidgetException as e:
         PrintOpenErrorMessage(e, ch)
         raise EndProgramSignal("Program Terminated: Interval Unit Open Failed")
@@ -1511,7 +1522,7 @@ def main():
         total_time_unit_toggle.setDeviceSerialNumber(120683)
         total_time_unit_toggle.setChannel(4)
         total_time_unit_toggle.open()
-        print('Wait for toggle 4 attach...')
+        print('Wait for total time unit toggle, port 4 attach...')
         total_time_unit_toggle.openWaitForAttachment(5000)
     except PhidgetException as e:
         PrintOpenErrorMessage(e, ch)
@@ -1616,7 +1627,7 @@ def main():
         relay.setDeviceSerialNumber(120683)
         relay.setChannel(0)
         relay.open()
-        print('Wait for relay attach...')
+        print('Wait for relay, port 0 attach...')
         relay.openWaitForAttachment(5000)
     except PhidgetException as e:
         PrintOpenErrorMessage(e, ch)
@@ -1820,6 +1831,20 @@ def main():
     def runRecord():
         print('record')
 
+        # Get the current date and time and format it
+        now = datetime.datetime.now()
+        dir_name = now.strftime("%Y%m%d_%Hh%Mm%Ss")
+
+        # Try opening a directory with the name created above
+        # If the directory can't be opened, create a directory
+        # with that name and navigate to it
+        try:
+            os.chdir(str(dir_name))
+        except:
+            make_dir = subprocess.Popen(["mkdir", str(dir_name)])
+            make_dir.wait()
+            os.chdir(str(dir_name))
+
         # Get the total time the program should run for
         # and the interval between videos from the appropriate rotators
         total_time = int(total_time_rotator.getSensorValue() * 10)
@@ -1897,42 +1922,42 @@ def main():
         interval_rotator.setDeviceSerialNumber(120683)
         interval_rotator.setChannel(0)
         interval_rotator.open()
-        print('Wait for rotator 0 attach...')
+        print('Wait for interval rotator, port 0 attach...')
         interval_rotator.openWaitForAttachment(5000)
         sleep(1)
         total_time_rotator.setDeviceSerialNumber(120683)
         total_time_rotator.setChannel(2)
         total_time_rotator.open()
-        print('Wait for rotator 2 attach...')
+        print('Wait for total time rotator, port 2 attach...')
         total_time_rotator.openWaitForAttachment(5000)
         sleep(1)
         video_length_rotator.setDeviceSerialNumber(120683)
         video_length_rotator.setChannel(5)
         video_length_rotator.open()
-        print('Wait for rotator 5 attach...')
+        print('Wait for video length rotator, port 5 attach...')
         video_length_rotator.openWaitForAttachment(5000)
         sleep(1)
         video_delay_rotator.setDeviceSerialNumber(120683)
         video_delay_rotator.setChannel(1)
         video_delay_rotator.open()
-        print('Wait for rotator 5 attach...')
+        print('Wait for video delay rotator, port 5 attach...')
         video_delay_rotator.openWaitForAttachment(5000)
         sleep(1)
         shutter_speed.setDeviceSerialNumber(120683)
         shutter_speed.setChannel(4)
         shutter_speed.open()
-        print('Wait for shutter speed 4 attach...')
+        print('Wait for shutter speed, port 4 attach...')
         shutter_speed.openWaitForAttachment(5000)
         sleep(1)
         iso.setDeviceSerialNumber(120683)
         iso.setChannel(3)
         iso.open()
-        print('Wait for iso 3 attach...')
+        print('Wait for iso, port 3 attach...')
         iso.openWaitForAttachment(5000)
         light_sensor.setDeviceSerialNumber(120683)
         light_sensor.setChannel(6)
         light_sensor.open()
-        print('Wait for light sensor 6 attach...')
+        print('Wait for light sensor, port 6 attach...')
         light_sensor.openWaitForAttachment(5000)
         sleep(1)
     except PhidgetException as e:

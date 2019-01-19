@@ -13,6 +13,7 @@ __date__ = 'April 30th, 2018'
 import subprocess
 import time
 import sys
+import os
 
 def main():
     # Gather information from arguments passed to function
@@ -43,6 +44,19 @@ def main():
     while (x < total_videos):
         print('running record')
 
+        dir_name = "SCENE" + "%02d" % (x + 1)
+        # Try opening a directory with the name created above
+        # If the directory can't be opened, create a directory
+        # with that name and navigate to it
+        try:
+            os.chdir(str(dir_name))
+        except:
+            make_dir = subprocess.Popen(["mkdir", str(dir_name)])
+            make_dir.wait()
+            os.chdir(str(dir_name))
+
+        subprocess.call(["arecord", "-d", str(video_length), "-f", "cd", "-t", "wav", "--use-strftime", "%Y%m%d_%Hh%Mm%vs.wav"])
+
         # Start recording on each camera
         for port in camera_ports:
             subprocess.call(["gphoto2", "--port=" + port, "--set-config", "movie=1"])
@@ -57,6 +71,9 @@ def main():
         # Increment the counter for how many videos have been taken
         # and wait for the desired interval between videos
         x = x + 1
-        time.sleep(interval - video_length)
+        time.sleep(interval)
+
+        # Naviagte to the previous directory to prevent nested directories
+        os.chdir("../")
 
 main()
