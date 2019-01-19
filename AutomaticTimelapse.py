@@ -158,6 +158,8 @@ def main():
     path = "/home/ryan/watchfile"       # This is where the program will look
                                         # for new images
 
+    # Use this for sorting image files and to not skip images that are added
+    # to the watchfile while the cameras are capturing
     # Get, treat, and sort the files in the directory
     files = subprocess.check_output((["ls", "-al", path]))
     files = files.decode('utf-8')
@@ -171,6 +173,7 @@ def main():
             entry = [item[7], item[8]]
             filenames.append(entry)
     filenames.sort()
+
 
     x = 0                               # Used to name images taken,
                                         # keeps track of how many images were taken
@@ -234,6 +237,7 @@ def main():
                 filenames = results['files']    # Update our records with the filename
                                                 # of the picture we just used so we don't
                                                 # take the same picture more than once
+
                 x += 1
                 os.chdir("../")                 # Change back a directory to prevent
                                                 # creating multiple nested ones
@@ -241,8 +245,8 @@ def main():
                 delay = 0
                 if '/' in shutter:
                     delay = 1
-                else: 
-                    delay = shutter
+                else:
+                    delay = int(shutter)
                 time.sleep(delay)
             except:
                 time.sleep(1)
