@@ -55,7 +55,7 @@ def main():
             make_dir.wait()
             os.chdir(str(dir_name))
 
-        subprocess.call(["arecord", "-d", str(video_length), "-f", "cd", "-t", "wav", "--use-strftime", "%Y%m%d_%Hh%Mm%vs.wav"])
+        subprocess.Popen(["arecord", "-d", str(video_length), "-f", "cd", "-t", "wav", "--use-strftime", "%Y%m%d_%Hh%Mm%vs.wav"])
 
         # Start recording on each camera
         for port in camera_ports:

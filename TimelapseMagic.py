@@ -147,8 +147,6 @@ def main():
         elif (44.1 < rawLength):
             length = 29
 
-        length = length * 60    # convert the video length to minutes
-
         return length
 
     # User-defined function to get the video delay from the raw voltage input
@@ -653,7 +651,7 @@ def main():
 
 ### Start video delay rotator functions
 
-    # Standard phidget attach handler for video_length_rotator
+    # Standard phidget attach handler for video_delay_rotator
     def videoDelayRotatorAttached(e):
         try:
             #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
@@ -1221,6 +1219,15 @@ def main():
 
 #####################################################################################################################################
 
+### Error handler for all the toggles
+
+
+    # Toggle error handler, shared by all toggles
+    def toggleErrorHandler(button, errorCode, errorString):
+        sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
+
+#####################################################################################################################################
+
 ### Start mode toggle functions
 
     # mode_toggle attach handler
@@ -1303,11 +1310,11 @@ def main():
     try:
         mode_toggle.setOnAttachHandler(modeToggleAttachHandler)
         mode_toggle.setOnDetachHandler(modeToggleDetachHandler)
-        mode_toggle.setOnErrorHandler(ErrorEvent)
+        mode_toggle.setOnErrorHandler(toggleErrorHandler)
         mode_toggle.setOnStateChangeHandler(modeToggleStateChangeHandler)
-        mode_toggle.openWaitForAttachment(5000)
     except PhidgetException as e:
         print("Phidget Exception %i: %s" % (e.code, e.details))
+        print("Mode toggle")
         print("Exiting....")
         exit(1)
 
@@ -1322,15 +1329,6 @@ def main():
         raise EndProgramSignal("Program Terminated: Mode Toggle Open Failed")
 
 ### End mode toggle functions
-
-#####################################################################################################################################
-
-### Error handler for all the toggles
-
-
-    # Toggle error handler, shared by all toggles
-    def toggleErrorHandler(button, errorCode, errorString):
-        sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
 
 #####################################################################################################################################
 
@@ -1858,11 +1856,12 @@ def main():
 
         # Call to local function to get video length
         video_length = getVideoLength()
+        video_length = video_length * 60        # convert to minutes
 
         # Call to local function to get video delay
         video_delay = getVideoDelayInt()
 
-        time.sleep(video_delay)
+        sleep(video_delay)
 
         textLCD.writeText(LCDFont.FONT_5x8, 13, 1, "     ")
         textLCD.flush()     # The display doesn't update without this

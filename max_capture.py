@@ -4,7 +4,7 @@
 # It triggers the capture on the cameras without downloading the images
 # to the computer; images are stored in the camera's memory
 # It takes the port location in the camera_ports list as
-# a command line argument. This file only accesses one camera at a time 
+# a command line argument. This file only accesses one camera at a time
 
 __author__ = 'Jolene Poulin'
 __version__ = '0.1.1'
