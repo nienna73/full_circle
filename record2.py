@@ -56,6 +56,9 @@ def main():
             os.chdir(str(dir_name))
 
         subprocess.Popen(["arecord", "-d", str(video_length), "-f", "cd", "-t", "wav", "--use-strftime", "%Y%m%d_%Hh%Mm%vs.wav"])
+        # TODO: change this to prefered format:
+        # arecord -d 10 -t wav --use-strftime %Y%m%d_%Hh%Mm%vs.wav -c 4 -f S24_LE -r48000
+        # TODO: make it so this works if the mic isn't connected
 
         # Start recording on each camera
         for port in camera_ports:
