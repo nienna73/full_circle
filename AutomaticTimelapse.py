@@ -120,7 +120,7 @@ def main():
     # Voltage change handler for interval_unit_toggle
     def BatteryMonitorVoltageChange(interfaceKit, voltage):
         # This is the handler for the interval variable
-        output = (voltage - 2.4835) * 12.0797
+        output = (voltage - 2.5) / 0.0681
         print(output)
 
     # Attach all the handlers to the proper phidgets,
