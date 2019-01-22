@@ -40,25 +40,44 @@ def main():
     camera_ports.sort(reverse = True)       # Sort so the cameras are triggered
                                             # in a sensible order
 
+    has_audio = False                       # a bool to store whether or not
+                                            # we can record with the Zoom device
+
+    # Get a string of all connected audio devices,
+    # decode the string to remove strange characters,
+    # split the string into a list to be treated
+    audio_devices = subprocess.check_output(["arecord", "--list-devices"])
+    audio_devices = audio_devices.decode('utf-8')
+    audio_devices = audio_devices.split()
+
+    for device in audio_devices:
+        if device.lower() == "h2n":
+            has_audio = True
+
     # Record video based on the criteria passed in
     while (x < total_videos):
-        print('running record')
+        print("Running record")
 
-        dir_name = "SCENE" + "%02d" % (x + 1)
-        # Try opening a directory with the name created above
-        # If the directory can't be opened, create a directory
-        # with that name and navigate to it
-        try:
-            os.chdir(str(dir_name))
-        except:
-            make_dir = subprocess.Popen(["mkdir", str(dir_name)])
-            make_dir.wait()
-            os.chdir(str(dir_name))
+        if has_audio:
+            print("Recording with audio")
+            # If the Zoom device is connected, take all the steps to record
+            # audio, otherwise continue with just video
 
-        subprocess.Popen(["arecord", "-d", str(video_length), "-f", "cd", "-t", "wav", "--use-strftime", "%Y%m%d_%Hh%Mm%vs.wav"])
-        # TODO: change this to prefered format:
-        # arecord -d 10 -t wav --use-strftime %Y%m%d_%Hh%Mm%vs.wav -c 4 -f S24_LE -r48000
-        # TODO: make it so this works if the mic isn't connected
+            dir_name = "SCENE" + "%02d" % (x + 1)
+            # Try opening a directory with the name created above
+            # If the directory can't be opened, create a directory
+            # with that name and navigate to it
+            try:
+                os.chdir(str(dir_name))
+            except:
+                make_dir = subprocess.Popen(["mkdir", str(dir_name)])
+                make_dir.wait()
+                os.chdir(str(dir_name))
+
+            subprocess.Popen(["arecord", "-d", str(video_length), "-t", "wav", "--use-strftime", "%Y%m%d_%Hh%Mm%vs.wav", "-c", "4", "-f", "S24_LE", "-r48000"])
+            # The preferred format is:
+            # arecord -d 10 -t wav --use-strftime %Y%m%d_%Hh%Mm%vs.wav -c 4 -f S24_LE -r48000
+            # TODO: make it so this works if the mic isn't connected
 
         # Start recording on each camera
         for port in camera_ports:
