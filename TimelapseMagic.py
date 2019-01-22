@@ -1829,20 +1829,6 @@ def main():
     def runRecord():
         print('record')
 
-        # Get the current date and time and format it
-        now = datetime.datetime.now()
-        dir_name = now.strftime("%Y%m%d_%Hh%Mm%Ss")
-
-        # Try opening a directory with the name created above
-        # If the directory can't be opened, create a directory
-        # with that name and navigate to it
-        try:
-            os.chdir(str(dir_name))
-        except:
-            make_dir = subprocess.Popen(["mkdir", str(dir_name)])
-            make_dir.wait()
-            os.chdir(str(dir_name))
-
         # Get the total time the program should run for
         # and the interval between videos from the appropriate rotators
         total_time = int(total_time_rotator.getSensorValue() * 10)

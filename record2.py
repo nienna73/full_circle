@@ -14,6 +14,7 @@ import subprocess
 import time
 import sys
 import os
+import datetime
 
 def main():
     # Gather information from arguments passed to function
@@ -63,7 +64,14 @@ def main():
             # If the Zoom device is connected, take all the steps to record
             # audio, otherwise continue with just video
 
-            dir_name = "SCENE" + "%02d" % (x + 1)
+            # Make a new folder here as YYYYMMDD_SCENE-0X if that
+            # folder doesn't already exist
+
+            # Get the current date and format it
+            now = datetime.datetime.now()
+            dir_name = now.strftime("%Y%m%d")
+
+            dir_name = dir_name + "_SCENE" + "%02d" % (x + 1)
             # Try opening a directory with the name created above
             # If the directory can't be opened, create a directory
             # with that name and navigate to it
@@ -77,7 +85,6 @@ def main():
             subprocess.Popen(["arecord", "-d", str(video_length), "-t", "wav", "--use-strftime", "%Y%m%d_%Hh%Mm%vs.wav", "-c", "4", "-f", "S24_LE", "-r48000"])
             # The preferred format is:
             # arecord -d 10 -t wav --use-strftime %Y%m%d_%Hh%Mm%vs.wav -c 4 -f S24_LE -r48000
-            # TODO: make it so this works if the mic isn't connected
 
         # Start recording on each camera
         for port in camera_ports:
@@ -95,7 +102,10 @@ def main():
         x = x + 1
         time.sleep(interval)
 
-        # Naviagte to the previous directory to prevent nested directories
-        os.chdir("../")
+        if has_audio:
+            # Naviagte to the previous directory to prevent nested directories
+            # Only do this is recording with audio as new folders are
+            # only created for audio
+            os.chdir("../")
 
 main()
