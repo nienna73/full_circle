@@ -21,6 +21,7 @@ import sys
 import datetime
 import os
 
+
 camera_ports = []           # relevant camera ports
 x = int(sys.argv[1])        # the number-th photo taken
 filename = "placeholder"    # gets assigned something to prevent unitialized variable errors

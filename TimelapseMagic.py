@@ -45,6 +45,10 @@ from Phidget22.Phidget import *
 from Phidget22.Net import *
 from Phidget22.Devices.VoltageInput import *
 
+# Local imports
+from video_stitch import video_stitch
+# this is a local filepath
+
 
 def main():
 
@@ -1736,7 +1740,7 @@ def main():
 
     # User-define function to capture stills
     def runCapture():
-        print("Run")
+        print("Capture")
 
         # Get the current date and time and format it
         now = datetime.datetime.now()
@@ -1817,6 +1821,16 @@ def main():
             # Pause so the relay doesn't get confused
             sleep(int(interval))
             relay.setDutyCycle(0.0)
+
+
+            # Try editing and renaming the .pts file
+            try:
+                subprocess.call(["sed", "'s/00000" + str(x), "/00000" + str(x+1), "/g'", "00000" + str(x) + "-A.pts", ">", "00000" + str(x+1) + "-A.pts"])
+            except:
+                print("Error in renaming .pts file")
+
+            # Update the current video, if it exists
+            video_stitch(x)
 
             # Update the counters
             x = x + 1
