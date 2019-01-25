@@ -71,7 +71,7 @@ def main():
             now = datetime.datetime.now()
             dir_name = now.strftime("%Y%m%d")
 
-            dir_name = dir_name + "_SCENE" + "%02d" % (x + 1)
+            dir_name = dir_name + "_SCENE-" + "%02d" % (x + 1)
             # Try opening a directory with the name created above
             # If the directory can't be opened, create a directory
             # with that name and navigate to it
