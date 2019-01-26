@@ -1830,7 +1830,7 @@ def main():
                 print("Error in renaming .pts file")
 
             # Update the current video, if it exists
-            video_stitch(x)
+            video_stitch(x, "/home/ryan/" + str(dir_name))
 
             # Update the counters
             x = x + 1
