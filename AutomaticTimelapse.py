@@ -121,7 +121,7 @@ def main():
     def BatteryMonitorVoltageChange(interfaceKit, voltage):
         # This is the handler for the interval variable
         output = (voltage - 2.5) / 0.06810
-        print(output)
+        # print(output)
 
     # Attach all the handlers to the proper phidgets,
     # catch and return any errors
@@ -333,6 +333,12 @@ def main():
 
 ### Start monitor and timelapse functions
 
+    # Force the user to confirm the settings
+    ppoff = input("Is picutre profile off? ")
+    raw_mode = input("Shooting in raw? ")
+    pc_remote = input("Are the cameras in PC remote? ")
+
+
     # Define variables for use in the loop
     now = datetime.datetime.now()
     dir_name = now.strftime("%Y%m%d_%Hh%Mm%Ss")
@@ -363,8 +369,12 @@ def main():
         # Call to local import
         results = check_shutter_and_iso(filenames, path)
 
-        iso = results['iso']
-        shutter = results['shutter']
+        # iso = results['iso']
+        # shutter = results['shutter']
+
+        iso = "100"
+        shutter = "3"
+
 
         # Default is 0, !0 means new iso and shutter speed values
         # were found in the new file
@@ -407,9 +417,11 @@ def main():
                 # x is the number-th photo taken (used for the filename)
                 # i is the index of the camera port in a sorted list of ports
                 i = 0
+                process = ""
                 while i < number_of_cameras:
                     process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i)])
                     i = i + 1
+                process.wait()
 
 
                 # Trigger the relay for simultaneous image capture
@@ -431,7 +443,10 @@ def main():
                     delay = int(shutter)
                 time.sleep(delay)
             except:
+                print("\n error \n")
                 time.sleep(1)
+
+        time.sleep(2)
 
 
     # Close the relay

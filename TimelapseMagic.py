@@ -1756,6 +1756,15 @@ def main():
             make_dir.wait()
             os.chdir(str(dir_name))
 
+        # Create a log file, write to it, then close it
+        filename = str(dir_name) + "_log.txt"
+        error_file = open(filename, "w+")
+        error_file.write("Start of Error logs from " + str(dir_name))
+        error_file.close()
+
+        # Re-open the log file in append mode
+        log_file = open(filename, "a+")
+
         # Get the interval between photos and
         # the total time the system should run for
         # from their respective rotators
@@ -1803,41 +1812,48 @@ def main():
 
         camera_ports.sort(reverse = True)   # sorted so they capture in the correct order
 
-        # So long as we haven't taken the desired number of photos,
-        # keep running this loop and taking photos
-        while x < int(number_of_photos):
-            # Update the display to indicate progress
-            status = str(x + 1) + '/' + str(number_of_photos) + '   '
-            textLCD.writeText(LCDFont.FONT_5x8, 13, 1, status)
-            textLCD.flush()
+        try:
+            # So long as we haven't taken the desired number of photos,
+            # keep running this loop and taking photos
+            while x < int(number_of_photos):
+                # Update the display to indicate progress
+                status = str(x + 1) + '/' + str(number_of_photos) + '   '
+                textLCD.writeText(LCDFont.FONT_5x8, 13, 1, status)
+                textLCD.flush()
 
-            # Open the capture program for each camera
-            while i < number_of_cameras:
-                process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i)])
-                i = i + 1
+                # Open the capture program for each camera
+                while i < number_of_cameras:
+                    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i)])
+                    i = i + 1
 
-            # Trigger the relay so all cameras capture at the same time
-            relay.setDutyCycle(1.0)
-            # Pause so the relay doesn't get confused
-            sleep(int(interval))
-            relay.setDutyCycle(0.0)
+                # Trigger the relay so all cameras capture at the same time
+                relay.setDutyCycle(1.0)
+                # Pause so the relay doesn't get confused
+                sleep(int(interval))
+                relay.setDutyCycle(0.0)
 
 
-            # Try editing and renaming the .pts file
-            try:
-                subprocess.call(["sed", "'s/00000" + str(x), "/00000" + str(x+1), "/g'", "00000" + str(x) + "-A.pts", ">", "00000" + str(x+1) + "-A.pts"])
-            except:
-                print("Error in renaming .pts file")
+                # Try editing and renaming the .pts file
+                try:
+                    subprocess.call(["sed", "'s/00000" + str(x), "/00000" + str(x+1), "/g'", "00000" + str(x) + "-A.pts", ">", "00000" + str(x+1) + "-A.pts"])
+                except:
+                    print("Error in renaming .pts file")
 
-            # Update the current video, if it exists
-            video_stitch(x, "/home/ryan/" + str(dir_name))
+                # Update the current video, if it exists
+                # video_stitch(x, "/home/ryan/" + str(dir_name), log_file)
 
-            # Update the counters
-            x = x + 1
-            i = 0
+                # Update the counters
+                x = x + 1
+                i = 0
+        except Error as e:
+            print("oops")
+            log_file.write(str(e))
 
-        # Naviagte to the previous directory to prevent nested directories
+        # Close the log file
+        error_file.close()
+        # Navigate to the previous directory to prevent nested directories
         os.chdir("../")
+
 
     # User-defined function for recording
     def runRecord():
