@@ -337,6 +337,7 @@ def main():
     ppoff = input("Is picutre profile off? ")
     raw_mode = input("Shooting in raw? ")
     pc_remote = input("Are the cameras in PC remote? ")
+    bulb_on = input("Are the cameras in BULB mode? ")
 
 
     # Define variables for use in the loop
@@ -345,6 +346,21 @@ def main():
     # path = "/home/ryan/" + str(dir_name)
     path = "/home/ryan/watchfile"       # This is where the program will look
                                         # for new images
+
+    # Try to open the directory where the photos are stored,
+    # if it doesn't exist, create it then navigate to it
+    try:
+        os.chdir(str(dir_name))
+    except:
+        make_dir = subprocess.Popen(["mkdir", str(dir_name)])
+        make_dir.wait()
+        os.chdir(str(dir_name))
+        # Create a log file the first time the directory is opened,
+        # write to it, then close it
+        filename = str(dir_name) + "_log.txt"
+        error_file = open(filename, "w+")
+        error_file.write("Start of Error logs from " + str(dir_name))
+        error_file.close()
 
     # Use this for sorting image files and to not skip images that are added
     # to the watchfile while the cameras are capturing
@@ -366,14 +382,13 @@ def main():
     x = 0                               # Used to name images taken,
                                         # keeps track of how many images were taken
     while True:
+        log_file = open(filename, "a+")
         # Call to local import
-        results = check_shutter_and_iso(filenames, path)
+        results = check_shutter_and_iso(filenames, path, log_file)
+        log_file.close()
 
-        # iso = results['iso']
-        # shutter = results['shutter']
-
-        iso = "100"
-        shutter = "3"
+        iso = results['iso']
+        shutter = results['shutter']
 
 
         # Default is 0, !0 means new iso and shutter speed values
@@ -382,35 +397,40 @@ def main():
             print(iso)
             print(shutter)
 
+
+
+            camera_ports = []       # stores relevant ports
+
+            # Locate all cameras and split results into readable strings
+            ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
+            ports_strings_split = ports_strings.split()
+
+
+            # Locate all ports of format usb:xxx,xxx
+            # as they're needed for gphoto2
+            for item in ports_strings_split:
+                item = item.decode('utf-8')
+                if item[0] == 'u':
+                    camera_ports.append(item)
+
+            # Set the ISO and shutter speed of each camera
+            number_of_cameras = len(camera_ports)
+
+
+            # Re-open the log file in append mode
+            log_file = open(filename, "a+")
+            log_file.write("Input ISO: " + iso + '\n')
+            log_file.write("Input Shutter Speed: " + shutter + '\n')
+            log_file.write("Output filename: " + "%06d" % (x + 1) + '\n\n')
+            log_file.close()
+
             try:
-                # Try to open the directory where the photos are stored,
-                # if it doesn't exist, create it then navigate to it
-                try:
-                    os.chdir(str(dir_name))
-                except:
-                    make_dir = subprocess.Popen(["mkdir", str(dir_name)])
-                    make_dir.wait()
-                    os.chdir(str(dir_name))
+                subprocess.call(["gphoto2", "--debug", "--debug-logfile", "/home/ryan/Documents/full_circle/" + str(dir_name) + "/" + filename, "--debug-loglevel=error"])
 
-                camera_ports = []       # stores relevant ports
-
-                # Locate all cameras and split results into readable strings
-                ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
-                ports_strings_split = ports_strings.split()
-
-
-                # Locate all ports of format usb:xxx,xxx
-                # as they're needed for gphoto2
-                for item in ports_strings_split:
-                    item = item.decode('utf-8')
-                    if item[0] == 'u':
-                        camera_ports.append(item)
-
-                # Set the ISO and shutter speed of each camera
-                number_of_cameras = len(camera_ports)
                 for port in camera_ports:
                     print(port)
-                    subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter), "--set-config-value", "iso=" + str(iso)])
+                    # subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter), "--set-config-value", "iso=" + str(iso)])
+                    subprocess.call(["gphoto2", "--port=" + port, "--set-config", "shutterspeed=bulb", "--set-config-value", "iso=" + str(iso), "--debug", "--debug-logfile", "/home/ryan/Documents/full_circle/" + str(dir_name) + "/" + filename])
                     # subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter)])
 
                 # Open an instance of capture.py for each camera, where:
@@ -419,9 +439,22 @@ def main():
                 i = 0
                 process = ""
                 while i < number_of_cameras:
-                    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i)])
+                    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/bulb_capture_on.py", str(x), str(i), str(shutter)])
                     i = i + 1
-                process.wait()
+
+                wait_time = 0
+                if '/' in shutter:
+                    split_shutter = shutter.split('/')
+                    wait_time = int(split_shutter[0]) / int(split_shutter[1])
+                else:
+                    wait_time = float(shutter)
+
+                time.sleep(wait_time)
+
+                j = 0
+                while j < number_of_cameras:
+                    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/bulb_capture_off.py", str(x), str(j), str(shutter)])
+                    j = j + 1
 
 
                 # Trigger the relay for simultaneous image capture
@@ -433,17 +466,26 @@ def main():
                                                 # take the same picture more than once
 
                 x += 1
-                os.chdir("../")                 # Change back a directory to prevent
+                # os.chdir("../")                 # Change back a directory to prevent
                                                 # creating multiple nested ones
 
                 delay = 0
                 if '/' in shutter:
                     delay = 1
                 else:
-                    delay = int(shutter)
+                    delay = float(shutter)
                 time.sleep(delay)
             except:
+                e = sys.exc_info()[0]
                 print("\n error \n")
+                print(e)
+                print("\n")
+
+                # Re-open the log file in append mode
+                log_file = open(filename, "a+")
+                log_file.write(str(e) + '\n\n')
+                log_file.close()
+
                 time.sleep(1)
 
         time.sleep(2)

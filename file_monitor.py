@@ -23,7 +23,7 @@ import os
 
 from operator import itemgetter
 
-def check_shutter_and_iso(old_files, path):
+def check_shutter_and_iso(old_files, path, log_file):
     # Initialize the variables to be used
     shutter_speed = 0
     iso = 0
@@ -50,6 +50,7 @@ def check_shutter_and_iso(old_files, path):
             print(file)
             old_files.append(file)      # add anything new we see to the list
             if ".jpg" in file[1].lower() or ".arw" in file[1].lower():
+                log_file.write('\n'+ "Input filename: " + file[1] + '\n')
 
                 try:
                     #Ryan added 5-seond delay to prevent "file is empty" error from exiftool reading jpg before it was done copying
