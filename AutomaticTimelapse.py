@@ -425,7 +425,6 @@ def main():
             log_file.close()
 
             try:
-                subprocess.call(["gphoto2", "--debug", "--debug-logfile", "/home/ryan/Documents/full_circle/" + str(dir_name) + "/" + filename, "--debug-loglevel=error"])
 
                 for port in camera_ports:
                     print(port)
