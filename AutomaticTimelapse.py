@@ -25,6 +25,8 @@ from Phidget22.Phidget import *
 
 #custom imports
 from file_monitor import check_shutter_and_iso
+from video_stitch import video_stitch, first_stitch
+
 # This is a local file path,
 # if file_monitor is ever in a different directory
 # than this file, it will need a full file path
@@ -337,7 +339,8 @@ def main():
     ppoff = input("Is picutre profile off? ")
     raw_mode = input("Shooting in raw? ")
     pc_remote = input("Are the cameras in PC remote? ")
-    bulb_on = input("Are the cameras in BULB mode? ")
+    # bulb_on = input("Are the cameras in BULB mode? ")
+    with_audio = input("Are you recording with audio? (y/n): ")
 
 
     # Define variables for use in the loop
@@ -361,6 +364,10 @@ def main():
         error_file = open(filename, "w+")
         error_file.write("Start of Error logs from " + str(dir_name))
         error_file.close()
+
+    # Start recording audio if specified
+    if with_audio.lower() == 'y':
+        subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture_audio.py", str(dir_name)])
 
     # Use this for sorting image files and to not skip images that are added
     # to the watchfile while the cameras are capturing
@@ -389,6 +396,21 @@ def main():
 
         iso = results['iso']
         shutter = results['shutter']
+
+        # If we're recording with audio,
+        # check to see if the audio record program is running,
+        # restart it if it isn't
+
+        # Get a list of all processes that are currently running
+        # and decode them so they can be easily processed
+        processes = subprocess.check_output(["ps", "-ef"])
+        processes_list = processes.split()
+        for i in range(0, len(processes_list)):
+            processes_list[i] = processes_list[i].decode('utf-8')
+
+        if not '/home/ryan/Documents/full_circle/capture_audio.py' in processes_list:
+            subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture_audio.py", str(dir_name)])
+            print('Relaunching Audio')
 
 
         # Default is 0, !0 means new iso and shutter speed values
@@ -463,6 +485,12 @@ def main():
                 filenames = results['files']    # Update our records with the filename
                                                 # of the picture we just used so we don't
                                                 # take the same picture more than once
+
+                # Update the current video, if it exists
+                if x > 0:
+                    video_stitch(x, "/home/ryan/" + str(dir_name), log_file)
+                elif x == 0:
+                    first_stitch("/home/ryan" + str(dir_name), log_file)
 
                 x += 1
                 # os.chdir("../")                 # Change back a directory to prevent
