@@ -419,8 +419,6 @@ def main():
             print(iso)
             print(shutter)
 
-
-
             camera_ports = []       # stores relevant ports
 
             # Locate all cameras and split results into readable strings
