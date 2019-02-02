@@ -355,13 +355,13 @@ def main():
     try:
         os.chdir(str(dir_name))
     except:
-        make_dir = subprocess.Popen(["mkdir", str(dir_name)])
-        make_dir.wait()
-        os.chdir(str(dir_name))
-
         # Create a new folder to store the stitched preview
         preview_dir = subprocess.Popen(["mkdir", str(dir_name) + "_preview"])
         preview_dir.wait()
+
+        make_dir = subprocess.Popen(["mkdir", str(dir_name)])
+        make_dir.wait()
+        os.chdir(str(dir_name))
 
         # Create a log file the first time the directory is opened,
         # write to it, then close it
@@ -371,10 +371,10 @@ def main():
         error_file.close()
 
         # Change the location of the mp4's to the correct filepath
-        input_files = open("/home/ryan/Documents/full_circle/stitchwatch/input_files.txt", w+)
+        input_files = open("/home/ryan/Documents/full_circle/stitchwatch/input_files.txt", "w+")
         input_files.truncate(0)
-        input_files.write("file '/home/ryan/" + str(dir_name) + "_preview/full-stitched-video.mp4'\n")
-        input_files.write("file '/home/ryan/" + str(dir_name) + "_preview/newest_video_frame.mp4'\n")
+        input_files.write("file '/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/full-stitched-video.mp4'\n")
+        input_files.write("file '/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/newest_video_frame.mp4'\n")
         input_files.close()
 
     # Start recording audio if specified
@@ -420,9 +420,10 @@ def main():
         for i in range(0, len(processes_list)):
             processes_list[i] = processes_list[i].decode('utf-8')
 
-        if not '/home/ryan/Documents/full_circle/capture_audio.py' in processes_list:
-            subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture_audio.py", str(dir_name)])
-            print('Relaunching Audio')
+        if with_audio.lower() == 'y':
+            if not '/home/ryan/Documents/full_circle/capture_audio.py' in processes_list:
+                subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture_audio.py", str(dir_name)])
+                print('Relaunching Audio')
 
 
         # Default is 0, !0 means new iso and shutter speed values
@@ -508,7 +509,7 @@ def main():
 
                 # Update the current video, if it exists
                 if x > 0:
-                    video_stitch(x, "/home/ryan/" + str(dir_name) + "/", log_file)
+                    video_stitch(x, "/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/", log_file)
                 elif x == 0:
                     first_stitch("/home/ryan/Documents/full_circle/stitchwatch/", "/home/ryan/" + str(dir_name) + "_preview/", log_file)
 
