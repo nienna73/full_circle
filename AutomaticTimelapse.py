@@ -488,7 +488,11 @@ def main():
                         subprocess.call(["cp", photo_name, "/home/ryan/Documents/full_circle/stitchwatch/"])
                         j += 1
                 except:
+                    # Print error to the screen and to the log file
                     print("Error in moving files to stitchwatch")
+                    log_file = open(filename, "a+")
+                    log_file.write("Error in moving files to /stitchwatch")
+                    log_file.close()
 
                 # Try editing and renaming the .pts file
                 try:
@@ -496,7 +500,11 @@ def main():
                     new_number = "%06d" % (x+1)
                     subprocess.call(["sed", "'s/" + old_number + "/" + new_number + "/g'", "/home/ryan/Documents/full_circle/stitchwatch/" + old_number + "-A.pts", ">", "/home/ryan/Documents/full_circle/stitchwatch/" + new_number + "-A.pts"])
                 except:
+                    # Print error to the screen and to the log file
                     print("Error in renaming .pts file")
+                    log_file = open(filename, "a+")
+                    log_file.write("Error in renaming .pts file")
+                    log_file.close()
 
                 # Update the current video, if it exists
                 if x > 0:
