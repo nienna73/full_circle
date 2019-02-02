@@ -1859,12 +1859,26 @@ def main():
                 sleep(int(interval))
                 relay.setDutyCycle(0.0)
 
+                # Add GPS metadata to the images
+                try:
+                    j = 0
+                    latitude = gps.getLatitude()
+                    longitude = gps.getLongitude()
+                    while j < number_of_cameras:
+                        photo_name = "%06d" % (x+1) + "-" + char(65+x) + ".arw"
+                        subprocess.call(["exiftool", "-gpslongitude=" + longitude, "-gpslatitude=" + latitude, photo_name])
+                        j += 1
+                except:
+                    print("Could not add gps data to images")
+                    log_file.write("Could not add gps data to images")
+
 
                 # Try editing and renaming the .pts file
                 try:
                     subprocess.call(["sed", "'s/00000" + str(x), "/00000" + str(x+1), "/g'", "00000" + str(x) + "-A.pts", ">", "00000" + str(x+1) + "-A.pts"])
                 except:
                     print("Error in renaming .pts file")
+                    log_file.write("Error in renaming .pts file")
 
                 # Update the current video, if it exists
                 # video_stitch(x, "/home/ryan/" + str(dir_name), log_file)
@@ -1877,7 +1891,7 @@ def main():
             log_file.write(str(e))
 
         # Close the log file
-        error_file.close()
+        log_file.close()
         # Navigate to the previous directory to prevent nested directories
         os.chdir("../")
 
