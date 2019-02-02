@@ -358,12 +358,24 @@ def main():
         make_dir = subprocess.Popen(["mkdir", str(dir_name)])
         make_dir.wait()
         os.chdir(str(dir_name))
+
+        # Create a new folder to store the stitched preview
+        preview_dir = subprocess.Popen(["mkdir", str(dir_name) + "_preview"])
+        preview_dir.wait()
+
         # Create a log file the first time the directory is opened,
         # write to it, then close it
         filename = str(dir_name) + "_log.txt"
         error_file = open(filename, "w+")
         error_file.write("Start of Error logs from " + str(dir_name))
         error_file.close()
+
+        # Change the location of the mp4's to the correct filepath
+        input_files = open("/home/ryan/Documents/full_circle/stitchwatch/input_files.txt", w+)
+        input_files.truncate(0)
+        input_files.write("file '/home/ryan/" + str(dir_name) + "_preview/full-stitched-video.mp4'\n")
+        input_files.write("file '/home/ryan/" + str(dir_name) + "_preview/newest_video_frame.mp4'\n")
+        input_files.close()
 
     # Start recording audio if specified
     if with_audio.lower() == 'y':
@@ -449,31 +461,14 @@ def main():
                 for port in camera_ports:
                     print(port)
                     subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter), "--set-config-value", "iso=" + str(iso)])
-                    # subprocess.call(["gphoto2", "--port=" + port, "--set-config", "shutterspeed=bulb", "--set-config-value", "iso=" + str(iso), "--debug", "--debug-logfile", "/home/ryan/Documents/full_circle/" + str(dir_name) + "/" + filename])
-                    # subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter)])
 
                 # Open an instance of capture.py for each camera, where:
                 # x is the number-th photo taken (used for the filename)
                 # i is the index of the camera port in a sorted list of ports
                 i = 0
-                process = ""
                 while i < number_of_cameras:
-                    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i), str(shutter)])
+                    subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i), str(shutter)])
                     i = i + 1
-
-                #wait_time = 0
-                #if '/' in shutter:
-                #    split_shutter = shutter.split('/')
-                #    wait_time = int(split_shutter[0]) / int(split_shutter[1])
-                #else:
-                #    wait_time = float(shutter)
-
-                #time.sleep(wait_time)
-
-                #j = 0
-                #while j < number_of_cameras:
-                #    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/bulb_capture_off.py", str(x), str(j), str(shutter)])
-                #    j = j + 1
 
 
                 # Trigger the relay for simultaneous image capture
@@ -484,11 +479,30 @@ def main():
                                                 # of the picture we just used so we don't
                                                 # take the same picture more than once
 
+                # Try moving the .arw files to stitchwatch so they can
+                # be stitched
+                try:
+                    j = 0
+                    while j < number_of_cameras:
+                        photo_name = "%06d" % (x+1) + "-" + char(x+65) + ".arw"
+                        subprocess.call(["cp", photo_name, "/home/ryan/Documents/full_circle/stitchwatch/"])
+                        j += 1
+                except:
+                    print("Error in moving files to stitchwatch")
+
+                # Try editing and renaming the .pts file
+                try:
+                    old_number = "%06d" % (x)
+                    new_number = "%06d" % (x+1)
+                    subprocess.call(["sed", "'s/" + old_number + "/" + new_number + "/g'", "/home/ryan/Documents/full_circle/stitchwatch/" + old_number + "-A.pts", ">", "/home/ryan/Documents/full_circle/stitchwatch/" + new_number + "-A.pts"])
+                except:
+                    print("Error in renaming .pts file")
+
                 # Update the current video, if it exists
                 if x > 0:
-                    video_stitch(x, "/home/ryan/" + str(dir_name), log_file)
+                    video_stitch(x, "/home/ryan/" + str(dir_name) + "/", log_file)
                 elif x == 0:
-                    first_stitch("/home/ryan" + str(dir_name), log_file)
+                    first_stitch("/home/ryan/Documents/full_circle/stitchwatch/", "/home/ryan/" + str(dir_name) + "_preview/", log_file)
 
                 x += 1
                 # os.chdir("../")                 # Change back a directory to prevent
