@@ -39,7 +39,7 @@ from time import sleep
 from Phidget22.Devices.DigitalInput import *
 from Phidget22.Devices.DigitalOutput import *
 from Phidget22.Devices.LCD import *
-#from Phidget22.Devices.GPS import *
+from Phidget22.Devices.GPS import *
 from Phidget22.PhidgetException import *
 from Phidget22.Phidget import *
 from Phidget22.Net import *
@@ -48,6 +48,15 @@ from Phidget22.Devices.VoltageInput import *
 # Local imports
 from video_stitch import video_stitch
 # this is a local filepath
+
+try:
+    from PhidgetHelperFunctions import *
+except ImportError:
+    sys.stderr.write("\nCould not find PhidgetHelperFunctions. Either add PhdiegtHelperFunctions.py to your project folder "
+                      "or remove the import from your project.")
+    sys.stderr.write("\nPress ENTER to end program.")
+    readin = sys.stdin.readline()
+    sys.exit()
 
 
 def main():
@@ -285,7 +294,7 @@ def main():
     #Create an TextLCD object and a GPS object
     try:
         textLCD = LCD()
-        #gps = GPS()
+        gps = GPS()
     except RuntimeError as e:
         print("Runtime Exception: %s" % e.details)
         print("Exiting....")
@@ -1641,97 +1650,115 @@ def main():
 
 ### Start GPS functions
 
-#    # Standard Phidget attach handler for the gps
+    # Standard Phidget attach handler for the gps
+    def gpsAttachHandler(self):
+        ph = gps
+        try:
+            # If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            # www.phidgets.com/docs/Using_Multiple_Phidgets for information
 
-#    def gpsAttachHandler(self):
+            print("\nAttach Event:")
 
-#        ph = gps
-#        try:
-            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
-            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+            """
+            * Get device information and display it.
+            """
+            channelClassName = ph.getChannelClassName()
+            serialNumber = ph.getDeviceSerialNumber()
+            channel = ph.getChannel()
+            if(ph.getDeviceClass() == DeviceClass.PHIDCLASS_VINT):
+                hubPort = ph.getHubPort()
+                print("\n\t-> Channel Class: " + channelClassName + "\n\t-> Serial Number: " + str(serialNumber) +
+                   "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel:  " + str(channel) + "\n")
+            else:
+               print("\n\t-> Channel Class: " + channelClassName + "\n\t-> Serial Number: " + str(serialNumber) +
+                       "\n\t-> Channel:  " + str(channel) + "\n")
 
-#            print("\nAttach Event:")
+        except PhidgetException as e:
+           print("\nError in Attach Event:")
+           #DisplayError(e)
+           traceback.print_exc()
+           return
 
-#            """
-#            * Get device information and display it.
-#            """
-#            channelClassName = ph.getChannelClassName()
-#            serialNumber = ph.getDeviceSerialNumber()
-#            channel = ph.getChannel()
-#            if(ph.getDeviceClass() == DeviceClass.PHIDCLASS_VINT):
-#                hubPort = ph.getHubPort()
-#                print("\n\t-> Channel Class: " + channelClassName + "\n\t-> Serial Number: " + str(serialNumber) +
-#                    "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel:  " + str(channel) + "\n")
-#            else:
-#                print("\n\t-> Channel Class: " + channelClassName + "\n\t-> Serial Number: " + str(serialNumber) +
-#                        "\n\t-> Channel:  " + str(channel) + "\n")
+    # Standard phidget detach handler for the gps
+    def gpsDetachHandler(self):
 
-#        except PhidgetException as e:
-#            print("\nError in Attach Event:")
-#            #DisplayError(e)
-#            traceback.print_exc()
-#            return
+       ph = gps
+       try:
+           # If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+           # www.phidgets.com/docs/Using_Multiple_Phidgets for information
 
-#    # Standard phidget detach handler for the gps
-#    def gpsDetachHandler(self):
-#
-#        ph = gps
-#        try:
-            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
-            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+           print("\nDetach Event:")
+           """
+           * Get device information and display it.
+           """
+           serialNumber = ph.getDeviceSerialNumber()
+           channelClass = ph.getChannelClassName()
+           channel = ph.getChannel()
 
-#            print("\nDetach Event:")
+           deviceClass = ph.getDeviceClass()
+           if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+               print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) + "\n\t-> Channel:  " + str(channel) + "\n")
+           else:
+               hubPort = ph.getHubPort()
+               print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) + "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel:  " + str(channel) + "\n")
 
-#            """
-#            * Get device information and display it.
-#            """
-#            serialNumber = ph.getDeviceSerialNumber()
-#            channelClass = ph.getChannelClassName()
-#            channel = ph.getChannel()
+       except PhidgetException as e:
+           print("\nError in Detach Event:")
+           #DisplayError(e)
+           traceback.print_exc()
+           return
 
-#            deviceClass = ph.getDeviceClass()
-#            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
-#                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
-#                      "\n\t-> Channel:  " + str(channel) + "\n")
-#            else:
-#                hubPort = ph.getHubPort()
-#                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
-#                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel:  " + str(channel) + "\n")
-#
-#        except PhidgetException as e:
-#            print("\nError in Detach Event:")
-#            #DisplayError(e)
-#            traceback.print_exc()
-#            return
+   # Standard phidget error handler for the gps
+    def gpsErrorHandler(self, errorCode, errorString):
+       sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
 
-#    # Standard phidget error handler for the gps
-#    def gpsErrorHandler(self, errorCode, errorString):
-#
-#        sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
-#
-#    # Change handler for the gps
-#    def gpsPositionChangeHandler(self, latitude, longitude, altitude):
+   # Change handler for the gps
+    def gpsPositionChangeHandler(self, latitude, longitude, altitude):
 
-        #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
-        #www.phidgets.com/docs/Using_Multiple_Phidgets for information
-#        # Print the current coordinates to the terminal
-#        print("\n[Position Event] -> Latitude:  %7.3f\n", latitude)
-#        print("                 -> Longitude: %7.3f\n", longitude)
-#        print("                 -> Altitude:  %7.3f\n", altitude)
+        # If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+        # www.phidgets.com/docs/Using_Multiple_Phidgets for information
+       # Print the current coordinates to the terminal
+       print("\n[Position Event] -> Latitude:  %7.3f\n", latitude)
+       print("                 -> Longitude: %7.3f\n", longitude)
+       print("                 -> Altitude:  %7.3f\n", altitude)
 
-#    # Attach everything to the gps
-#    try:
-#        gps.setDeviceSerialNumber(120683)
-#        gps.setChannel(0)      # THIS IS WRONG as far as I know, it needs a different channel
-#        gps.setOnAttachHandler(gpsAttachHandler)
-#        gps.setOnDetachHandler(gpsDetachHandler)
-#        gps.setOnErrorHandler(gpsErrorHandler)
-#        print('Wait for GPS attach...')
-#        gps.openWaitForAttachment(5000)
-#    except PhidgetException as e:
-#        print("Phidget Exception %i: %s" % (e.code, e.details))
-#        print("Exiting....")
-#        exit(1)
+    channelInfo = AskForDeviceParameters(gps)
+
+    gps.setDeviceSerialNumber(channelInfo.deviceSerialNumber)
+    gps.setHubPort(channelInfo.hubPort)
+    gps.setIsHubPortDevice(channelInfo.isHubPortDevice)
+    gps.setChannel(channelInfo.channel)
+
+    if(channelInfo.netInfo.isRemote):
+        gps.setIsRemote(channelInfo.netInfo.isRemote)
+        if(channelInfo.netInfo.serverDiscovery):
+            try:
+                Net.enableServerDiscovery(PhidgetServerType.PHIDGETSERVER_DEVICEREMOTE)
+            except PhidgetException as e:
+                PrintEnableServerDiscoveryErrorMessage(e)
+                raise EndProgramSignal("Program Terminated: EnableServerDiscovery Failed")
+        else:
+            Net.addServer("Server", channelInfo.netInfo.hostname,
+                channelInfo.netInfo.port, channelInfo.netInfo.password, 0)
+
+   # Attach everything to the gps
+    try:
+       gps.setOnAttachHandler(gpsAttachHandler)
+       gps.setOnDetachHandler(gpsDetachHandler)
+       gps.setOnErrorHandler(gpsErrorHandler)
+       print('Wait for GPS attach...')
+       gps.openWaitForAttachment(5000)
+    except PhidgetException as e:
+       print("Phidget Exception %i: %s" % (e.code, e.details))
+       print("Exiting....")
+       exit(1)
+
+    try:
+       print(gps.getLongitude())
+       print(gps.getLatitude())
+       # More functions: https://www.phidgets.com/?view=api
+    except:
+       print("Can't access specs")
 
 ### End GPS functions
 
