@@ -448,8 +448,8 @@ def main():
 
                 for port in camera_ports:
                     print(port)
-                    # subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter), "--set-config-value", "iso=" + str(iso)])
-                    subprocess.call(["gphoto2", "--port=" + port, "--set-config", "shutterspeed=bulb", "--set-config-value", "iso=" + str(iso), "--debug", "--debug-logfile", "/home/ryan/Documents/full_circle/" + str(dir_name) + "/" + filename])
+                    subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter), "--set-config-value", "iso=" + str(iso)])
+                    # subprocess.call(["gphoto2", "--port=" + port, "--set-config", "shutterspeed=bulb", "--set-config-value", "iso=" + str(iso), "--debug", "--debug-logfile", "/home/ryan/Documents/full_circle/" + str(dir_name) + "/" + filename])
                     # subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter)])
 
                 # Open an instance of capture.py for each camera, where:
@@ -458,22 +458,22 @@ def main():
                 i = 0
                 process = ""
                 while i < number_of_cameras:
-                    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/bulb_capture_on.py", str(x), str(i), str(shutter)])
+                    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i), str(shutter)])
                     i = i + 1
 
-                wait_time = 0
-                if '/' in shutter:
-                    split_shutter = shutter.split('/')
-                    wait_time = int(split_shutter[0]) / int(split_shutter[1])
-                else:
-                    wait_time = float(shutter)
+                #wait_time = 0
+                #if '/' in shutter:
+                #    split_shutter = shutter.split('/')
+                #    wait_time = int(split_shutter[0]) / int(split_shutter[1])
+                #else:
+                #    wait_time = float(shutter)
 
-                time.sleep(wait_time)
+                #time.sleep(wait_time)
 
-                j = 0
-                while j < number_of_cameras:
-                    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/bulb_capture_off.py", str(x), str(j), str(shutter)])
-                    j = j + 1
+                #j = 0
+                #while j < number_of_cameras:
+                #    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/bulb_capture_off.py", str(x), str(j), str(shutter)])
+                #    j = j + 1
 
 
                 # Trigger the relay for simultaneous image capture
