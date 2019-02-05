@@ -39,7 +39,7 @@ def first_stitch(path_to_jpg, path_to_mp4, log_file):
     try:
         # take first stitched  image and call it full-stitched-video
         subprocess.call(["ffmpeg", "-y", "-framerate", "24", "-i", path_to_jpg + "000001-A.jpg", "-s", "2048x1024", "-vcodec", "libx264", "-cmp", "22", path_to_mp4 + "full-stitched-video.mp4"])
-    except(e):
+    except AttributeError as e:
         # Print the error to the terminal and to the log file
         print("\n\nError in attaching new frame to video:")
         print(e)

@@ -15,12 +15,19 @@ from operator import itemgetter
 # os.system("for(int i=0;i<3;i++)); do echo hi & done")
 
 
-path = "/home/ryan/"
-time.sleep(5)
-print("end")
-# os.killpg(p.pid, signal.SIGTERM)
-exit()
+# path = "/home/ryan/"
+# time.sleep(5)
+# print("end")
+# # os.killpg(p.pid, signal.SIGTERM)
+# exit()
 
+x=1
+old_number = "%06d" % (x)
+new_number = "%06d" % (x+1)
+old_path = "/home/ryan/Documents/full_circle/stitchwatch/" + old_number + "-A.pts"
+new_path = "/home/ryan/Documents/full_circle/stitchwatch/" + new_number + "-A.pts"
+command = "sed 's/%s/%s/g' %s > %s" % (old_number, new_number, old_path, new_path)
+process = subprocess.call([command], shell=True)
 
 
 # # new_files = os.listdir(path)
