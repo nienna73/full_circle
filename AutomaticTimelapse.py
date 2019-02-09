@@ -341,6 +341,7 @@ def main():
     pc_remote = input("Are the cameras in PC remote? ")
     # bulb_on = input("Are the cameras in BULB mode? ")
     with_audio = input("Are you recording with audio? (y/n): ")
+    # add question for stitching as you go
 
 
     # Define variables for use in the loop
