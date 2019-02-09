@@ -342,6 +342,7 @@ def main():
     # bulb_on = input("Are the cameras in BULB mode? ")
     with_audio = input("Are you recording with audio? (y/n): ")
     # add question for stitching as you go
+    stitching = input("Do you want to stitch as you go? (y/n): ")
 
 
     # Define variables for use in the loop
@@ -357,8 +358,10 @@ def main():
         os.chdir(str(dir_name))
     except:
         # Create a new folder to store the stitched preview
-        preview_dir = subprocess.Popen(["mkdir", str(dir_name) + "_preview"])
-        preview_dir.wait()
+        if stitching.lower() == 'y':
+            preview_dir = subprocess.Popen(["mkdir", str(dir_name) + "_preview"])
+            preview_dir.wait()
+
 
         make_dir = subprocess.Popen(["mkdir", str(dir_name)])
         make_dir.wait()
@@ -375,7 +378,7 @@ def main():
         input_files = open("/home/ryan/Documents/full_circle/stitchwatch/input_files.txt", "w+")
         input_files.truncate(0)
         input_files.write("file '/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/full-stitched-video.mp4'\n")
-        input_files.write("file '/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/newest_video_frame.mp4'\n")
+        input_files.write("file '/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/newest-video-frame.mp4'\n")
         input_files.close()
 
     # Start recording audio if specified
@@ -483,60 +486,49 @@ def main():
                                                 # of the picture we just used so we don't
                                                 # take the same picture more than once
 
-                # Try moving the .arw files to stitchwatch so they can
-                # be stitched
-                try:
-                    j = 0
-                    while j < number_of_cameras:
-                        photo_name = "%06d" % (x+1) + "-" + chr(j+65) + ".arw"
-                        print(photo_name)
-                        process = subprocess.call(["cp", "-f", photo_name, "/home/ryan/Documents/full_circle/stitchwatch/"])
-                        j += 1
-                except NameError as e:
-                    # Print error to the screen and to the log file
-                    print("\nError in moving files to stitchwatch\n")
-                    print(e)
-                    log_file = open(filename, "a+")
-                    log_file.write("Error in moving files to /stitchwatch")
-                    log_file.close()
+                if stitching.lower() == 'y':
+                    # Try moving the .arw files to stitchwatch so they can
+                    # be stitched
+                    try:
+                        j = 0
+                        while j < number_of_cameras:
+                            photo_name = "%06d" % (x+1) + "-" + chr(j+65) + ".arw"
+                            print(photo_name)
+                            process = subprocess.call(["cp", "-f", photo_name, "/home/ryan/Documents/full_circle/stitchwatch/"])
+                            j += 1
+                        time.sleep(6)
+                    except NameError as e:
+                        # Print error to the screen and to the log file
+                        print("\nError in moving files to stitchwatch\n")
+                        print(e)
+                        log_file = open(filename, "a+")
+                        log_file.write("Error in moving files to /stitchwatch")
+                        log_file.close()
 
-                # Try editing and renaming the .pts file
-                try:
-                    if x > 0:
-                        old_number = "%06d" % (x)
-                        new_number = "%06d" % (x+1)
-                        old_path = "/home/ryan/Documents/full_circle/stitchwatch/" + old_number + "-A.pts"
-                        new_path = "/home/ryan/Documents/full_circle/stitchwatch/" + new_number + "-A.pts"
-                        command = "sed 's/%s/%s/g' %s > %s" % (old_number, new_number, old_path, new_path)
-                        process = subprocess.call([command], shell=True)
-                except NameError as e:
-                    # Print error to the screen and to the log file
-                    print("Error in renaming .pts file")
-                    print(e)
-                    log_file = open(filename, "a+")
-                    log_file.write("Error in renaming .pts file")
-                    log_file.close()
-                except AttributeError as e:
-                    print(e)
+                    # Try editing and renaming the .pts file
+                    try:
+                        if x > 0:
+                            old_number = "%06d" % (x)
+                            new_number = "%06d" % (x+1)
+                            old_path = "/home/ryan/Documents/full_circle/stitchwatch/" + old_number + "-A.pts"
+                            new_path = "/home/ryan/Documents/full_circle/stitchwatch/" + new_number + "-A.pts"
+                            command = "sed 's/%s/%s/g' %s > %s" % (old_number, new_number, old_path, new_path)
+                            process = subprocess.call([command], shell=True)
+                        else:
+                            subprocess.call(["cp", "-f", "/home/ryan/Documents/full_circle/template.pts", "/home/ryan/Documents/full_circle/stitchwatch/000001-A.pts"])
+                    except NameError as e:
+                        # Print error to the screen and to the log file
+                        print("Error in renaming .pts file")
+                        print(e)
+                        log_file = open(filename, "a+")
+                        log_file.write("Error in renaming .pts file")
+                        log_file.close()
+                    except AttributeError as e:
+                        print(e)
+
+                    subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wait_for_stitch.py", str(x), str(dir_name), str(log_file)])
 
 
-                # Look for the new stitched image before creating the video
-                jpgs = subprocess.check_output((["ls", "/home/ryan/Documents/full_circle/stitchwatch/"]))
-                jpgs = jpgs.decode('utf-8')
-                jpgs = jpgs.splitlines()
-
-                jpg_name = "%06d" % (x+1) + "-A.jpg"
-
-                while not jpg_name in jpgs:
-                    jpgs = subprocess.check_output((["ls", "/home/ryan/Documents/full_circle/stitchwatch/"]))
-                    jpgs = jpgs.decode('utf-8')
-                    jpgs = jpgs.splitlines()
-
-                # Update the current video, if it exists
-                if x > 0:
-                    video_stitch(x, "/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/", log_file)
-                elif x == 0:
-                    first_stitch("/home/ryan/Documents/full_circle/stitchwatch/", "/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/", log_file)
 
                 x += 1
                 # os.chdir("../")                 # Change back a directory to prevent
