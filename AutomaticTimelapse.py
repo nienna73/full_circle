@@ -433,8 +433,8 @@ def main():
         # Default is 0, !0 means new iso and shutter speed values
         # were found in the new file
         if iso != 0 and shutter != 0:
-            print(iso)
-            print(shutter)
+            print("Iso: " + iso)
+            print("Shutter speed: " + shutter)
 
             camera_ports = []       # stores relevant ports
 
@@ -463,19 +463,46 @@ def main():
 
             try:
 
-                for port in camera_ports:
-                    print(port)
-                    subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter), "--set-config-value", "iso=" + str(iso)])
+                if float(shutter) < 1.0:
+                    # Use standard capture if the shutter speed is fast enough
+                    for port in camera_ports:
+                        print(port)
+                        subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter), "--set-config-value", "iso=" + str(iso)])
 
-                # Open an instance of capture.py for each camera, where:
-                # x is the number-th photo taken (used for the filename)
-                # i is the index of the camera port in a sorted list of ports
-                i = 0
-                process = ''
-                while i < number_of_cameras:
-                    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i), str(shutter)])
-                    i = i + 1
-                process.wait()
+                    # Open an instance of capture.py for each camera, where:
+                    # x is the number-th photo taken (used for the filename)
+                    # i is the index of the camera port in a sorted list of ports
+                    i = 0
+                    process = ''
+                    while i < number_of_cameras:
+                        process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i), str(shutter)])
+                        i = i + 1
+                    process.wait()
+                    
+                else:
+                    # Use bulb capture if the shutter speed is slow
+                    subprocess.call(["gphoto2", "--port=" + port, "--set-config", "shutterspeed=bulb", "--set-config-value", "iso=" + str(iso)])
+
+                    i = 0
+                    process = ""
+                    while i < number_of_cameras:
+                        process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/bulb_capture_on.py", str(i)])
+                        i = i + 1
+                        process.wait()
+
+                    wait_time = 0
+                    if '/' in shutter:
+                        split_shutter = shutter.split('/')
+                        wait_time = int(split_shutter[0]) / int(split_shutter[1])
+                    else:
+                        wait_time = float(shutter)
+
+                    time.sleep(wait_time)
+
+                    j = 0
+                    while j < number_of_cameras:
+                        process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/bulb_capture_off.py", str(x), str(j)])
+                        j = j + 1
 
 
                 # Trigger the relay for simultaneous image capture
@@ -487,46 +514,8 @@ def main():
                                                 # take the same picture more than once
 
                 if stitching.lower() == 'y':
-                    # Try moving the .arw files to stitchwatch so they can
-                    # be stitched
-                    try:
-                        j = 0
-                        while j < number_of_cameras:
-                            photo_name = "%06d" % (x+1) + "-" + chr(j+65) + ".arw"
-                            print(photo_name)
-                            process = subprocess.call(["cp", "-f", photo_name, "/home/ryan/Documents/full_circle/stitchwatch/"])
-                            j += 1
-                        time.sleep(6)
-                    except NameError as e:
-                        # Print error to the screen and to the log file
-                        print("\nError in moving files to stitchwatch\n")
-                        print(e)
-                        log_file = open(filename, "a+")
-                        log_file.write("Error in moving files to /stitchwatch")
-                        log_file.close()
-
-                    # Try editing and renaming the .pts file
-                    try:
-                        if x > 0:
-                            old_number = "%06d" % (x)
-                            new_number = "%06d" % (x+1)
-                            old_path = "/home/ryan/Documents/full_circle/stitchwatch/" + old_number + "-A.pts"
-                            new_path = "/home/ryan/Documents/full_circle/stitchwatch/" + new_number + "-A.pts"
-                            command = "sed 's/%s/%s/g' %s > %s" % (old_number, new_number, old_path, new_path)
-                            process = subprocess.call([command], shell=True)
-                        else:
-                            subprocess.call(["cp", "-f", "/home/ryan/Documents/full_circle/template.pts", "/home/ryan/Documents/full_circle/stitchwatch/000001-A.pts"])
-                    except NameError as e:
-                        # Print error to the screen and to the log file
-                        print("Error in renaming .pts file")
-                        print(e)
-                        log_file = open(filename, "a+")
-                        log_file.write("Error in renaming .pts file")
-                        log_file.close()
-                    except AttributeError as e:
-                        print(e)
-
-                    subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wait_for_stitch.py", str(x), str(dir_name), str(log_file)])
+                    # Call the stitching function
+                    subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wait_for_stitch.py", str(x), str(dir_name), str(log_file), str(dir_name)])
 
 
 
