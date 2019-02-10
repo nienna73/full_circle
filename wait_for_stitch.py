@@ -34,14 +34,27 @@ except NameError as e:
 # Try editing and renaming the .pts file
 try:
     if x > 0:
+
+        # Look for the new stitched image before creating the video
+        txt_file_check = subprocess.check_output(["ls", "/home/ryan/Documents/full_circle/stitchwatch/"])
+        txt_file_check = txt_file_check.decode('utf-8')
+        txt_file_check = txt_file_check.splitlines()
+
+        txt_file = "%06d" % (x) + "-A.txt"
+
+        while not txt_file in txt_file_check:
+            txt_file_check = subprocess.check_output((["ls", "/home/ryan/Documents/full_circle/stitchwatch/"]))
+            txt_file_check = txt_file_check.decode('utf-8')
+            txt_file_check = txt_file_check.splitlines()
+
         old_number = "%06d" % (x)
         new_number = "%06d" % (x+1)
-        old_path = "/home/ryan/Documents/full_circle/stitchwatch/" + old_number + "-A.pts"
+        old_path = "/home/ryan/Documents/full_circle/stitchwatch/" + old_number + "-A.txt"
         new_path = "/home/ryan/Documents/full_circle/stitchwatch/" + new_number + "-A.pts"
         command = "sed 's/%s/%s/g' %s > %s" % (old_number, new_number, old_path, new_path)
         process = subprocess.call([command], shell=True)
     else:
-        subprocess.call(["cp", "-f", "/home/ryan/Documents/full_circle/template.pts", "/home/ryan/Documents/full_circle/stitchwatch/000001-A.pts"])
+        subprocess.call(["cp", "-f", "/home/ryan/Documents/full_circle/template.txt", "/home/ryan/Documents/full_circle/stitchwatch/000001-A.pts"])
 except NameError as e:
     # Print error to the screen and to the log file
     print("Error in renaming .pts file")
@@ -61,12 +74,22 @@ jpgs = jpgs.splitlines()
 jpg_name = "%06d" % (x+1) + "-A.jpg"
 
 while not jpg_name in jpgs:
-    jpgs = subprocess.check_output((["ls", "/home/ryan/Documents/full_circle/stitchwatch/"]))
+    jpgs = subprocess.check_output(["ls", "/home/ryan/Documents/full_circle/stitchwatch/"])
     jpgs = jpgs.decode('utf-8')
     jpgs = jpgs.splitlines()
 
+size = 0
+while size < 200000:
+    files = subprocess.check_output(["ls", "-al", "/home/ryan/Documents/full_circle/stitchwatch/"])
+    files = files.decode('utf-8')
+    files = files.splitlines()
+    for file in files:
+        if jpg_name.lower() in file.lower():
+            file = file.split()
+            size = int(file[4])
+
 # Wait for the image to finish being stitched
-time.sleep(60)
+time.sleep(20)
 
 # Update the current video, if it exists
 if x > 0:

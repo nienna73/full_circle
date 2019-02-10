@@ -21,13 +21,21 @@ from operator import itemgetter
 # # os.killpg(p.pid, signal.SIGTERM)
 # exit()
 
-x=1
-old_number = "%06d" % (x)
-new_number = "%06d" % (x+1)
-old_path = "/home/ryan/Documents/full_circle/stitchwatch/" + old_number + "-A.pts"
-new_path = "/home/ryan/Documents/full_circle/stitchwatch/" + new_number + "-A.pts"
-command = "sed 's/%s/%s/g' %s > %s" % (old_number, new_number, old_path, new_path)
-process = subprocess.call([command], shell=True)
+# x=1
+# old_number = "%06d" % (x)
+# new_number = "%06d" % (x+1)
+# old_path = "/home/ryan/Documents/full_circle/stitchwatch/" + old_number + "-A.pts"
+# new_path = "/home/ryan/Documents/full_circle/stitchwatch/" + new_number + "-A.pts"
+# command = "sed 's/%s/%s/g' %s > %s" % (old_number, new_number, old_path, new_path)
+# process = subprocess.call([command], shell=True)
+
+files = subprocess.check_output(["ls", "-al", "/home/ryan/Documents/full_circle/20190210_14h10m27s/"])
+files = files.decode('utf-8')
+files = files.splitlines()
+for file in files:
+    if ".jpg" in file.lower():
+        file = file.split()
+        print(file[4])
 
 
 # # new_files = os.listdir(path)

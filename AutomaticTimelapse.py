@@ -524,7 +524,6 @@ def main():
                                                 # take the same picture more than once
 
                 if stitching.lower() == 'y':
-                    print("\nStitching\n")
                     # Call the stitching function
                     subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wait_for_stitch.py", str(x), str(dir_name), str(log_file), str(dir_name), str(number_of_cameras)])
 
