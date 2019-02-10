@@ -413,18 +413,18 @@ def main():
         iso = results['iso']
         shutter = results['shutter']
 
-        # If we're recording with audio,
-        # check to see if the audio record program is running,
-        # restart it if it isn't
-
-        # Get a list of all processes that are currently running
-        # and decode them so they can be easily processed
-        processes = subprocess.check_output(["ps", "-ef"])
-        processes_list = processes.split()
-        for i in range(0, len(processes_list)):
-            processes_list[i] = processes_list[i].decode('utf-8')
-
         if with_audio.lower() == 'y':
+            # If we're recording with audio,
+            # check to see if the audio record program is running,
+            # restart it if it isn't
+
+            # Get a list of all processes that are currently running
+            # and decode them so they can be easily processed
+            processes = subprocess.check_output(["ps", "-ef"])
+            processes_list = processes.split()
+            for i in range(0, len(processes_list)):
+                processes_list[i] = processes_list[i].decode('utf-8')
+
             if not '/home/ryan/Documents/full_circle/capture_audio.py' in processes_list:
                 subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture_audio.py", str(dir_name)])
                 print('Relaunching Audio')
@@ -462,8 +462,9 @@ def main():
             log_file.close()
 
             try:
+                float_shutter = float(shutter)
 
-                if float(shutter) < 1.0:
+                if float_shutter <= 1.0:
                     # Use standard capture if the shutter speed is fast enough
                     for port in camera_ports:
                         print(port)
@@ -478,10 +479,12 @@ def main():
                         process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i), str(shutter)])
                         i = i + 1
                     process.wait()
-                    
+
                 else:
                     # Use bulb capture if the shutter speed is slow
-                    subprocess.call(["gphoto2", "--port=" + port, "--set-config", "shutterspeed=bulb", "--set-config-value", "iso=" + str(iso)])
+                    for port in camera_ports:
+                        print(port)
+                        subprocess.call(["gphoto2", "--port=" + port, "--set-config", "shutterspeed=bulb", "--set-config-value", "iso=" + str(iso)])
 
                     i = 0
                     process = ""
@@ -504,6 +507,8 @@ def main():
                         process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/bulb_capture_off.py", str(x), str(j)])
                         j = j + 1
 
+                    time.sleep(10)
+
 
                 # Trigger the relay for simultaneous image capture
                 # relay.setDutyCycle(1.0)
@@ -514,10 +519,9 @@ def main():
                                                 # take the same picture more than once
 
                 if stitching.lower() == 'y':
+                    print("\nStitching\n")
                     # Call the stitching function
-                    subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wait_for_stitch.py", str(x), str(dir_name), str(log_file), str(dir_name)])
-
-
+                    subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wait_for_stitch.py", str(x), str(dir_name), str(log_file), str(dir_name), str(number_of_cameras)])
 
                 x += 1
                 # os.chdir("../")                 # Change back a directory to prevent

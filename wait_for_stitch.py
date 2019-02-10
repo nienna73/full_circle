@@ -9,6 +9,7 @@ x = int(sys.argv[1])
 dir_name = sys.argv[2]
 filename = sys.argv[3]
 dir_name = sys.argv[4]
+number_of_cameras = int(sys.argv[5])
 
 filename = "/home/ryan/Documents/full_circle/" + dir_name + "/" + filename
 
@@ -53,7 +54,7 @@ except AttributeError as e:
 
 
 # Look for the new stitched image before creating the video
-jpgs = subprocess.check_output((["ls", "/home/ryan/Documents/full_circle/stitchwatch/"]))
+jpgs = subprocess.check_output(["ls", "/home/ryan/Documents/full_circle/stitchwatch/"])
 jpgs = jpgs.decode('utf-8')
 jpgs = jpgs.splitlines()
 
