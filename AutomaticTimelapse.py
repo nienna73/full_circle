@@ -462,7 +462,12 @@ def main():
             log_file.close()
 
             try:
-                float_shutter = float(shutter)
+                float_shutter = 0
+                if '/' in shutter:
+                    float_shutter = shutter.split('/')
+                    float_shutter = int(float_shutter[0]) / int(float_shutter[1])
+                else:
+                    float_shutter = float(shutter)
 
                 if float_shutter <= 1.0:
                     # Use standard capture if the shutter speed is fast enough
