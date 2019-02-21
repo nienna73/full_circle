@@ -45,4 +45,4 @@ camera_ports.sort(reverse = True)
 # filename 'filename', then delete it from the camera
 
 
-subprocess.call(["gphoto2", "--port=" + camera_ports[int(sys.argv[2])], "--set-config", "bulb=1"])
+subprocess.call(["gphoto2", "--port=" + camera_ports[int(sys.argv[1])], "--set-config", "bulb=1"])

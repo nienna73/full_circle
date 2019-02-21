@@ -25,6 +25,8 @@ from Phidget22.Phidget import *
 
 #custom imports
 from file_monitor import check_shutter_and_iso
+from video_stitch import video_stitch, first_stitch
+
 # This is a local file path,
 # if file_monitor is ever in a different directory
 # than this file, it will need a full file path
@@ -32,13 +34,13 @@ from file_monitor import check_shutter_and_iso
 def main():
 
     # Battery monitor voltage input to notify when batteries are dying
-    try:
-        battery_monitor = VoltageInput()
-        textLCD = LCD()
-    except RuntimeError as e:
-        print("Runtime Exception: %s" % e.details)
-        print("Exiting....")
-        exit(1)
+    # try:
+    #     battery_monitor = VoltageInput()
+    #     textLCD = LCD()
+    # except RuntimeError as e:
+    #     print("Runtime Exception: %s" % e.details)
+    #     print("Exiting....")
+    #     exit(1)
 
 #####################################################################################################################################
 
@@ -46,94 +48,94 @@ def main():
 
     # Standard interface kit error handler
     # Shared by all the interface kits
-    def interfaceKitError(e):
-        try:
-            source = e.device
-            print("InterfaceKit %i: Phidget Error %i: %s" % (source.getSerialNum(), e.eCode, e.description))
-        except PhidgetException as e:
-            print("Phidget Exception %i: %s" % (e.code, e.details))
+    # def interfaceKitError(e):
+    #     try:
+    #         source = e.device
+    #         print("InterfaceKit %i: Phidget Error %i: %s" % (source.getSerialNum(), e.eCode, e.description))
+    #     except PhidgetException as e:
+    #         print("Phidget Exception %i: %s" % (e.code, e.details))
 
 #####################################################################################################################################
 
 ### Start battery monitor functions
     # Standard phidget attach handler for interval_rotator
-    def BatteryMonitorAttached(e):
-        try:
-            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
-            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
-
-            print("\nAttach Event:")
-
-            """
-            * Get device information and display it.
-            """
-            serialNumber = battery_monitor.getDeviceSerialNumber()
-            channelClass = battery_monitor.getChannelClassName()
-            channel = battery_monitor.getChannel()
-
-            deviceClass = battery_monitor.getDeviceClass()
-            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
-                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
-                      "\n\t-> Channel " + str(channel) + "\n")
-            else:
-                hubPort = battery_monitor.getHubPort()
-                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
-                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
-
-        except PhidgetException as e:
-            print("\nError in Attach Event:")
-            #DisplayError(e)
-            traceback.print_exc()
-            return
+    # def BatteryMonitorAttached(e):
+    #     try:
+    #         #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+    #         #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+    #
+    #         print("\nAttach Event:")
+    #
+    #         """
+    #         * Get device information and display it.
+    #         """
+    #         serialNumber = battery_monitor.getDeviceSerialNumber()
+    #         channelClass = battery_monitor.getChannelClassName()
+    #         channel = battery_monitor.getChannel()
+    #
+    #         deviceClass = battery_monitor.getDeviceClass()
+    #         if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+    #             print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+    #                   "\n\t-> Channel " + str(channel) + "\n")
+    #         else:
+    #             hubPort = battery_monitor.getHubPort()
+    #             print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+    #                   "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+    #
+    #     except PhidgetException as e:
+    #         print("\nError in Attach Event:")
+    #         #DisplayError(e)
+    #         traceback.print_exc()
+    #         return
 
     # Standard phidget detach handler for interval rotator
-    def BatteryMonitorDetached(e):
-
-        try:
-            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
-            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
-
-            print("\nDetach Event:")
-
-            """
-            * Get device information and display it.
-            """
-            serialNumber = battery_monitor.getDeviceSerialNumber()
-            channelClass = battery_monitor.getChannelClassName()
-            channel = battery_monitor.getChannel()
-
-            deviceClass = battery_monitor.getDeviceClass()
-            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
-                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
-                      "\n\t-> Channel " + str(channel) + "\n")
-            else:
-                hubPort = battery_monitor.getHubPort()
-                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
-                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
-
-        except PhidgetException as e:
-            print("\nError in Detach Event:")
-            #DisplayError(e)
-            traceback.print_exc()
-            return
+    # def BatteryMonitorDetached(e):
+    #
+    #     try:
+    #         #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+    #         #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+    #
+    #         print("\nDetach Event:")
+    #
+    #         """
+    #         * Get device information and display it.
+    #         """
+    #         serialNumber = battery_monitor.getDeviceSerialNumber()
+    #         channelClass = battery_monitor.getChannelClassName()
+    #         channel = battery_monitor.getChannel()
+    #
+    #         deviceClass = battery_monitor.getDeviceClass()
+    #         if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+    #             print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+    #                   "\n\t-> Channel " + str(channel) + "\n")
+    #         else:
+    #             hubPort = battery_monitor.getHubPort()
+    #             print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+    #                   "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+    #
+    #     except PhidgetException as e:
+    #         print("\nError in Detach Event:")
+    #         #DisplayError(e)
+    #         traceback.print_exc()
+    #         return
 
     # Voltage change handler for interval_unit_toggle
-    def BatteryMonitorVoltageChange(interfaceKit, voltage):
-        # This is the handler for the interval variable
-        output = (voltage - 2.5) / 0.06810
+    # def BatteryMonitorVoltageChange(interfaceKit, voltage):
+    #     # This is the handler for the interval variable
+    #     output = (voltage - 2.5) / 0.06810
         # print(output)
 
     # Attach all the handlers to the proper phidgets,
     # catch and return any errors
-    try:
-        battery_monitor.setOnAttachHandler(BatteryMonitorAttached)
-        battery_monitor.setOnDetachHandler(BatteryMonitorDetached)
-        battery_monitor.setOnErrorHandler(interfaceKitError)
-        battery_monitor.setOnVoltageChangeHandler(BatteryMonitorVoltageChange)
-    except PhidgetException as e:
-        print("Phidget Exception %i: %s" % (e.code, e.details))
-        print("Exiting....")
-        exit(1)
+    # try:
+    #     battery_monitor.setOnAttachHandler(BatteryMonitorAttached)
+    #     battery_monitor.setOnDetachHandler(BatteryMonitorDetached)
+    #     battery_monitor.setOnErrorHandler(interfaceKitError)
+    #     battery_monitor.setOnVoltageChangeHandler(BatteryMonitorVoltageChange)
+    # except PhidgetException as e:
+    #     print("Phidget Exception %i: %s" % (e.code, e.details))
+    #     print("Exiting....")
+    #     exit(1)
 
 ### End battery monitor functions
 
@@ -142,54 +144,54 @@ def main():
 ### Start LCD functions
 
     # Standard attach handler for the LCD
-    def LCDAttached(self):
-        try:
-            attached = self
-            print("\nAttach Event Detected (Information Below)")
-            print("===========================================")
-            print("Library Version: %s" % attached.getLibraryVersion())
-            print("Serial Number: %d" % attached.getDeviceSerialNumber())
-            print("Channel: %d" % attached.getChannel())
-            print("Channel Class: %s" % attached.getChannelClass())
-            print("Channel Name: %s" % attached.getChannelName())
-            print("Device ID: %d" % attached.getDeviceID())
-            print("Device Version: %d" % attached.getDeviceVersion())
-            print("Device Name: %s" % attached.getDeviceName())
-            print("Device Class: %d" % attached.getDeviceClass())
-            print("\n")
-
-        except PhidgetException as e:
-            print("Phidget Exception %i: %s" % (e.code, e.details))
-            print("Press Enter to Exit...\n")
-            readin = sys.stdin.read(1)
-            exit(1)
+    # def LCDAttached(self):
+    #     try:
+    #         attached = self
+    #         print("\nAttach Event Detected (Information Below)")
+    #         print("===========================================")
+    #         print("Library Version: %s" % attached.getLibraryVersion())
+    #         print("Serial Number: %d" % attached.getDeviceSerialNumber())
+    #         print("Channel: %d" % attached.getChannel())
+    #         print("Channel Class: %s" % attached.getChannelClass())
+    #         print("Channel Name: %s" % attached.getChannelName())
+    #         print("Device ID: %d" % attached.getDeviceID())
+    #         print("Device Version: %d" % attached.getDeviceVersion())
+    #         print("Device Name: %s" % attached.getDeviceName())
+    #         print("Device Class: %d" % attached.getDeviceClass())
+    #         print("\n")
+    #
+    #     except PhidgetException as e:
+    #         print("Phidget Exception %i: %s" % (e.code, e.details))
+    #         print("Press Enter to Exit...\n")
+    #         readin = sys.stdin.read(1)
+    #         exit(1)
 
     # Standard detach handler for the LCD
-    def LCDDetached(self):
-        detached = self
-        try:
-            print("\nDetach event on Port %d Channel %d" % (detached.getHubPort(), detached.getChannel()))
-        except PhidgetException as e:
-            print("Phidget Exception %i: %s" % (e.code, e.details))
-            print("Press Enter to Exit...\n")
-            readin = sys.stdin.read(1)
-            exit(1)
-
-    # Standard error handler for the LCD
-    def ErrorEvent(self, eCode, description):
-        print("Error %i : %s" % (eCode, description))
-
-    # Attach the handlers to the LCD, catch and return any errors
-    try:
-        textLCD.setOnAttachHandler(LCDAttached)
-        textLCD.setOnDetachHandler(LCDDetached)
-        textLCD.setOnErrorHandler(ErrorEvent)
-        print("Waiting for the Phidget LCD Object to be attached...")
-        textLCD.openWaitForAttachment(5000)
-    except PhidgetException as e:
-        print("Phidget Exception %i: %s" % (e.code, e.details))
-        print("Exiting....")
-        exit(1)
+    # def LCDDetached(self):
+    #     detached = self
+    #     try:
+    #         print("\nDetach event on Port %d Channel %d" % (detached.getHubPort(), detached.getChannel()))
+    #     except PhidgetException as e:
+    #         print("Phidget Exception %i: %s" % (e.code, e.details))
+    #         print("Press Enter to Exit...\n")
+    #         readin = sys.stdin.read(1)
+    #         exit(1)
+    #
+    # # Standard error handler for the LCD
+    # def ErrorEvent(self, eCode, description):
+    #     print("Error %i : %s" % (eCode, description))
+    #
+    # # Attach the handlers to the LCD, catch and return any errors
+    # try:
+    #     textLCD.setOnAttachHandler(LCDAttached)
+    #     textLCD.setOnDetachHandler(LCDDetached)
+    #     textLCD.setOnErrorHandler(ErrorEvent)
+    #     print("Waiting for the Phidget LCD Object to be attached...")
+    #     textLCD.openWaitForAttachment(5000)
+    # except PhidgetException as e:
+    #     print("Phidget Exception %i: %s" % (e.code, e.details))
+    #     print("Exiting....")
+    #     exit(1)
 
 ### End LCD functions
 
@@ -318,17 +320,17 @@ def main():
 ### End relay functions
 ### General Phidget Functions
 
-    try:
-        battery_monitor.setDeviceSerialNumber(120683)
-        battery_monitor.setChannel(7)
-        battery_monitor.open()
-        print('Wait for rotator 0 attach...')
-        battery_monitor.openWaitForAttachment(5000)
-        time.sleep(1)
-    except PhidgetException as e:
-        print("Phidget Exception %i: %s" % (e.code, e.details))
-        print("Exiting....")
-        exit(1)
+    # try:
+    #     battery_monitor.setDeviceSerialNumber(120683)
+    #     battery_monitor.setChannel(7)
+    #     battery_monitor.open()
+    #     print('Wait for rotator 0 attach...')
+    #     battery_monitor.openWaitForAttachment(5000)
+    #     time.sleep(1)
+    # except PhidgetException as e:
+    #     print("Phidget Exception %i: %s" % (e.code, e.details))
+    #     print("Exiting....")
+    #     exit(1)
 
 
 ### Start monitor and timelapse functions
@@ -337,7 +339,10 @@ def main():
     ppoff = input("Is picutre profile off? ")
     raw_mode = input("Shooting in raw? ")
     pc_remote = input("Are the cameras in PC remote? ")
-    bulb_on = input("Are the cameras in BULB mode? ")
+    # bulb_on = input("Are the cameras in BULB mode? ")
+    with_audio = input("Are you recording with audio? (y/n): ")
+    # add question for stitching as you go
+    stitching = input("Do you want to stitch as you go? (y/n): ")
 
 
     # Define variables for use in the loop
@@ -352,15 +357,33 @@ def main():
     try:
         os.chdir(str(dir_name))
     except:
+        # Create a new folder to store the stitched preview
+        if stitching.lower() == 'y':
+            preview_dir = subprocess.Popen(["mkdir", str(dir_name) + "_preview"])
+            preview_dir.wait()
+
+
         make_dir = subprocess.Popen(["mkdir", str(dir_name)])
         make_dir.wait()
         os.chdir(str(dir_name))
+
         # Create a log file the first time the directory is opened,
         # write to it, then close it
         filename = str(dir_name) + "_log.txt"
         error_file = open(filename, "w+")
         error_file.write("Start of Error logs from " + str(dir_name))
         error_file.close()
+
+        # Change the location of the mp4's to the correct filepath
+        input_files = open("/home/ryan/Documents/full_circle/stitchwatch/input_files.txt", "w+")
+        input_files.truncate(0)
+        input_files.write("file '/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/full-stitched-video.mp4'\n")
+        input_files.write("file '/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/newest-video-frame.mp4'\n")
+        input_files.close()
+
+    # Start recording audio if specified
+    if with_audio.lower() == 'y':
+        subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture_audio.py", str(dir_name)])
 
     # Use this for sorting image files and to not skip images that are added
     # to the watchfile while the cameras are capturing
@@ -390,14 +413,28 @@ def main():
         iso = results['iso']
         shutter = results['shutter']
 
+        if with_audio.lower() == 'y':
+            # If we're recording with audio,
+            # check to see if the audio record program is running,
+            # restart it if it isn't
+
+            # Get a list of all processes that are currently running
+            # and decode them so they can be easily processed
+            processes = subprocess.check_output(["ps", "-ef"])
+            processes_list = processes.split()
+            for i in range(0, len(processes_list)):
+                processes_list[i] = processes_list[i].decode('utf-8')
+
+            if not '/home/ryan/Documents/full_circle/capture_audio.py' in processes_list:
+                subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture_audio.py", str(dir_name)])
+                print('Relaunching Audio')
+
 
         # Default is 0, !0 means new iso and shutter speed values
         # were found in the new file
         if iso != 0 and shutter != 0:
-            print(iso)
-            print(shutter)
-
-
+            print("Iso: " + iso)
+            print("Shutter speed: " + shutter)
 
             camera_ports = []       # stores relevant ports
 
@@ -425,35 +462,57 @@ def main():
             log_file.close()
 
             try:
+                float_shutter = 0
+                if '/' in shutter:
+                    float_shutter = shutter.split('/')
+                    float_shutter = int(float_shutter[0]) / int(float_shutter[1])
+                else:
+                    float_shutter = float(shutter)
 
-                for port in camera_ports:
-                    print(port)
-                    subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter), "--set-config-value", "iso=" + str(iso)])
-                    # subprocess.call(["gphoto2", "--port=" + port, "--set-config", "shutterspeed=bulb", "--set-config-value", "iso=" + str(iso), "--debug", "--debug-logfile", "/home/ryan/Documents/full_circle/" + str(dir_name) + "/" + filename])
-                    # subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter)])
+                if float_shutter <= 1.0:
+                    # Use standard capture if the shutter speed is fast enough
+                    for port in camera_ports:
+                        print(port)
+                        subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter), "--set-config-value", "iso=" + str(iso)])
 
-                # Open an instance of capture.py for each camera, where:
-                # x is the number-th photo taken (used for the filename)
-                # i is the index of the camera port in a sorted list of ports
-                i = 0
-                process = ""
-                while i < number_of_cameras:
-                    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i), str(shutter)])
-                    i = i + 1
+                    # Open an instance of capture.py for each camera, where:
+                    # x is the number-th photo taken (used for the filename)
+                    # i is the index of the camera port in a sorted list of ports
+                    i = 0
+                    process = ''
+                    while i < number_of_cameras:
+                        process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i), str(shutter)])
+                        i = i + 1
+                    process.wait()
 
-                #wait_time = 0
-                #if '/' in shutter:
-                #    split_shutter = shutter.split('/')
-                #    wait_time = int(split_shutter[0]) / int(split_shutter[1])
-                #else:
-                #    wait_time = float(shutter)
+                else:
+                    # Use bulb capture if the shutter speed is slow
+                    for port in camera_ports:
+                        print(port)
+                        subprocess.call(["gphoto2", "--port=" + port, "--set-config", "shutterspeed=bulb", "--set-config-value", "iso=" + str(iso)])
 
-                #time.sleep(wait_time)
+                    i = 0
+                    process = ""
+                    while i < number_of_cameras:
+                        process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/bulb_capture_on.py", str(i)])
+                        i = i + 1
+                        process.wait()
 
-                #j = 0
-                #while j < number_of_cameras:
-                #    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/bulb_capture_off.py", str(x), str(j), str(shutter)])
-                #    j = j + 1
+                    wait_time = 0
+                    if '/' in shutter:
+                        split_shutter = shutter.split('/')
+                        wait_time = int(split_shutter[0]) / int(split_shutter[1])
+                    else:
+                        wait_time = float(shutter)
+
+                    time.sleep(wait_time)
+
+                    j = 0
+                    while j < number_of_cameras:
+                        process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/bulb_capture_off.py", str(x), str(j)])
+                        j = j + 1
+
+                    time.sleep(10)
 
 
                 # Trigger the relay for simultaneous image capture
@@ -463,6 +522,10 @@ def main():
                 filenames = results['files']    # Update our records with the filename
                                                 # of the picture we just used so we don't
                                                 # take the same picture more than once
+
+                if stitching.lower() == 'y':
+                    # Call the stitching function
+                    subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wait_for_stitch.py", str(x), str(dir_name), str(log_file), str(dir_name), str(number_of_cameras)])
 
                 x += 1
                 # os.chdir("../")                 # Change back a directory to prevent

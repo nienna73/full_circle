@@ -1,6 +1,8 @@
 #Ignore folders of images
 2019*/
 *.wav
-stitchwatch/
+stitchwatch*/
 input_files.txt
 2019*.txt
+*.pts
+template.txt
