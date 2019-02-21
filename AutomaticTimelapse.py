@@ -525,7 +525,8 @@ def main():
 
                 if stitching.lower() == 'y':
                     # Call the stitching function
-                    subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wait_for_stitch.py", str(x), str(dir_name), str(log_file), str(dir_name), str(number_of_cameras)])
+                    # subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wait_for_stitch.py", str(x), str(dir_name), str(log_file), str(dir_name), str(number_of_cameras)])
+                    subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wine_stitch.py", str(x), str(dir_name), str(log_file)])
 
                 x += 1
                 # os.chdir("../")                 # Change back a directory to prevent

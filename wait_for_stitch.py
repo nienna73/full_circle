@@ -89,7 +89,7 @@ while size < 200000:
             size = int(file[4])
 
 # Wait for the image to finish being stitched
-time.sleep(20)
+time.sleep(25)
 
 # Update the current video, if it exists
 if x > 0:
