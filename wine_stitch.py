@@ -9,10 +9,12 @@ dir_name = sys.argv[2]      # location where all .arw files are stored
 
 filename = sys.argv[3]
 
+
+full_dir_name = "/home/ryan/Documents/full_circle/" + dir_name + "/"
+
 # Try editing and renaming the .pts file
 try:
     if x > 0:
-        full_dir_name = "/home/ryan/Documents/full_circle/" + dir_name + "/"
 
         # Look for the new stitched image before creating the video
         txt_file_check = subprocess.check_output(["ls", full_dir_name])
@@ -46,7 +48,7 @@ except AttributeError as e:
     print(e)
 
 stitch_file = "%06d" % (x+1) + "-A.pts"
-process = subprocess.Popen(["wine", "'/home/ryan/Desktop/PTGui.exe'", "-batch", "-x", stitch_file])
+process = subprocess.Popen(["wine", "/home/ryan/Desktop/PTGui.exe", "-batch", "-x", stitch_file])
 process.wait()
 
 # Update the current video, if it exists
