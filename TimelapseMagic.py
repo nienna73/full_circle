@@ -253,6 +253,8 @@ def main():
         interval_unit_toggle.close()
         total_time_unit_toggle.setOnStateChangeHandler(None)
         total_time_unit_toggle.close()
+        LCD_on_off_toggle.setOnStateChangeHandler(None)
+        LCD_on_off_toggle.close()
         textLCD.close()
         relay.close()
         #gps.close()
@@ -276,6 +278,7 @@ def main():
         mode_toggle = DigitalInput()
         interval_unit_toggle = DigitalInput()
         total_time_unit_toggle = DigitalInput()
+        LCD_on_off_toggle = DigitalInput()
         relay = DigitalOutput()
     except RuntimeError as e:
         print("Runtime Exception: %s" % e.details)
@@ -1737,6 +1740,106 @@ def main():
 
 #####################################################################################################################################
 
+### Start total time until toggle functions
+
+    # total_time_unit_toggle attach handler
+    def LCDOnOffToggleAttachHandler(e):
+
+        ph = LCD_on_off_toggle
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nAttach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = ph.getDeviceSerialNumber()
+            channelClass = ph.getChannelClassName()
+            channel = ph.getChannel()
+
+            deviceClass = ph.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = ph.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Attach Event:")
+            #DisplayError(e)
+            traceback.print_exc()
+            return
+
+    # LCD_on_off_toggle detach handler
+    def LCDOnOffToggleDetachHandler(e):
+
+        ph = LCD_on_off_toggle
+
+        try:
+            #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+            #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+            print("\nDetach Event:")
+
+            """
+            * Get device information and display it.
+            """
+            serialNumber = ph.getDeviceSerialNumber()
+            channelClass = ph.getChannelClassName()
+            channel = ph.getChannel()
+
+            deviceClass = ph.getDeviceClass()
+            if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+            else:
+                hubPort = ph.getHubPort()
+                print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+        except PhidgetException as e:
+            print("\nError in Detach Event:")
+            #DisplayError(e)
+            traceback.print_exc()
+            return
+
+    # LCD_on_off_toggle state handler
+    def LCDOnOffToggleStateChangeHandler(self, state):
+
+        if state == 0:
+            textLCD.setBacklight(0)
+        elif state == 1:
+            textLCD.setBacklight(1)
+        # textLCD.writeText(LCDFont.FONT_5x8, 19, 1, text)
+        # textLCD.flush()
+
+    try:
+        LCD_on_off_toggle.setOnAttachHandler(LCDOnOffToggleAttachHandler)
+        LCD_on_off_toggle.setOnDetachHandler(LCDOnOffToggleDetachHandler)
+        LCD_on_off_toggle.setOnErrorHandler(toggleErrorHandler)
+        LCD_on_off_toggle.setOnStateChangeHandler(LCDOnOffToggleStateChangeHandler)
+    except PhidgetException as e:
+        print("Phidget Exception %i: %s" % (e.code, e.details))
+        print("Exiting....")
+        exit(1)
+
+    try:
+        LCD_on_off_toggle.setDeviceSerialNumber(120683)
+        LCD_on_off_toggle.setChannel(5)
+        LCD_on_off_toggle.open()
+        print('Wait for LCD on/off button, port 5 attach...')
+        LCD_on_off_toggle.openWaitForAttachment(5000)
+    except PhidgetException as e:
+        PrintOpenErrorMessage(e, ch)
+        raise EndProgramSignal("Program Terminated: Total Time Unit Open Failed")
+
+### End total time unit toggle functions
+
+#####################################################################################################################################
 
     # User-define function to capture stills
     def runCapture():
@@ -1908,7 +2011,7 @@ def main():
         # Open record2.py, which does the rest of the recording from there
         subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/record2.py", str(video_length), str(number_of_videos), str(interval)])
 
-    # User-defined function to end all processes with the click of a button
+    # User-defined function to end all proces        text = str(state)ses with the click of a button
     def killAll():
         print('Kill all processes')
 
