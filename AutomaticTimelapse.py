@@ -26,6 +26,7 @@ from Phidget22.Phidget import *
 #custom imports
 from file_monitor import check_shutter_and_iso
 from video_stitch import video_stitch, first_stitch
+from copy_to_drive import copy_to_drive
 
 # This is a local file path,
 # if file_monitor is ever in a different directory
@@ -343,6 +344,9 @@ def main():
     with_audio = input("Are you recording with audio? (y/n): ")
     # add question for stitching as you go
     stitching = input("Do you want to stitch as you go? (y/n): ")
+    move_to_drive = input("Do you want to move the raws to an external drive? (y/n): ")
+    if move_to_drive.lower() == 'y':
+        drive_connected = input("Is the 4TB drive connected? ")
 
 
     # Define variables for use in the loop
@@ -362,6 +366,12 @@ def main():
             preview_dir = subprocess.Popen(["mkdir", str(dir_name) + "_preview"])
             preview_dir.wait()
 
+        if move_to_drive.lower() == 'y':
+            full_dir_name = "/media/ryan/4TB-WD-012/" + str(dir_name)
+            drive_dir = subprocess.Popen(["mkdir", full_dir_name])
+            drive_dir.wait()
+
+
 
         make_dir = subprocess.Popen(["mkdir", str(dir_name)])
         make_dir.wait()
@@ -375,7 +385,7 @@ def main():
         error_file.close()
 
         # Change the location of the mp4's to the correct filepath
-        input_files = open("/home/ryan/Documents/full_circle/stitchwatch/input_files.txt", "w+")
+        input_files = open("/home/ryan/watchfile/input_files.txt", "w+")
         input_files.truncate(0)
         input_files.write("file '/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/full-stitched-video.mp4'\n")
         input_files.write("file '/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/newest-video-frame.mp4'\n")
@@ -526,7 +536,8 @@ def main():
                 if stitching.lower() == 'y':
                     # Call the stitching function
                     # subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wait_for_stitch.py", str(x), str(dir_name), str(log_file), str(dir_name), str(number_of_cameras)])
-                    subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wine_stitch.py", str(x), str(dir_name), str(log_file)])
+                    wine_process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wine_stitch.py", str(x), str(dir_name), str(log_file)])
+                    wine_process.wait()
 
                 x += 1
                 # os.chdir("../")                 # Change back a directory to prevent
@@ -538,6 +549,8 @@ def main():
                 else:
                     delay = float(shutter)
                 time.sleep(delay)
+                if move_to_drive.lower() == 'y':
+                    copy_to_drive(dir_name, (x-1), len(camera_ports))
             except:
                 e = sys.exc_info()[0]
                 print("\n error \n")
