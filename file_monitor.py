@@ -72,6 +72,7 @@ def check_shutter_and_iso(old_files, path, log_file):
 
                 except:
                     # Return the ISO and shutter speed in dictionary format for easy access
+                    print("except")
                     return {'iso':0, 'shutter':0, 'files':old_files}
 
     return {'iso':iso, 'shutter':shutter_speed, 'files':old_files}

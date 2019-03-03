@@ -337,7 +337,7 @@ def main():
 ### Start monitor and timelapse functions
 
     # Force the user to confirm the settings
-    ppoff = input("Is picutre profile off? ")
+    ppoff = input("Is picture profile off? ")
     raw_mode = input("Shooting in raw? ")
     pc_remote = input("Are the cameras in PC remote? ")
     # bulb_on = input("Are the cameras in BULB mode? ")
@@ -367,6 +367,8 @@ def main():
             preview_dir.wait()
 
         if move_to_drive.lower() == 'y':
+            # The numbers in the drive name might change every time it's connected
+            # look into this to prevent future issues
             full_dir_name = "/media/ryan/4TB-WD-012/" + str(dir_name)
             drive_dir = subprocess.Popen(["mkdir", full_dir_name])
             drive_dir.wait()
@@ -449,16 +451,20 @@ def main():
             camera_ports = []       # stores relevant ports
 
             # Locate all cameras and split results into readable strings
+            # Remove the Canon camera
             ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
-            ports_strings_split = ports_strings.split()
+            ports_strings_split = ports_strings.splitlines()
 
+            for string in ports_strings_split:
+                string_decode = string.decode('utf-8')
+                if 'sony' not in string_decode.lower():
+                    ports_strings_split.remove(string)
 
-            # Locate all ports of format usb:xxx,xxx
-            # as they're needed for gphoto2
-            for item in ports_strings_split:
-                item = item.decode('utf-8')
-                if item[0] == 'u':
-                    camera_ports.append(item)
+            for string in ports_strings_split:
+                string = string.decode('utf-8').split()
+                for item in string:
+                    if item[0].lower() == 'u':
+                        camera_ports.append(item)
 
             # Set the ISO and shutter speed of each camera
             number_of_cameras = len(camera_ports)

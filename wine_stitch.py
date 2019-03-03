@@ -29,7 +29,7 @@ try:
         process = subprocess.call([command], shell=True)
     else:
         new_location = full_dir_name + "000001-A.pts"
-        subprocess.call(["cp", "-f", "/home/ryan/Documents/full_circle/template.txt", new_location])
+        subprocess.call(["cp", "-f", "/home/ryan/Documents/full_circle/template.pts", new_location])
 except NameError as e:
     # Print error to the screen and to the log file
     print("Error in renaming .pts file")
@@ -43,8 +43,8 @@ except AttributeError as e:
 # Run wine and wait for it to finish
 stitch_file = "%06d" % (x+1) + "-A.pts"
 process = subprocess.Popen(["wine", "/home/ryan/Desktop/PTGui.exe", "-batch", "-x", stitch_file])
-# process.wait()
-time.sleep(40)
+process.wait()
+time.sleep(30)
 
 # Update the current video, if it exists
 if x > 0:
