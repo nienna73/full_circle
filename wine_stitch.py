@@ -40,21 +40,29 @@ except NameError as e:
 except AttributeError as e:
     print(e)
 
+subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wine_ptgui.py", str(x), str(dir_name), str(filename)])
+
 # Run wine and wait for it to finish
-stitch_file = "%06d" % (x+1) + "-A.pts"
-process = subprocess.Popen(["wine", "/home/ryan/Desktop/PTGui.exe", "-batch", "-x", stitch_file])
-process.wait()
-time.sleep(30)
-
-# Update the current video, if it exists
-if x > 0:
-    video_stitch(x, "/home/ryan/Documents/full_circle/" + str(dir_name) + "/", "/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/", filename)
-elif x == 0:
-    first_stitch("/home/ryan/Documents/full_circle/" + str(dir_name) + "/", "/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/", filename)
-
-# Log the success
-jpg_name = "%06d" % (x+1) + "-A.jpg"
-log_file = open(filename, "a+")
-message = "Stitched " + jpg_name + "\n\n"
-log_file.write(message)
-log_file.close()
+# did_stitch = False
+# while not did_stitch:
+#     try:
+#         stitch_file = "%06d" % (x+1) + "-A.pts"
+#         process = subprocess.Popen(["wine", "/home/ryan/Desktop/PTGui.exe", "-batch", "-x", stitch_file])
+#         did_complete = process.wait(45)
+#         did_stitch = True
+#     except:
+#         did_stitch = False
+# time.sleep(30)
+#
+# # Update the current video, if it exists
+# if x > 0:
+#     video_stitch(x, "/home/ryan/Documents/full_circle/" + str(dir_name) + "/", "/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/", filename)
+# elif x == 0:
+#     first_stitch("/home/ryan/Documents/full_circle/" + str(dir_name) + "/", "/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/", filename)
+#
+# # Log the success
+# jpg_name = "%06d" % (x+1) + "-A.jpg"
+# log_file = open(filename, "a+")
+# message = "Stitched " + jpg_name + "\n\n"
+# log_file.write(message)
+# log_file.close()
