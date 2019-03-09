@@ -29,13 +29,34 @@ from operator import itemgetter
 # command = "sed 's/%s/%s/g' %s > %s" % (old_number, new_number, old_path, new_path)
 # process = subprocess.call([command], shell=True)
 
-files = subprocess.check_output(["ls", "-al", "/home/ryan/Documents/full_circle/20190210_14h10m27s/"])
-files = files.decode('utf-8')
-files = files.splitlines()
-for file in files:
-    if ".jpg" in file.lower():
-        file = file.split()
-        print(file[4])
+# files = subprocess.check_output(["ls", "-al", "/home/ryan/Documents/full_circle/20190210_14h10m27s/"])
+# files = files.decode('utf-8')
+# files = files.splitlines()
+# for file in files:
+#     if ".jpg" in file.lower():
+#         file = file.split()
+#         print(file[4])
+
+camera_ports = []       # stores relevant ports
+
+# Locate all cameras and split results into readable strings
+ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
+ports_strings_split = ports_strings.splitlines()
+
+for string in ports_strings_split:
+    string_decode = string.decode('utf-8')
+    if 'sony' not in string_decode.lower():
+        ports_strings_split.remove(string)
+
+for string in ports_strings_split:
+    string = string.decode('utf-8').split()
+    for item in string:
+        if item[0].lower() == 'u':
+            camera_ports.append(item)
+
+print(camera_ports)
+
+
 
 
 # # new_files = os.listdir(path)
