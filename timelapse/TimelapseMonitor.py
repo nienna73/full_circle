@@ -33,8 +33,8 @@ def main():
             print(process)
 
         # If TimelapseMagic isn't running, start it up
-        if not '/home/ryan/Documents/full_circle/TimelapseMagic.py' in processes_list:
-            os.system('gnome-terminal -x python3 /home/ryan/Documents/full_circle/TimelapseMagic.py')
+        if not '/home/ryan/Documents/full_circle/timelapse/TimelapseMagic.py' in processes_list:
+            os.system('gnome-terminal -x python3 /home/ryan/Documents/full_circle/timelapse/TimelapseMagic.py')
             print('Relaunching Program')
 
         # Wait 10 seconds before checking again

@@ -38,7 +38,7 @@ def main():
     while True:
         j = 0
         while j < len(camera_ports):
-            process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/max_capture.py", str(j)])
+            process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/auxiliary/max_capture.py", str(j)])
             j = j + 1
         time.sleep(i)
 

@@ -25,9 +25,9 @@ while not did_stitch:
 
 # Update the current video, if it exists
 if x > 0:
-    video_stitch(x, "/home/ryan/Documents/full_circle/" + str(dir_name) + "/", "/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/", filename)
+    video_stitch(x, "/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "/", "/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "_preview/", filename)
 elif x == 0:
-    first_stitch("/home/ryan/Documents/full_circle/" + str(dir_name) + "/", "/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/", filename)
+    first_stitch("/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "/", "/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "_preview/", filename)
 
 # Log the success
 jpg_name = "%06d" % (x+1) + "-A.jpg"

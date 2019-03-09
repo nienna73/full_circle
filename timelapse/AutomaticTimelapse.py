@@ -389,13 +389,13 @@ def main():
         # Change the location of the mp4's to the correct filepath
         input_files = open("/home/ryan/watchfile/input_files.txt", "w+")
         input_files.truncate(0)
-        input_files.write("file '/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/full-stitched-video.mp4'\n")
-        input_files.write("file '/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/newest-video-frame.mp4'\n")
+        input_files.write("file '/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "_preview/full-stitched-video.mp4'\n")
+        input_files.write("file '/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "_preview/newest-video-frame.mp4'\n")
         input_files.close()
 
     # Start recording audio if specified
     if with_audio.lower() == 'y':
-        subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture_audio.py", str(dir_name)])
+        subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/capture_audio.py", str(dir_name)])
 
     # Use this for sorting image files and to not skip images that are added
     # to the watchfile while the cameras are capturing
@@ -437,8 +437,8 @@ def main():
             for i in range(0, len(processes_list)):
                 processes_list[i] = processes_list[i].decode('utf-8')
 
-            if not '/home/ryan/Documents/full_circle/capture_audio.py' in processes_list:
-                subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture_audio.py", str(dir_name)])
+            if not '/home/ryan/Documents/full_circle/timelapse/capture_audio.py' in processes_list:
+                subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/capture_audio.py", str(dir_name)])
                 print('Relaunching Audio')
 
 
@@ -497,7 +497,7 @@ def main():
                     i = 0
                     process = ''
                     while i < number_of_cameras:
-                        process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i), str(shutter)])
+                        process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/capture.py", str(x), str(i), str(shutter)])
                         i = i + 1
                     process.wait()
 
@@ -510,7 +510,7 @@ def main():
                     i = 0
                     process = ""
                     while i < number_of_cameras:
-                        process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/bulb_capture_on.py", str(i)])
+                        process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/bulb_capture_on.py", str(i)])
                         i = i + 1
                         process.wait()
 
@@ -525,7 +525,7 @@ def main():
 
                     j = 0
                     while j < number_of_cameras:
-                        process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/bulb_capture_off.py", str(x), str(j)])
+                        process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/bulb_capture_off.py", str(x), str(j)])
                         j = j + 1
 
                     time.sleep(10)
@@ -542,7 +542,7 @@ def main():
                 if stitching.lower() == 'y':
                     # Call the stitching function
                     # subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wait_for_stitch.py", str(x), str(dir_name), str(log_file), str(dir_name), str(number_of_cameras)])
-                    wine_process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wine_stitch.py", str(x), str(dir_name), str(log_file)])
+                    wine_process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/wine_stitch.py", str(x), str(dir_name), str(log_file)])
                     wine_process.wait()
 
                 x += 1

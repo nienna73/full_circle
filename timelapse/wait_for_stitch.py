@@ -11,7 +11,7 @@ filename = sys.argv[3]
 dir_name = sys.argv[4]
 number_of_cameras = int(sys.argv[5])
 
-filename = "/home/ryan/Documents/full_circle/" + dir_name + "/" + filename
+filename = "/home/ryan/Documents/full_circle/timelapse/" + dir_name + "/" + filename
 
 # Try moving the .arw files to stitchwatch so they can
 # be stitched
@@ -93,9 +93,9 @@ time.sleep(25)
 
 # Update the current video, if it exists
 if x > 0:
-    video_stitch(x, "/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/", filename)
+    video_stitch(x, "/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "_preview/", filename)
 elif x == 0:
-    first_stitch("/home/ryan/Documents/full_circle/stitchwatch/", "/home/ryan/Documents/full_circle/" + str(dir_name) + "_preview/", filename)
+    first_stitch("/home/ryan/Documents/full_circle/stitchwatch/", "/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "_preview/", filename)
 
 # Log the success
 log_file = open(filename, "a+")

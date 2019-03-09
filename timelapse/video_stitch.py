@@ -25,11 +25,7 @@ def video_stitch(x, path_to_jpg, path_to_mp4, log_file):
         # over write the full-stitched-video with the new-full-stitched-video
         subprocess.call(["mv", "-f", path_to_mp4 + "new-full-stitched-video.mp4", path_to_mp4 + "full-stitched-video.mp4"])
         # repeat as new stitched images come in
-        # pts_filename = "/home/ryan/watchfile/" + image_number + "-A.pts"
-        # txt_filename = "/home/ryan/watchfile/" + image_number + "-A.txt"
-        #
-        # print("Pts filename: ", pts_filename, "\tTxt filename: ", txt_filename)
-        # subprocess.call(["mv", "-f", pts_filename, txt_filename])
+
         filepath = path_to_jpg + log_file
         log_file = open(filepath, "a+")
         message = "Attached new frame to video: " + image_number + "\n"
@@ -50,7 +46,6 @@ def first_stitch(path_to_jpg, path_to_mp4, log_file):
     try:
         # take first stitched  image and call it full-stitched-video
         subprocess.call(["ffmpeg", "-y", "-framerate", "24", "-i", path_to_jpg + "000001-A.jpg", "-s", "2048x1024", "-vcodec", "libx264", "-cmp", "22", path_to_mp4 + "full-stitched-video.mp4"])
-        # subprocess.call(["mv", "-f", "/home/ryan/watchfile/000001-A.pts", "/home/ryan/watchfile/000001-A.txt"])
     except AttributeError as e:
         # Print the error to the terminal and to the log file
         print("\n\nError in attaching new frame to video:")

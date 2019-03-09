@@ -10,7 +10,7 @@ dir_name = sys.argv[2]      # location where all .arw files are stored
 filename = sys.argv[3]
 
 
-full_dir_name = "/home/ryan/Documents/full_circle/" + dir_name + "/"
+full_dir_name = "/home/ryan/Documents/full_circle/timelapse/" + dir_name + "/"
 
 # Try editing and renaming the .pts file
 try:
@@ -40,4 +40,4 @@ except NameError as e:
 except AttributeError as e:
     print(e)
 
-subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wine_ptgui.py", str(x), str(dir_name), str(filename)])
+subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/wine_ptgui.py", str(x), str(dir_name), str(filename)])

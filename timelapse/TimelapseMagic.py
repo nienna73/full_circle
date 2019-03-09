@@ -1926,7 +1926,7 @@ def main():
 
                 # Open the capture program for each camera
                 while i < number_of_cameras:
-                    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/capture.py", str(x), str(i)])
+                    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/capture.py", str(x), str(i)])
                     i = i + 1
 
                 # Trigger the relay so all cameras capture at the same time
@@ -2009,7 +2009,7 @@ def main():
         textLCD.flush()
 
         # Open record2.py, which does the rest of the recording from there
-        subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/record2.py", str(video_length), str(number_of_videos), str(interval)])
+        subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/record2.py", str(video_length), str(number_of_videos), str(interval)])
 
     # User-defined function to end all proces        text = str(state)ses with the click of a button
     def killAll():

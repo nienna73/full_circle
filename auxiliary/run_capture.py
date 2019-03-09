@@ -129,7 +129,7 @@ def main():
         time.sleep(int(interval))
         while i < number_of_cameras:
             print(i)
-            process = subprocess.Popen(["python3", "capture.py", str(i), number_of_photos, interval, str(x)])
+            process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/capture.py", str(i), number_of_photos, interval, str(x)])
             processes.append(process)
             i = i + 1
         x = x + 1
