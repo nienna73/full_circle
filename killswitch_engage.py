@@ -1,5 +1,6 @@
-#!/usr/bin/env python
+#! /usr/env/python
 
+'''
 # Killswitch Engage is meant to run on a Raspberry Pi in the field with a timelapse camera
 # It uses a relay, which is wired to be always on.
 # When this program is used, it opens the relay, waits 10 seconds, then closes the relay again
@@ -7,6 +8,7 @@
 
 # This file was created by Jolene Poulin on February 22, 2019
 # for use by Full Circle Visuals Inc.
+'''
 
 
 """Copyright 2010 Phidgets Inc.
@@ -259,16 +261,18 @@ def main():
     def kill_process():
         sleep(5)
         try:
+            relay_left.setDutyCycle(1.0)
+            print("relay on")
+            sleep(10)
             relay_left.setDutyCycle(0.0)
             print("relay off")
-            #sleep(10)
-            #relay_left.setDutyCycle(0.0)
-            #print("relay off")
+            
+            relay_right.setDutyCycle(1.0)
+            print("relay on")
+            sleep(10)
+            relay_right.setDutyCycle(0.0)
+            print("relay off")
 
-            #minCycle = relay_left.getMinDutyCycle()
-            #print(minCycle + '\t')
-            #maxCycle = relay_left.getMaxDutyCycle()
-            #print(maxCycle)
         except PhidgetException as e:
             print("Phidget Exception %i: %s" % (e.code, e.details))
             print("Exiting....")
@@ -281,7 +285,8 @@ def main():
     # Release everything! Close all the active phidgets, return an
     # error if one is found
     try:
-        relay.close()
+        relay_left.close()
+        relay_right.close()
     except PhidgetException as e:
         print("Phidget Exception %i: %s" % (e.code, e.details))
         print("Exiting....")
