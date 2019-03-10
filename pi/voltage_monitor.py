@@ -142,7 +142,7 @@ def onVoltageChangeHandler(self, voltage):
 	if volts < 10.0 and not has_notified_slack:
 		has_notified_slack = True
 		print("posting to slack")
-		command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"Help! My current voltage has dropped to " + str(volts) + "\"}' https://hooks.slack.com/services/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"
+		command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"Help! The battery voltage (input 0) has dropped to " + str(volts) + "\"}' https://hooks.slack.com/services/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"
 		os.system(command)
 		current_datetime = time.strftime("%Y%m%d_%Hh%Mm%Ss")
 		message = "At " + str(current_datetime) + " voltage dropped to : " + str(volts) + "\n"
