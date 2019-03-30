@@ -905,6 +905,8 @@ def main():
         # Call to local function to get shutter speed
         output = getShutterSpeed()
 
+        output = "{:6s}".format(output)
+
         # Update the output!
         text = str(output)
         textLCD.writeText(LCDFont.FONT_5x8, 0, 1, text)
@@ -994,6 +996,8 @@ def main():
     def isoChanged(interfaceKit, voltage):
         # Call to local function to get iso
         output = getIso()
+
+        output = "{:5s}".format(output)
 
         # Update the display
         text = str(output)
@@ -1814,6 +1818,8 @@ def main():
             textLCD.setBacklight(0)
         elif state == 1:
             textLCD.setBacklight(1)
+        print(state)
+        textLCD.setBacklight(1.0)
         # textLCD.writeText(LCDFont.FONT_5x8, 19, 1, text)
         # textLCD.flush()
 
