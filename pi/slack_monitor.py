@@ -6,7 +6,9 @@ from slackclient import SlackClient
 import subprocess
 import os
 
-slack_client = SlackClient("xoxb-29833002065-571970030258-j4tDeRh3RIy5ftM5QTDUs109")
+time.sleep(10)
+slack_token = os.environ.get('KILLBOT_5000_TOKEN')
+slack_client = SlackClient(slack_token)
 
 
 # Fetch your Bot's User ID
@@ -26,7 +28,7 @@ if slack_client.rtm_connect():
         for message in slack_client.rtm_read():
             if 'text' in message and message['text'].startswith("<@%s>" % slack_user_id):
                 
-                print "Message received: %s" % json.dumps(message, indent=2)
+                # print "Message received: %s" % json.dumps(message, indent=2)
 
                 message_text = message['text'].\
                     split("<@%s>" % slack_user_id)[1].\
@@ -43,7 +45,7 @@ if slack_client.rtm_connect():
                         text="The killswitch was engaged",
                         as_user=True)
                         
-                if re.match(r'.*(you there?).*', message_text, re.IGNORECASE):
+                if re.match(r'.*(you there).*', message_text, re.IGNORECASE):
                     print("you there?")
 
                     slack_client.api_call(
