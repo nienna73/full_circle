@@ -22,16 +22,3 @@ while not did_stitch:
         did_stitch = True
     except:
         did_stitch = False
-
-# Update the current video, if it exists
-if x > 0:
-    video_stitch(x, "/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "/", "/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "_preview/", filename)
-elif x == 0:
-    first_stitch("/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "/", "/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "_preview/", filename)
-
-# Log the success
-jpg_name = "%06d" % (x+1) + "-A.jpg"
-log_file = open(filename, "a+")
-message = "Stitched " + jpg_name + "\n\n"
-log_file.write(message)
-log_file.close()
