@@ -234,6 +234,7 @@ def onVoltageChangeHandlerGenerator(self, voltage):
 		log_file.write(message)
         
 	if volts < 10.0 and not has_notified_slack:
+		print("[Voltage Event] -> Generator Voltage: " + str(volts))
 		has_notified_slack = True
 		print("posting to slack")
 		command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"Help! The generator voltage (input 0) has dropped to " + str(volts) + "\"}' " + webhook
@@ -243,7 +244,6 @@ def onVoltageChangeHandlerGenerator(self, voltage):
 		log_file.write(message)
 	elif volts > 10.0:
 		has_notified_slack = False
-	print("[Voltage Event] -> Generator Voltage: " + str(volts))
 	
 def onVoltageChangeHandlerBattery(self, voltage):
 	global has_notified_slack
@@ -259,6 +259,7 @@ def onVoltageChangeHandlerBattery(self, voltage):
 		log_file.write(message)
         
 	if volts < 5.0 and not has_notified_slack:
+		print("[Voltage Event] -> Battery Voltage: " + str(volts))
 		has_notified_slack = True
 		print("posting to slack")
 		command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"Help! The battery voltage (input 2) has dropped to " + str(volts) + "\"}' " + webhook
@@ -268,7 +269,6 @@ def onVoltageChangeHandlerBattery(self, voltage):
 		log_file.write(message)
 	elif volts > 5.0:
 		has_notified_slack = False
-	print("[Voltage Event] -> Battery Voltage: " + str(volts))
 
 
 """
@@ -356,8 +356,6 @@ def main():
 		print("You can do stuff with your Phidgets here and/or in the event handlers.")
 		
 		time.sleep(60)
-		bat_volts = battery.getVoltage()
-		print(bat_volts)
 
 	except PhidgetException as e:
 		sys.stderr.write("\nExiting with error(s)...")
