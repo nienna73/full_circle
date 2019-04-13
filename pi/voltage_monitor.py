@@ -14,7 +14,121 @@ from Phidget22.PhidgetException import *
 from Phidget22.Phidget import *
 from Phidget22.Net import *
 
-def onAttachHandler(self):
+from get_battery_status import get_status
+
+def onAttachHandlerInput(self):
+    
+    ph = self
+    try:
+        #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+        #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+        
+        print("\nAttach Event:")
+        
+        """
+        * Get device information and display it.
+        """
+        channelClassName = ph.getChannelClassName()
+        serialNumber = ph.getDeviceSerialNumber()
+        channel = ph.getChannel()
+        if(ph.getDeviceClass() == DeviceClass.PHIDCLASS_VINT):
+            hubPort = ph.getHubPort()
+            print("\n\t-> Channel Class: " + channelClassName + "\n\t-> Serial Number: " + str(serialNumber) +
+                "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel:  " + str(channel) + "\n")
+        else:
+            print("\n\t-> Channel Class: " + channelClassName + "\n\t-> Serial Number: " + str(serialNumber) +
+                    "\n\t-> Channel:  " + str(channel) + "\n")
+        
+        """
+        * Set the DataInterval inside of the attach handler to initialize the device with this value.
+        * DataInterval defines the minimum time between VoltageChange events.
+        * DataInterval can be set to any value from MinDataInterval to MaxDataInterval.
+        """
+        print("\n\tSetting DataInterval to 1000ms")
+        ph.setDataInterval(1000)
+
+        """
+        * Set the VoltageChangeTrigger inside of the attach handler to initialize the device with this value.
+        * VoltageChangeTrigger will affect the frequency of VoltageChange events, by limiting them to only occur when
+        * the voltage changes by at least the value set.
+        """
+        print("\tSetting Voltage ChangeTrigger to 0.0")
+        ph.setVoltageChangeTrigger(0.0)
+        
+        """
+        * Set the SensorType inside of the attach handler to initialize the device with this value.
+        * You can find the appropriate SensorType for your sensor in its User Guide and the VoltageInput API
+        * SensorType will apply the appropriate calculations to the voltage reported by the device
+        * to convert it to the sensor's units.
+        * SensorType can only be set for Sensor Port voltage inputs (VINT Ports and Analog Input Ports)
+        """
+        if(ph.getChannelSubclass() == ChannelSubclass.PHIDCHSUBCLASS_VOLTAGEINPUT_SENSOR_PORT):
+            print("\tSetting Voltage SensorType")
+            ph.setSensorType(VoltageSensorType.SENSOR_TYPE_VOLTAGE)
+        
+    except PhidgetException as e:
+        print("\nError in Attach Event:")
+        DisplayError(e)
+        traceback.print_exc()
+        return
+	
+def onAttachHandlerOutput(self):
+    
+    ph = self
+    try:
+        #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+        #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+        
+        print("\nAttach Event:")
+        
+        """
+        * Get device information and display it.
+        """
+        channelClassName = ph.getChannelClassName()
+        serialNumber = ph.getDeviceSerialNumber()
+        channel = ph.getChannel()
+        if(ph.getDeviceClass() == DeviceClass.PHIDCLASS_VINT):
+            hubPort = ph.getHubPort()
+            print("\n\t-> Channel Class: " + channelClassName + "\n\t-> Serial Number: " + str(serialNumber) +
+                "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel:  " + str(channel) + "\n")
+        else:
+            print("\n\t-> Channel Class: " + channelClassName + "\n\t-> Serial Number: " + str(serialNumber) +
+                    "\n\t-> Channel:  " + str(channel) + "\n")
+        
+        """
+        * Set the DataInterval inside of the attach handler to initialize the device with this value.
+        * DataInterval defines the minimum time between VoltageChange events.
+        * DataInterval can be set to any value from MinDataInterval to MaxDataInterval.
+        """
+        print("\n\tSetting DataInterval to 1000ms")
+        ph.setDataInterval(1000)
+
+        """
+        * Set the VoltageChangeTrigger inside of the attach handler to initialize the device with this value.
+        * VoltageChangeTrigger will affect the frequency of VoltageChange events, by limiting them to only occur when
+        * the voltage changes by at least the value set.
+        """
+        print("\tSetting Voltage ChangeTrigger to 0.0")
+        ph.setVoltageChangeTrigger(0.0)
+        
+        """
+        * Set the SensorType inside of the attach handler to initialize the device with this value.
+        * You can find the appropriate SensorType for your sensor in its User Guide and the VoltageInput API
+        * SensorType will apply the appropriate calculations to the voltage reported by the device
+        * to convert it to the sensor's units.
+        * SensorType can only be set for Sensor Port voltage inputs (VINT Ports and Analog Input Ports)
+        """
+        if(ph.getChannelSubclass() == ChannelSubclass.PHIDCHSUBCLASS_VOLTAGEINPUT_SENSOR_PORT):
+            print("\tSetting Voltage SensorType")
+            ph.setSensorType(VoltageSensorType.SENSOR_TYPE_VOLTAGE)
+        
+    except PhidgetException as e:
+        print("\nError in Attach Event:")
+        DisplayError(e)
+        traceback.print_exc()
+        return
+	
+def onAttachHandlerBattery(self):
     
     ph = self
     try:
@@ -70,13 +184,78 @@ def onAttachHandler(self):
         traceback.print_exc()
         return
 
+
 """
 * Displays info about the detached Phidget channel.
 * Fired when a Phidget channel with onDetachHandler registered detaches
 *
 * @param self The Phidget channel that fired the attach event
 """
-def onDetachHandler(self):
+def onDetachHandlerInput(self):
+
+    ph = self
+
+    try:
+        #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+        #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+        
+        print("\nDetach Event:")
+        
+        """
+        * Get device information and display it.
+        """
+        serialNumber = ph.getDeviceSerialNumber()
+        channelClass = ph.getChannelClassName()
+        channel = ph.getChannel()
+        
+        deviceClass = ph.getDeviceClass()
+        if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+            print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                  "\n\t-> Channel:  " + str(channel) + "\n")
+        else:            
+            hubPort = ph.getHubPort()
+            print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                  "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel:  " + str(channel) + "\n")
+        
+    except PhidgetException as e:
+        print("\nError in Detach Event:")
+        DisplayError(e)
+        traceback.print_exc()
+        return
+	
+def onDetachHandlerOutput(self):
+
+    ph = self
+
+    try:
+        #If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+        #www.phidgets.com/docs/Using_Multiple_Phidgets for information
+        
+        print("\nDetach Event:")
+        
+        """
+        * Get device information and display it.
+        """
+        serialNumber = ph.getDeviceSerialNumber()
+        channelClass = ph.getChannelClassName()
+        channel = ph.getChannel()
+        
+        deviceClass = ph.getDeviceClass()
+        if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+            print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                  "\n\t-> Channel:  " + str(channel) + "\n")
+        else:            
+            hubPort = ph.getHubPort()
+            print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                  "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel:  " + str(channel) + "\n")
+        
+    except PhidgetException as e:
+        print("\nError in Detach Event:")
+        DisplayError(e)
+        traceback.print_exc()
+        return
+	
+def onDetachHandlerBattery(self):
 
     ph = self
 
@@ -116,7 +295,15 @@ def onDetachHandler(self):
 * @param errorCode the code associated with the error of enum type ph.ErrorEventCode
 * @param errorString string containing the description of the error fired
 """
-def onErrorHandler(self, errorCode, errorString):
+def onErrorHandlerInput(self, errorCode, errorString):
+
+    sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
+    
+def onErrorHandlerOutput(self, errorCode, errorString):
+
+    sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
+
+def onErrorHandlerBattery(self, errorCode, errorString):
 
     sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
 
@@ -127,29 +314,127 @@ def onErrorHandler(self, errorCode, errorString):
 * @param self The DigitalInput channel that fired the StateChange event
 * @param state The reported state from the DigitalInput channel
 """
-def onVoltageChangeHandler(self, voltage):
-	global has_notified_slack
+def onVoltageChangeHandlerInput(self, voltage):
+	#input
+	global input_has_notified_slack
 	global ticks
-	global log_file
-	ticks += 1
+	global log_file_name
 	volts = (voltage - 2.5) / 0.0681
+	webhook = os.environ.get('VOLTAGE_MONITOR_WEBHOOK')
+	string_volts = "%.2f" % volts
 	
 	if ticks % 60 == 0:
 		current_datetime = time.strftime("%Y%m%d_%Hh%Mm%Ss")
-		message = "Voltage at " + str(current_datetime) + " is: " + str(volts) + "\n"
-		log_file.write(message)
+		input_update_message = "Input Voltage at " + str(current_datetime) + " is: " + string_volts + "\n"
+		log_file = open(log_file_name, "a+")
+		log_file.write(input_update_message)
+		log_file.close()
         
-	if volts < 10.0 and not has_notified_slack:
-		has_notified_slack = True
+	if volts < 11.5 and (not input_has_notified_slack):
+		print("[Voltage Event] -> Input Voltage: " + string_volts)
+		input_has_notified_slack = True
 		print("posting to slack")
-		command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"Help! The battery voltage (input 0) has dropped to " + str(volts) + "\"}' https://hooks.slack.com/services/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"
+		command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"Help! The input voltage (input 0) has dropped to " + string_volts + "\"}' " + webhook
 		os.system(command)
 		current_datetime = time.strftime("%Y%m%d_%Hh%Mm%Ss")
-		message = "At " + str(current_datetime) + " voltage dropped to : " + str(volts) + "\n"
-		log_file.write(message)
-	elif volts > 10.0:
-		has_notified_slack = False
-	print("[Voltage Event] -> Voltage: " + str(volts))
+		input_log_message = "At " + str(current_datetime) + " the input voltage dropped to : " + string_volts + "\n"
+		log_file = open(log_file_name, "a+")
+		log_file.write(input_log_message)
+		log_file.close()
+	elif volts > 11.5:
+		input_has_notified_slack = False
+	
+def onVoltageChangeHandlerOutput(self, voltage):
+	#output
+	global output_has_notified_slack
+	global ticks
+	global log_file_name
+	volts = (voltage - 2.5) / 0.0681
+	webhook = os.environ.get('VOLTAGE_MONITOR_WEBHOOK')
+	string_volts = "%.2f" % volts
+	
+	if ticks % 60 == 0:
+		current_datetime = time.strftime("%Y%m%d_%Hh%Mm%Ss")
+		output_update_message = "Output Voltage at " + str(current_datetime) + " is: " + string_volts + "\n"
+		log_file = open(log_file_name, "a+")
+		log_file.write(output_update_message)
+		log_file.close()
+        
+	if volts < 11.5 and not output_has_notified_slack:
+		print("[Voltage Event] -> Output Voltage: " + string_volts)
+		output_has_notified_slack = True
+		print("posting to slack")
+		command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"Help! The output voltage (input 2) has dropped to " + string_volts + "\"}' " + webhook
+		os.system(command)
+		current_datetime = time.strftime("%Y%m%d_%Hh%Mm%Ss")
+		output_log_message = "At " + str(current_datetime) + " the output voltage dropped to : " + string_volts + "\n"
+		log_file = open(log_file_name, "a+")
+		log_file.write(output_log_message)
+		log_file.close()
+	elif volts > 11.5:
+		output_has_notified_slack = False
+		
+def onVoltageChangeHandlerBattery(self, voltage):
+	#battery
+	global battery_has_notified_slack
+	global ticks
+	global log_file_name
+	global pi_has_under_90, pi_has_under_50, pi_has_under_10
+	volts = (voltage - 2.5) / 0.0681
+	webhook = os.environ.get('VOLTAGE_MONITOR_WEBHOOK')
+	string_volts = "%.2f" % volts
+	
+	if ticks % 60 == 0:
+		current_datetime = time.strftime("%Y%m%d_%Hh%Mm%Ss")
+		battery_update_message = "Battery Voltage at " + str(current_datetime) + " is: " + string_volts + "\n\n"
+		log_file = open(log_file_name, "a+")
+		log_file.write(battery_update_message)
+		log_file.close()
+        
+	if volts < 11.5 and not battery_has_notified_slack:
+		print("[Voltage Event] -> Battery Voltage: " + string_volts)
+		battery_has_notified_slack = True
+		print("posting to slack")
+		command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"Help! The battery voltage (input 1) has dropped to " + string_volts + "\"}' " + webhook
+		os.system(command)
+		current_datetime = time.strftime("%Y%m%d_%Hh%Mm%Ss")
+		battery_log_message = "At " + str(current_datetime) + " the battery voltage dropped to : " + string_volts + "\n"
+		log_file = open(log_file_name, "a+")
+		log_file.write(battery_log_message)
+		log_file.close()
+	elif volts > 11.5:
+		battery_has_notified_slack = False
+		
+		
+	# Check the filename once every hour
+	if ticks % 3600 == 0:
+		checkFileName(log_file_name)
+		
+	# Check the Pi battery once every 5 minutes
+	if ticks % 300 == 0:
+		per = get_status()
+		print per
+		print type(per)
+		if per < 100 and per > 50 and not pi_has_under_90:
+			pi_has_under_90 = True
+			command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"The Raspberry Pi is now operating on battery power. \"}' " + webhook
+			os.system(command)
+		elif per < 50 and per > 10 and not pi_has_under_50:
+			pi_has_under_50 = True
+			command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"The Raspberry Pi has less than 50% battery remaining. \"}' " + webhook
+			os.system(command)
+		elif per < 10 and not pi_has_under_10:
+			pi_has_under_10 = True
+			command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"The Raspberry Pi has less than 10% battery remaining. It will die soon. \"}' " + webhook
+			os.system(command)
+		else:
+			pi_has_under_10 = False
+			pi_has_under_50 = False
+			pi_has_under_90 = False
+		
+	ticks += 1
+				
+
 
 """
 * Outputs the VoltageInput's most recently reported sensor value.
@@ -158,9 +443,32 @@ def onVoltageChangeHandler(self, voltage):
 * @param self The VoltageInput channel that fired the SensorChange event
 * @param sensorValue The reported sensor value from the VoltageInput channel
 """    
-def onSensorChangeHandler(self, sensorValue, sensorUnit):
+def onSensorChangeHandlerInput(self, sensorValue, sensorUnit):
 
     print("[Sensor Event] -> Sensor Value: " + str(sensorValue) + sensorUnit.symbol)
+    
+def onSensorChangeHandlerOutput(self, sensorValue, sensorUnit):
+
+    print("[Sensor Event] -> Sensor Value: " + str(sensorValue) + sensorUnit.symbol)
+    
+def onSensorChangeHandlerBattery(self, sensorValue, sensorUnit):
+
+    print("[Sensor Event] -> Sensor Value: " + str(sensorValue) + sensorUnit.symbol)
+    
+
+# Check if it's a new day
+# Make a new logfile if it is
+def checkFileName(filename):
+	global log_file_name
+	name = filename[:8]
+	new_date = str(time.strftime("%Y%m%d"))
+	if new_date != name:
+		print("Creating a new log file")
+		log_file_name = str(time.strftime("%Y%m%d_%Hh%Mm%Ss")) + "_log.txt"
+		log_file = open(log_file_name, "a+")
+		log_file.write("\nStart of session\n")
+		log_file.close()
+		
 
     
 """
@@ -175,16 +483,16 @@ def main():
 		"""
 		* Allocate a new Phidget Channel object
 		"""
-		ch = VoltageInput()
+		_input = VoltageInput()
 		
 		"""
 		* Add event handlers before calling open so that no events are missed.
 		"""
-		ch.setOnAttachHandler(onAttachHandler)
-		ch.setOnDetachHandler(onDetachHandler)
-		ch.setOnErrorHandler(onErrorHandler)
-		ch.setOnVoltageChangeHandler(onVoltageChangeHandler)
-		ch.setOnSensorChangeHandler(onSensorChangeHandler)
+		_input.setOnAttachHandler(onAttachHandlerInput)
+		_input.setOnDetachHandler(onDetachHandlerInput)
+		_input.setOnErrorHandler(onErrorHandlerInput)
+		_input.setOnVoltageChangeHandler(onVoltageChangeHandlerInput)
+		_input.setOnSensorChangeHandler(onSensorChangeHandlerInput)
 		
 		"""
 		* Open the channel with a timeout
@@ -193,41 +501,80 @@ def main():
 		print("\nOpening and Waiting for Attachment...")
 		
 		try:
-			ch.setDeviceSerialNumber(271638)
-			ch.setChannel(0)
-			ch.openWaitForAttachment(5000)
+			_input.setDeviceSerialNumber(271638)
+			_input.setChannel(0)
+			_input.openWaitForAttachment(5000)
 		except PhidgetException as e:
-			PrintOpenErrorMessage(e, ch)
-			raise EndProgramSignal("Program Terminated: Open Failed")
+			print("Program Terminated: Open Input Failed")
+			print(e)
+			return 2
 		
-		print("Sampling data for 10 seconds...")
+		output = VoltageInput()
+		
+		"""
+		* Add event handlers before calling open so that no events are missed.
+		"""
+		output.setOnAttachHandler(onAttachHandlerOutput)
+		output.setOnDetachHandler(onDetachHandlerOutput)
+		output.setOnErrorHandler(onErrorHandlerOutput)
+		output.setOnVoltageChangeHandler(onVoltageChangeHandlerOutput)
+		output.setOnSensorChangeHandler(onSensorChangeHandlerOutput)
+
+		"""
+		* Open the channel with a timeout
+		"""
+		
+		print("\nOpening and Waiting for Attachment...")
+		
+		try:
+			output.setDeviceSerialNumber(271638)
+			output.setChannel(1)
+			output.openWaitForAttachment(5000)
+		except PhidgetException as e:
+			print("Program Terminated: Open Output Failed")
+			print(e)
+			return 2
+			
+		battery = VoltageInput()
+		
+		"""
+		* Add event handlers before calling open so that no events are missed.
+		"""
+		battery.setOnAttachHandler(onAttachHandlerBattery)
+		battery.setOnDetachHandler(onDetachHandlerBattery)
+		battery.setOnErrorHandler(onErrorHandlerBattery)
+		battery.setOnVoltageChangeHandler(onVoltageChangeHandlerBattery)
+		battery.setOnSensorChangeHandler(onSensorChangeHandlerBattery)
+
+		"""
+		* Open the channel with a timeout
+		"""
+		
+		print("\nOpening and Waiting for Attachment...")
+		
+		try:
+			battery.setDeviceSerialNumber(271638)
+			battery.setChannel(2)
+			battery.openWaitForAttachment(5000)
+		except PhidgetException as e:
+			print("Program Terminated: Open Battery Failed")
+			print(e)
+			return 2
+		
+		print("Sampling data for 60 seconds...")
 		
 		print("You can do stuff with your Phidgets here and/or in the event handlers.")
 		
 		time.sleep(60)
-		volts = ch.getVoltage()
-		
-		"""
-		* Perform clean up and exit
-		"""        
-		print("\nDone Sampling...")
-
-		print("Cleaning up...")
-		ch.close()
-		print("\nExiting...")
-		return 0
 
 	except PhidgetException as e:
 		sys.stderr.write("\nExiting with error(s)...")
-		DisplayError(e)
+		print(e)
 		traceback.print_exc()
 		print("Cleaning up...")
-		ch.close()
-		return 1
-	except EndProgramSignal as e:
-		print(e)
-		print("Cleaning up...")
-		ch.close()
+		_input.close()
+		output.close()
+		battery.close()
 		return 1
 	except RuntimeError as e:
 		 sys.stderr.write("Runtime Error: \n\t" + e)
@@ -237,13 +584,20 @@ def main():
 		print("Press ENTER to end program.")
 		readin = sys.stdin.readline()
 
-has_notified_slack = False
+
+output_has_notified_slack = False
+input_has_notified_slack = False
+battery_has_notified_slack = False
+pi_has_under_90 = False
+pi_has_under_50 = False
+pi_has_under_10 = False
 ticks = 0
 
 
-filename = str(time.strftime("%Y%m%d_%Hh%Mm%Ss")) + "_log.txt"
-log_file = open(filename, "a+")
+log_file_name = str(time.strftime("%Y%m%d_%Hh%Mm%Ss")) + "_log.txt"
+log_file = open(log_file_name, "a+")
 log_file.write("\nStart of session\n")
-main()
 log_file.close()
+main()
+
 
