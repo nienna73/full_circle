@@ -213,6 +213,15 @@ def main():
         textLCD.writeText(LCDFont.FONT_5x8, 15, 1, 'WAIT')
         textLCD.flush()
 
+        if "." in s_speed:
+            if "3" in s_speed or "4" in s_speed:
+                s_speed = "1/3"
+            elif "5" in s_speed or "6" in s_speed:
+                s_speed = "1/2"
+            elif "8" in s_speed:
+                s_speed = "1"
+            print(s_speed)
+
         # Update the shutter speed and iso on each camera
         for port in cameras:
             print(port)

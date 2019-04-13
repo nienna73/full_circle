@@ -37,24 +37,59 @@ from operator import itemgetter
 #         file = file.split()
 #         print(file[4])
 
-camera_ports = []       # stores relevant ports
+# camera_ports = []       # stores relevant ports
+#
+# # Locate all cameras and split results into readable strings
+# ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
+# ports_strings_split = ports_strings.splitlines()
+#
+# for string in ports_strings_split:
+#     string_decode = string.decode('utf-8')
+#     if 'sony' not in string_decode.lower():
+#         ports_strings_split.remove(string)
+#
+# for string in ports_strings_split:
+#     string = string.decode('utf-8').split()
+#     for item in string:
+#         if item[0].lower() == 'u':
+#             camera_ports.append(item)
+#
+# print(camera_ports)
 
-# Locate all cameras and split results into readable strings
-ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
-ports_strings_split = ports_strings.splitlines()
+def locateAndUpdateCameras(s_speed, i_value):
+    cameras = []    # to hold ports, to be returned
+    # Detect all the cameras
+    ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
+    ports_strings_split = ports_strings.split()
 
-for string in ports_strings_split:
-    string_decode = string.decode('utf-8')
-    if 'sony' not in string_decode.lower():
-        ports_strings_split.remove(string)
+    # Find all the ports of format "usb:xxx,xxx"
+    for item in ports_strings_split:
+        item = item.decode('utf-8')
+        if item[0] == 'u':
+            cameras.append(item)
 
-for string in ports_strings_split:
-    string = string.decode('utf-8').split()
-    for item in string:
-        if item[0].lower() == 'u':
-            camera_ports.append(item)
+    if "." in s_speed:
+        if "3" in s_speed or "4" in s_speed:
+            s_speed = "1/3"
+        elif "5" in s_speed or "6" in s_speed:
+            s_speed = "1/2"
+        elif "8" in s_speed:
+            s_speed = "1"
+        print(s_speed)
 
-print(camera_ports)
+
+    # Update the shutter speed and iso on each camera
+    for port in cameras:
+        print(port)
+        subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + s_speed, "--set-config-value", "iso=" + i_value])
+
+    i = 0
+    x = 0
+    while i < len(cameras):
+        process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/capture.py", str(x), str(i)])
+        i = i + 1
+
+locateAndUpdateCameras("0.3", "100")
 
 
 

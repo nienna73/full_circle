@@ -37,6 +37,6 @@ number_of_cameras = len(camera_ports)
 i = 0
 process = ''
 while i < number_of_cameras:
-    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/capture.py", '0', str(i)])
+    process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/auxiliary/capture6.py", '0', str(i)])
     i = i + 1
 process.wait()
