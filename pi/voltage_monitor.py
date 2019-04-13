@@ -14,6 +14,8 @@ from Phidget22.PhidgetException import *
 from Phidget22.Phidget import *
 from Phidget22.Net import *
 
+from get_battery_status import get_status
+
 def onAttachHandlerInput(self):
     
     ph = self
@@ -377,6 +379,7 @@ def onVoltageChangeHandlerBattery(self, voltage):
 	global battery_has_notified_slack
 	global ticks
 	global log_file_name
+	global pi_has_under_90, pi_has_under_50, pi_has_under_10
 	volts = (voltage - 2.5) / 0.0681
 	webhook = os.environ.get('VOLTAGE_MONITOR_WEBHOOK')
 	string_volts = "%.2f" % volts
@@ -402,11 +405,35 @@ def onVoltageChangeHandlerBattery(self, voltage):
 	elif volts > 11.5:
 		battery_has_notified_slack = False
 		
-	ticks += 1
-	
+		
 	# Check the filename once every hour
 	if ticks % 3600 == 0:
 		checkFileName(log_file_name)
+		
+	# Check the Pi battery once every 5 minutes
+	if ticks % 300 == 0:
+		per = get_status()
+		print per
+		print type(per)
+		if per < 100 and per > 50 and not pi_has_under_90:
+			pi_has_under_90 = True
+			command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"The Raspberry Pi is now operating on battery power. \"}' " + webhook
+			os.system(command)
+		elif per < 50 and per > 10 and not pi_has_under_50:
+			pi_has_under_50 = True
+			command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"The Raspberry Pi has less than 50% battery remaining. \"}' " + webhook
+			os.system(command)
+		elif per < 10 and not pi_has_under_10:
+			pi_has_under_10 = True
+			command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"The Raspberry Pi has less than 10% battery remaining. It will die soon. \"}' " + webhook
+			os.system(command)
+		else:
+			pi_has_under_10 = False
+			pi_has_under_50 = False
+			pi_has_under_90 = False
+		
+	ticks += 1
+				
 
 
 """
@@ -561,6 +588,9 @@ def main():
 output_has_notified_slack = False
 input_has_notified_slack = False
 battery_has_notified_slack = False
+pi_has_under_90 = False
+pi_has_under_50 = False
+pi_has_under_10 = False
 ticks = 0
 
 
