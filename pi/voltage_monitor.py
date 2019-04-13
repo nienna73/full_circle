@@ -403,7 +403,10 @@ def onVoltageChangeHandlerBattery(self, voltage):
 		battery_has_notified_slack = False
 		
 	ticks += 1
-	checkFileName(log_file_name)
+	
+	# Check the filename once every hour
+	if ticks % 3600 == 0:
+		checkFileName(log_file_name)
 
 
 """
@@ -426,6 +429,8 @@ def onSensorChangeHandlerBattery(self, sensorValue, sensorUnit):
     print("[Sensor Event] -> Sensor Value: " + str(sensorValue) + sensorUnit.symbol)
     
 
+# Check if it's a new day
+# Make a new logfile if it is
 def checkFileName(filename):
 	global log_file_name
 	name = filename[:8]
