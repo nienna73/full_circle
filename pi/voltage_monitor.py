@@ -319,22 +319,23 @@ def onVoltageChangeHandlerInput(self, voltage):
 	global log_file_name
 	volts = (voltage - 2.5) / 0.0681
 	webhook = os.environ.get('VOLTAGE_MONITOR_WEBHOOK')
+	string_volts = "%.2f" % volts
 	
 	if ticks % 60 == 0:
 		current_datetime = time.strftime("%Y%m%d_%Hh%Mm%Ss")
-		input_update_message = "Input Voltage at " + str(current_datetime) + " is: " + str(volts) + "\n"
+		input_update_message = "Input Voltage at " + str(current_datetime) + " is: " + string_volts + "\n"
 		log_file = open(log_file_name, "a+")
 		log_file.write(input_update_message)
 		log_file.close()
         
 	if volts < 11.5 and (not input_has_notified_slack):
-		print("[Voltage Event] -> Input Voltage: " + str(volts))
+		print("[Voltage Event] -> Input Voltage: " + string_volts)
 		input_has_notified_slack = True
 		print("posting to slack")
-		command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"Help! The input voltage (input 0) has dropped to " + str(volts) + "\"}' " + webhook
+		command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"Help! The input voltage (input 0) has dropped to " + string_volts + "\"}' " + webhook
 		os.system(command)
 		current_datetime = time.strftime("%Y%m%d_%Hh%Mm%Ss")
-		input_log_message = "At " + str(current_datetime) + " the input voltage dropped to : " + str(volts) + "\n"
+		input_log_message = "At " + str(current_datetime) + " the input voltage dropped to : " + string_volts + "\n"
 		log_file = open(log_file_name, "a+")
 		log_file.write(input_log_message)
 		log_file.close()
@@ -348,22 +349,23 @@ def onVoltageChangeHandlerOutput(self, voltage):
 	global log_file_name
 	volts = (voltage - 2.5) / 0.0681
 	webhook = os.environ.get('VOLTAGE_MONITOR_WEBHOOK')
+	string_volts = "%.2f" % volts
 	
 	if ticks % 60 == 0:
 		current_datetime = time.strftime("%Y%m%d_%Hh%Mm%Ss")
-		output_update_message = "Output Voltage at " + str(current_datetime) + " is: " + str(volts) + "\n"
+		output_update_message = "Output Voltage at " + str(current_datetime) + " is: " + string_volts + "\n"
 		log_file = open(log_file_name, "a+")
 		log_file.write(output_update_message)
 		log_file.close()
         
 	if volts < 11.5 and not output_has_notified_slack:
-		print("[Voltage Event] -> Output Voltage: " + str(volts))
+		print("[Voltage Event] -> Output Voltage: " + string_volts)
 		output_has_notified_slack = True
 		print("posting to slack")
-		command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"Help! The output voltage (input 2) has dropped to " + str(volts) + "\"}' " + webhook
+		command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"Help! The output voltage (input 2) has dropped to " + string_volts + "\"}' " + webhook
 		os.system(command)
 		current_datetime = time.strftime("%Y%m%d_%Hh%Mm%Ss")
-		output_log_message = "At " + str(current_datetime) + " the output voltage dropped to : " + str(volts) + "\n"
+		output_log_message = "At " + str(current_datetime) + " the output voltage dropped to : " + string_volts + "\n"
 		log_file = open(log_file_name, "a+")
 		log_file.write(output_log_message)
 		log_file.close()
@@ -377,22 +379,23 @@ def onVoltageChangeHandlerBattery(self, voltage):
 	global log_file_name
 	volts = (voltage - 2.5) / 0.0681
 	webhook = os.environ.get('VOLTAGE_MONITOR_WEBHOOK')
+	string_volts = "%.2f" % volts
 	
 	if ticks % 60 == 0:
 		current_datetime = time.strftime("%Y%m%d_%Hh%Mm%Ss")
-		battery_update_message = "Battery Voltage at " + str(current_datetime) + " is: " + str(volts) + "\n\n"
+		battery_update_message = "Battery Voltage at " + str(current_datetime) + " is: " + string_volts + "\n\n"
 		log_file = open(log_file_name, "a+")
 		log_file.write(battery_update_message)
 		log_file.close()
         
 	if volts < 11.5 and not battery_has_notified_slack:
-		print("[Voltage Event] -> Battery Voltage: " + str(volts))
+		print("[Voltage Event] -> Battery Voltage: " + string_volts)
 		battery_has_notified_slack = True
 		print("posting to slack")
-		command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"Help! The battery voltage (input 1) has dropped to " + str(volts) + "\"}' " + webhook
+		command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"Help! The battery voltage (input 1) has dropped to " + string_volts + "\"}' " + webhook
 		os.system(command)
 		current_datetime = time.strftime("%Y%m%d_%Hh%Mm%Ss")
-		battery_log_message = "At " + str(current_datetime) + " the battery voltage dropped to : " + str(volts) + "\n"
+		battery_log_message = "At " + str(current_datetime) + " the battery voltage dropped to : " + string_volts + "\n"
 		log_file = open(log_file_name, "a+")
 		log_file.write(battery_log_message)
 		log_file.close()
@@ -400,6 +403,7 @@ def onVoltageChangeHandlerBattery(self, voltage):
 		battery_has_notified_slack = False
 		
 	ticks += 1
+	checkFileName(log_file_name)
 
 
 """
@@ -420,6 +424,19 @@ def onSensorChangeHandlerOutput(self, sensorValue, sensorUnit):
 def onSensorChangeHandlerBattery(self, sensorValue, sensorUnit):
 
     print("[Sensor Event] -> Sensor Value: " + str(sensorValue) + sensorUnit.symbol)
+    
+
+def checkFileName(filename):
+	global log_file_name
+	name = filename[:8]
+	new_date = str(time.strftime("%Y%m%d"))
+	if new_date != name:
+		print("Creating a new log file")
+		log_file_name = str(time.strftime("%Y%m%d_%Hh%Mm%Ss")) + "_log.txt"
+		log_file = open(log_file_name, "a+")
+		log_file.write("\nStart of session\n")
+		log_file.close()
+		
 
     
 """
@@ -534,6 +551,7 @@ def main():
 	finally:
 		print("Press ENTER to end program.")
 		readin = sys.stdin.readline()
+
 
 output_has_notified_slack = False
 input_has_notified_slack = False
