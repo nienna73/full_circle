@@ -3,11 +3,15 @@ import os
 import sys
 import time
 from video_stitch import video_stitch, first_stitch
+from copy_to_drive import copy_to_drive
+from wine_ptgui import wine_ptgui
 
 x = int(sys.argv[1])        # number of the photo one before the one we just took
 dir_name = sys.argv[2]      # location where all .arw files are stored
 
 filename = sys.argv[3]
+move_to_drive = sys.argv[4]
+camera_ports = int(sys.argv[5])
 
 
 full_dir_name = "/home/ryan/Documents/full_circle/timelapse/" + dir_name + "/"
@@ -40,8 +44,9 @@ except NameError as e:
 except AttributeError as e:
     print(e)
 
-stitch_process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/wine_ptgui.py", str(x), str(dir_name), str(filename)])
-stitch_process.wait()
+# stitch_process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/wine_ptgui.py", str(x), str(dir_name), str(filename)])
+# stitch_process.wait()
+wine_ptgui(x, dir_name, filename)
 
 # Update the current video, if it exists
 if x > 0:
@@ -55,3 +60,7 @@ log_file = open(filename, "a+")
 message = "Stitched " + jpg_name + "\n\n"
 log_file.write(message)
 log_file.close()
+
+if move_to_drive.lower() == 'y':
+    if x > 0:
+        copy_to_drive(dir_name, (x), camera_ports)

@@ -348,6 +348,8 @@ def main():
     if move_to_drive.lower() == 'y':
         drive_connected = input("Is the 4TB drive connected? ")
 
+    print("Ready to go!\n")
+
 
     # Define variables for use in the loop
     now = datetime.datetime.now()
@@ -445,6 +447,15 @@ def main():
         # Default is 0, !0 means new iso and shutter speed values
         # were found in the new file
         if iso != 0 and shutter != 0:
+
+            if "." in shutter:
+                if "0.3" in shutter or "0.4" in shutter:
+                    shutter = "1/3"
+                elif "0.5" in shutter or "0.6" in shutter:
+                    shutter = "1/2"
+                elif "0.8" in shutter:
+                    shutter = "1"
+
             print("Iso: " + iso)
             print("Shutter speed: " + shutter)
 
@@ -542,21 +553,20 @@ def main():
                 if stitching.lower() == 'y':
                     # Call the stitching function
                     # subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wait_for_stitch.py", str(x), str(dir_name), str(log_file), str(dir_name), str(number_of_cameras)])
-                    wine_process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/wine_stitch.py", str(x), str(dir_name), str(log_file)])
-                    wine_process.wait()
+                    wine_process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/wine_stitch.py", str(x), str(dir_name), str(log_file), str(move_to_drive), str(len(camera_ports))])
+                    # wine_process.wait()
 
                 x += 1
                 # os.chdir("../")                 # Change back a directory to prevent
                                                 # creating multiple nested ones
 
-                delay = 0
-                if '/' in shutter:
-                    delay = 1
-                else:
-                    delay = float(shutter)
-                time.sleep(delay)
-                if move_to_drive.lower() == 'y':
-                    copy_to_drive(dir_name, (x-1), len(camera_ports))
+                # delay = 0
+                # if '/' in shutter:
+                #     delay = 1
+                # else:
+                #     delay = float(shutter)
+                time.sleep(3)
+
             except:
                 e = sys.exc_info()[0]
                 print("\n error \n")
