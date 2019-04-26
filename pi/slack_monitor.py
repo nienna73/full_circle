@@ -6,6 +6,8 @@ from slackclient import SlackClient
 import subprocess
 import os
 
+from voltage_monitor import kill_process
+
 time.sleep(10)
 slack_token = os.environ.get('KILLBOT_5000_TOKEN')
 slack_client = SlackClient(slack_token)
@@ -36,8 +38,9 @@ if slack_client.rtm_connect():
 
                 if re.match(r'.*(engage).*', message_text, re.IGNORECASE):
                     print("engage")
-                    process = subprocess.Popen(["python", "/home/pi/Documents/full_circle/pi/killswitch_engage.py"])
-                    process.wait()
+                    #process = subprocess.Popen(["python", "/home/pi/Documents/full_circle/pi/killswitch_engage.py"])
+                    #process.wait()
+                    kill_process()
 
                     slack_client.api_call(
                         "chat.postMessage",

@@ -10,11 +10,177 @@ import datetime
 import time
 
 from Phidget22.Devices.VoltageInput import *
+from Phidget22.Devices.DigitalOutput import *
 from Phidget22.PhidgetException import *
 from Phidget22.Phidget import *
 from Phidget22.Net import *
 
 from get_battery_status import get_status
+
+
+
+#####################################################################################################################################
+
+### Start relay_left functions
+
+# Standard phidget attach handler for the relay
+def relayLeftAttachHandler(self):
+
+    ph = self
+
+    try:
+	#If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+	#www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+	print("\nAttach Event:")
+
+	"""
+	* Get device information and display it.
+	"""
+	serialNumber = ph.getDeviceSerialNumber()
+	channelClass = ph.getChannelClassName()
+	channel = ph.getChannel()
+
+	deviceClass = ph.getDeviceClass()
+	if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+	    print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+		"\n\t-> Channel " + str(channel) + "\n")
+	else:
+	    hubPort = ph.getHubPort()
+	    print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+    except PhidgetException as e:
+	print("\nError in Attach Event:")
+	#DisplayError(e)
+	traceback.print_exc()
+	return
+
+# Standard phidget detach handler for the relay
+def relayLeftDetachHandler(self):
+    ph = self
+
+    try:
+	#If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+	#www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+	print("\nDetach Event:")
+
+	"""
+	* Get device information and display it.
+	"""
+	serialNumber = ph.getDeviceSerialNumber()
+	channelClass = ph.getChannelClassName()
+	channel = ph.getChannel()
+
+	deviceClass = ph.getDeviceClass()
+	if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+	    print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Channel " + str(channel) + "\n")
+	else:
+	    hubPort = ph.getHubPort()
+	    print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+    except PhidgetException as e:
+	print("\nError in Detach Event:")
+	#DisplayError(e)
+	traceback.print_exc()
+	return
+
+# Standard error handler for the relay
+def relayErrorHandler(button, errorCode, errorString):
+    sys.stderr.write("[Phidget Error Event] -> " + errorString + " (" + str(errorCode) + ")\n")
+
+# Change handler for the relay
+def relayLeftStateChangeHandler(self, state):
+    # Output the state in two locations to indicate that things are working
+    if(state == 1):
+	print('relay left')
+
+
+### End relay_left functions
+
+#####################################################################################################################################
+
+### Start relay_right functions
+
+# Standard phidget attach handler for the relay
+def relayRightAttachHandler(self):
+
+    ph = self
+
+    try:
+	#If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+	#www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+	print("\nAttach Event:")
+
+	"""
+	* Get device information and display it.
+	"""
+	serialNumber = ph.getDeviceSerialNumber()
+	channelClass = ph.getChannelClassName()
+	channel = ph.getChannel()
+
+	deviceClass = ph.getDeviceClass()
+	if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+	    print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+		"\n\t-> Channel " + str(channel) + "\n")
+	else:
+	    hubPort = ph.getHubPort()
+	    print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+                      "\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+    except PhidgetException as e:
+	print("\nError in Attach Event:")
+	#DisplayError(e)
+	traceback.print_exc()
+	return
+
+# Standard phidget detach handler for the relay
+def relayRightDetachHandler(self):
+    ph = self
+
+    try:
+	#If you are unsure how to use more than one Phidget channel with this event, we recommend going to
+	#www.phidgets.com/docs/Using_Multiple_Phidgets for information
+
+	print("\nDetach Event:")
+
+	"""
+	* Get device information and display it.
+	"""
+	serialNumber = ph.getDeviceSerialNumber()
+	channelClass = ph.getChannelClassName()
+	channel = ph.getChannel()
+
+	deviceClass = ph.getDeviceClass()
+	if (deviceClass != DeviceClass.PHIDCLASS_VINT):
+		print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+			"\n\t-> Channel " + str(channel) + "\n")
+	else:
+		hubPort = ph.getHubPort()
+		print("\n\t-> Channel Class: " + channelClass + "\n\t-> Serial Number: " + str(serialNumber) +
+			"\n\t-> Hub Port: " + str(hubPort) + "\n\t-> Channel " + str(channel) + "\n")
+
+    except PhidgetException as e:
+	print("\nError in Detach Event:")
+	#DisplayError(e)
+	traceback.print_exc()
+    return
+
+
+# Change handler for the relay
+def relayRightStateChangeHandler(self, state):
+    # Output the state in two locations to indicate that things are working
+    if(state == 1):
+	print('relay right')
+
+
+### End relay_right functions
+
+#####################################################################################################################################
 
 def onAttachHandlerInput(self):
     
@@ -468,6 +634,26 @@ def checkFileName(filename):
 		log_file.close()
 		
 
+def kill_process():
+    time.sleep(5)
+    try:
+        relay_left.setDutyCycle(1.0)
+	print("relay on")
+	sleep(10)
+	relay_left.setDutyCycle(0.0)
+	print("relay off")
+
+	relay_right.setDutyCycle(1.0)
+	print("relay on")
+	sleep(10)
+	relay_right.setDutyCycle(0.0)
+	print("relay off")
+
+    except PhidgetException as e:
+	print("Phidget Exception %i: %s" % (e.code, e.details))
+	print("Exiting....")
+	print(e)
+	exit(1)
     
 """
 * Creates, configures, and opens a DigitalInput channel.
@@ -478,6 +664,36 @@ def checkFileName(filename):
 """
 def main():
 	try:
+		relay_left = DigitalOutput()
+		relay_right = DigitalOutput()
+		
+		relay_right.setOnAttachHandler(relayRightAttachHandler)
+		relay_right.setOnDetachHandler(relayRightDetachHandler)
+		relay_right.setOnErrorHandler(relayErrorHandler)
+		
+		try:
+			relay_right.setDeviceSerialNumber(271638)
+			relay_right.setChannel(1)
+			print('Wait for relay right to attach...')
+			relay_right.openWaitForAttachment(5000)
+		except PhidgetException as e:
+			print("Program Terminated: Relay Open Failed")
+			return
+			
+
+		relay_left.setOnAttachHandler(relayLeftAttachHandler)
+		relay_left.setOnDetachHandler(relayLeftDetachHandler)
+		relay_left.setOnErrorHandler(relayErrorHandler)
+
+		try:
+			relay_left.setDeviceSerialNumber(271638)
+			relay_left.setChannel(0)
+			print('Wait for relay left to attach...')
+			relay_left.openWaitForAttachment(5000)
+		except PhidgetException as e:
+			print("Program Terminated: Relay Open Failed")
+			return
+			
 		"""
 		* Allocate a new Phidget Channel object
 		"""
@@ -496,7 +712,7 @@ def main():
 		* Open the channel with a timeout
 		"""
 		
-		print("\nOpening and Waiting for Attachment...")
+		print("\nOpening and Waiting for _input Attachment...")
 		
 		try:
 			_input.setDeviceSerialNumber(271638)
@@ -522,7 +738,7 @@ def main():
 		* Open the channel with a timeout
 		"""
 		
-		print("\nOpening and Waiting for Attachment...")
+		print("\nOpening and Waiting for output Attachment...")
 		
 		try:
 			output.setDeviceSerialNumber(271638)
@@ -548,7 +764,7 @@ def main():
 		* Open the channel with a timeout
 		"""
 		
-		print("\nOpening and Waiting for Attachment...")
+		print("\nOpening and Waiting for battery Attachment...")
 		
 		try:
 			battery.setDeviceSerialNumber(271638)
@@ -573,6 +789,8 @@ def main():
 		_input.close()
 		output.close()
 		battery.close()
+		relay_left.close()
+		relay_right.close()
 		return 1
 	except RuntimeError as e:
 		 sys.stderr.write("Runtime Error: \n\t" + e)
@@ -583,20 +801,21 @@ def main():
 		readin = sys.stdin.readline()
 
 
-output_has_notified_slack = False
-input_has_notified_slack = False
-battery_has_notified_slack = False
-pi_has_under_90 = False
-pi_has_under_50 = False
-pi_has_under_10 = False
-ticks = 0
-
-
-log_file_name = str(time.strftime("%Y%m%d_%Hh%Mm%Ss")) + "_log.txt"
-log_file = open(log_file_name, "a+")
-log_file.write("\nStart of session\n")
-log_file.close()
-
-main()
+if __name__ == "__main__":
+	output_has_notified_slack = False
+	input_has_notified_slack = False
+	battery_has_notified_slack = False
+	pi_has_under_90 = False
+	pi_has_under_50 = False
+	pi_has_under_10 = False
+	ticks = 0
+	
+	
+	log_file_name = str(time.strftime("%Y%m%d_%Hh%Mm%Ss")) + "_log.txt"
+	log_file = open(log_file_name, "a+")
+	log_file.write("\nStart of session\n")
+	log_file.close()
+	
+	main()
 
 
