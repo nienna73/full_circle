@@ -1,7 +1,7 @@
+#! /usr/env/python
 import re
 import time
 import json
-import psutil
 from slackclient import SlackClient
 import subprocess
 import os

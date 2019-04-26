@@ -1,3 +1,4 @@
+#! /usr/env/python
 import sys
 import subprocess
 import os

@@ -413,19 +413,17 @@ def onVoltageChangeHandlerBattery(self, voltage):
 	# Check the Pi battery once every 5 minutes
 	if ticks % 300 == 0:
 		per = get_status()
-		print per
-		print type(per)
 		if per < 100 and per > 50 and not pi_has_under_90:
 			pi_has_under_90 = True
-			command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"The Raspberry Pi is now operating on battery power. \"}' " + webhook
+			command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"The Raspberry Pi has " + str(per) + "% battery remaining. \"}' " + webhook
 			os.system(command)
 		elif per < 50 and per > 10 and not pi_has_under_50:
 			pi_has_under_50 = True
-			command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"The Raspberry Pi has less than 50% battery remaining. \"}' " + webhook
+			command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"The Raspberry Pi has " + str(per) + "% battery remaining. \"}' " + webhook
 			os.system(command)
 		elif per < 10 and not pi_has_under_10:
 			pi_has_under_10 = True
-			command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"The Raspberry Pi has less than 10% battery remaining. It will die soon. \"}' " + webhook
+			command = "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"The Raspberry Pi has " + str(per) + "% battery remaining. It will die soon. \"}' " + webhook
 			os.system(command)
 		else:
 			pi_has_under_10 = False
@@ -598,6 +596,7 @@ log_file_name = str(time.strftime("%Y%m%d_%Hh%Mm%Ss")) + "_log.txt"
 log_file = open(log_file_name, "a+")
 log_file.write("\nStart of session\n")
 log_file.close()
+
 main()
 
 
