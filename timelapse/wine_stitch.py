@@ -44,9 +44,12 @@ except NameError as e:
 except AttributeError as e:
     print(e)
 
-# stitch_process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/wine_ptgui.py", str(x), str(dir_name), str(filename)])
-# stitch_process.wait()
-wine_ptgui(x, dir_name, filename)
+# Stitch the current panorama
+# wait for a successful stitch before moving on
+did_stitch = wine_ptgui(x, dir_name, filename)
+while did_stitch < 0:
+    did_stitch = wine_ptgui(x, dir_name, filename)
+
 
 # Update the current video, if it exists
 if x > 0:
@@ -54,13 +57,14 @@ if x > 0:
 elif x == 0:
     first_stitch("/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "/", "/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "_preview/", filename)
 
-# Log the success
+# Log the action
 jpg_name = "%06d" % (x+1) + "-A.jpg"
 log_file = open(filename, "a+")
 message = "Stitched " + jpg_name + "\n\n"
 log_file.write(message)
 log_file.close()
 
+# Move the files to the external drive, if applicable
 if move_to_drive.lower() == 'y':
     if x > 0:
-        copy_to_drive(dir_name, (x), camera_ports)
+        copy_to_drive(dir_name, x, camera_ports)

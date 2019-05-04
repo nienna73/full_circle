@@ -523,7 +523,7 @@ def main():
                     while i < number_of_cameras:
                         process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/bulb_capture_on.py", str(i)])
                         i = i + 1
-                        process.wait()
+                    process.wait()
 
                     wait_time = 0
                     if '/' in shutter:
@@ -538,8 +538,9 @@ def main():
                     while j < number_of_cameras:
                         process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/bulb_capture_off.py", str(x), str(j)])
                         j = j + 1
+                    process.wait()
 
-                    time.sleep(10)
+                    time.sleep(5)
 
 
                 # Trigger the relay for simultaneous image capture
@@ -552,19 +553,13 @@ def main():
 
                 if stitching.lower() == 'y':
                     # Call the stitching function
-                    # subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/wait_for_stitch.py", str(x), str(dir_name), str(log_file), str(dir_name), str(number_of_cameras)])
-                    wine_process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/wine_stitch.py", str(x), str(dir_name), str(log_file), str(move_to_drive), str(len(camera_ports))])
+                    wine_process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/wine_stitch.py", str(x), str(dir_name), str(filename), str(move_to_drive), str(len(camera_ports))])
                     # wine_process.wait()
 
                 x += 1
                 # os.chdir("../")                 # Change back a directory to prevent
                                                 # creating multiple nested ones
 
-                # delay = 0
-                # if '/' in shutter:
-                #     delay = 1
-                # else:
-                #     delay = float(shutter)
                 time.sleep(3)
 
             except:

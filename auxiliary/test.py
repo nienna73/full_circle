@@ -6,6 +6,12 @@ import time
 import signal
 
 from operator import itemgetter
+
+full_dir_name = "/home/ryan/Documents/full_circle/timelapse/20190504_11h30m30s/"
+
+jpg_img_check = subprocess.check_output((["ls", full_dir_name]))
+jpg_img_check = jpg_img_check.decode('utf-8')
+print(jpg_img_check)
 #
 # frequency = sys.argv[1]
 # duration = sys.argv[2]
@@ -56,40 +62,40 @@ from operator import itemgetter
 #
 # print(camera_ports)
 
-def locateAndUpdateCameras(s_speed, i_value):
-    cameras = []    # to hold ports, to be returned
-    # Detect all the cameras
-    ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
-    ports_strings_split = ports_strings.split()
-
-    # Find all the ports of format "usb:xxx,xxx"
-    for item in ports_strings_split:
-        item = item.decode('utf-8')
-        if item[0] == 'u':
-            cameras.append(item)
-
-    if "." in s_speed:
-        if "3" in s_speed or "4" in s_speed:
-            s_speed = "1/3"
-        elif "5" in s_speed or "6" in s_speed:
-            s_speed = "1/2"
-        elif "8" in s_speed:
-            s_speed = "1"
-        print(s_speed)
-
-
-    # Update the shutter speed and iso on each camera
-    for port in cameras:
-        print(port)
-        subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + s_speed, "--set-config-value", "iso=" + i_value])
-
-    i = 0
-    x = 0
-    while i < len(cameras):
-        process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/capture.py", str(x), str(i)])
-        i = i + 1
-
-locateAndUpdateCameras("0.3", "100")
+# def locateAndUpdateCameras(s_speed, i_value):
+#     cameras = []    # to hold ports, to be returned
+#     # Detect all the cameras
+#     ports_strings = subprocess.check_output(["gphoto2", "--auto-detect"])
+#     ports_strings_split = ports_strings.split()
+#
+#     # Find all the ports of format "usb:xxx,xxx"
+#     for item in ports_strings_split:
+#         item = item.decode('utf-8')
+#         if item[0] == 'u':
+#             cameras.append(item)
+#
+#     if "." in s_speed:
+#         if "3" in s_speed or "4" in s_speed:
+#             s_speed = "1/3"
+#         elif "5" in s_speed or "6" in s_speed:
+#             s_speed = "1/2"
+#         elif "8" in s_speed:
+#             s_speed = "1"
+#         print(s_speed)
+#
+#
+#     # Update the shutter speed and iso on each camera
+#     for port in cameras:
+#         print(port)
+#         subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + s_speed, "--set-config-value", "iso=" + i_value])
+#
+#     i = 0
+#     x = 0
+#     while i < len(cameras):
+#         process = subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/capture.py", str(x), str(i)])
+#         i = i + 1
+#
+# locateAndUpdateCameras("0.3", "100")
 
 
 
