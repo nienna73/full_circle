@@ -38,9 +38,9 @@ if slack_client.rtm_connect():
 
                 if re.match(r'.*(engage).*', message_text, re.IGNORECASE):
                     print("engage")
-                    #process = subprocess.Popen(["python", "/home/pi/Documents/full_circle/pi/killswitch_engage.py"])
-                    #process.wait()
-                    kill_process()
+                    process = subprocess.Popen(["python", "/home/pi/Documents/full_circle/pi/killswitch_engage.py"])
+                    process.wait()
+                    #kill_process()
 
                     slack_client.api_call(
                         "chat.postMessage",
