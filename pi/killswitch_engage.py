@@ -149,7 +149,6 @@ def main():
         print('Wait for relay left to attach...')
         relay_left.openWaitForAttachment(5000)
     except PhidgetException as e:
-        PrintOpenErrorMessage(e, ch)
         raise EndProgramSignal("Program Terminated: Relay Open Failed")
 
 ### End relay_left functions
@@ -250,7 +249,6 @@ def main():
         print('Wait for relay right to attach...')
         relay_right.openWaitForAttachment(5000)
     except PhidgetException as e:
-        PrintOpenErrorMessage(e, ch)
         raise EndProgramSignal("Program Terminated: Relay Open Failed")
 
 ### End relay_right functions
@@ -293,5 +291,5 @@ def main():
     print("Done.")
     exit(0)     # close the program
 
-
-main()
+if __name__ == "__main__":
+    main()
