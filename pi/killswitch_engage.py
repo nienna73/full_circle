@@ -146,7 +146,6 @@ def main():
     try:
         relay_left.setDeviceSerialNumber(271638)
         relay_left.setChannel(0)
-        relay_left.open()
         print('Wait for relay left to attach...')
         relay_left.openWaitForAttachment(5000)
     except PhidgetException as e:
@@ -248,7 +247,6 @@ def main():
     try:
         relay_right.setDeviceSerialNumber(271638)
         relay_right.setChannel(1)
-        relay_right.open()
         print('Wait for relay right to attach...')
         relay_right.openWaitForAttachment(5000)
     except PhidgetException as e:
