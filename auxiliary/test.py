@@ -7,11 +7,23 @@ import signal
 
 from operator import itemgetter
 
-full_dir_name = "/home/ryan/Documents/full_circle/timelapse/20190504_11h30m30s/"
+processes = subprocess.check_output(["ps", "aux"])
+break_char = "\n".encode('ascii')
+processes = processes.split(break_char)
+for process in processes:
+    process = process.decode("utf-8")
+    print(process)
+    # process = str(process)
+    if "ffplay" in process.lower():
+        split_process = process.split()
+        subprocess.call(["sudo", "kill", split_process[1]])
+        print ("Killed process ", split_process[-1])
 
-jpg_img_check = subprocess.check_output((["ls", full_dir_name]))
-jpg_img_check = jpg_img_check.decode('utf-8')
-print(jpg_img_check)
+# full_dir_name = "/home/ryan/Documents/full_circle/timelapse/20190504_11h30m30s/"
+#
+# jpg_img_check = subprocess.check_output((["ls", full_dir_name]))
+# jpg_img_check = jpg_img_check.decode('utf-8')
+# print(jpg_img_check)
 #
 # frequency = sys.argv[1]
 # duration = sys.argv[2]
