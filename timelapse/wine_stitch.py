@@ -50,12 +50,13 @@ did_stitch = wine_ptgui(x, dir_name, filename)
 while did_stitch < 0:
     did_stitch = wine_ptgui(x, dir_name, filename)
 
-
-# Update the current video, if it exists
-if x > 0:
-    video_stitch(x, "/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "/", "/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "_preview/", filename)
-elif x == 0:
-    first_stitch("/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "/", "/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "_preview/", filename)
+vid_stitch = -1
+while vid_stitch < 0:
+    # Update the current video, if it exists
+    if x > 0:
+        vid_stitch = video_stitch(x, "/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "/", "/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "_preview/", filename)
+    elif x == 0:
+        vid_stitch = first_stitch("/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "/", "/home/ryan/Documents/full_circle/timelapse/" + str(dir_name) + "_preview/", filename)
 
 # Log the action
 jpg_name = "%06d" % (x+1) + "-A.jpg"

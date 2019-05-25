@@ -31,6 +31,7 @@ def video_stitch(x, path_to_jpg, path_to_mp4, log_file):
         message = "Attached new frame to video: " + image_number + "\n"
         log_file.write(message)
         log_file.close()
+        return 0
     except:
         # Print the error to the terminal and to the log file
         print("\n\nError in attaching new frame to video:")
@@ -40,12 +41,14 @@ def video_stitch(x, path_to_jpg, path_to_mp4, log_file):
         log_file.write("Error in attaching new frame to video \n")
         # log_file.write(str(e) + '\n\n')
         log_file.close()
+        return -1
 
 # This function is for stitching the first video
 def first_stitch(path_to_jpg, path_to_mp4, log_file):
     try:
         # take first stitched  image and call it full-stitched-video
         subprocess.call(["ffmpeg", "-y", "-framerate", "24", "-i", path_to_jpg + "000001-A.jpg", "-s", "2048x1024", "-vcodec", "libx264", "-cmp", "22", path_to_mp4 + "full-stitched-video.mp4"])
+        return 0
     except AttributeError as e:
         # Print the error to the terminal and to the log file
         print("\n\nError in attaching new frame to video:")
@@ -54,3 +57,4 @@ def first_stitch(path_to_jpg, path_to_mp4, log_file):
         log_file.write("Error in creating first stitched image: \n")
         log_file.write(str(e) + '\n\n')
         log_file.close()
+        return -1

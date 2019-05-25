@@ -8,7 +8,7 @@ files = subprocess.check_output((["ls", "/home/ryan/Desktop/Stitch_Test_Images"]
 files = files.decode('utf-8')
 files = files.splitlines()
 
-x = 0
+x = 72
 
 while x < len(files):
     photo_location = '/home/ryan/Desktop/Stitch_Test_Images/' + files[x]
