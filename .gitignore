@@ -8,3 +8,5 @@ input_files.txt
 *.txt
 __pycache__/
 *.pyc
+pi/test.py
+pi/python-slackclient/

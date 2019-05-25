@@ -21,6 +21,7 @@ def main():
         for user in user_list.get('members'):
             if user.get('name') == "killbot5000":
                 slack_user_id = user.get('id')
+                print("Found bot user name")
                 break
 
 
