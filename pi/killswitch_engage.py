@@ -60,4 +60,32 @@ def engage():
     
     relay_left.close()
     relay_right.close()
+    
+def engage0():
+    relay_left = open_relay(0)
+    
+    sleep(5)
+    
+    relay_left.setDutyCycle(1.0)
+    print("relay on")
+    sleep(10)
+    relay_left.setDutyCycle(0.0)
+    print("relay off")
+    
+    relay_left.close()
+    
+def engage1():
+    relay_right = open_relay(1)
+    
+    sleep(5)
+    
+    relay_right.setDutyCycle(1.0)
+    print("relay on")
+    sleep(10)
+    relay_right.setDutyCycle(0.0)
+    print("relay off")
+
+    relay_right.close()
+    
+    
 

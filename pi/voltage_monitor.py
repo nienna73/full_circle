@@ -37,7 +37,7 @@ def report_volts():
 	
     stati = []
 
-    stati.append(["_input", _input.getVolts()])
+    stati.append(["input", _input.getVolts()])
     stati.append(["output", output.getVolts()])
     stati.append(["battery", battery.getVolts()])
 	

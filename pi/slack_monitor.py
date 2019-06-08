@@ -7,7 +7,7 @@ import subprocess
 import os
 
 #from voltage_monitor import kill_process
-from killswitch_engage import engage
+from killswitch_engage import engage, engage0, engage1
 from log_status import log_status
 from check_filename import check_filename
 from voltage_monitor import check_volts, report_volts
@@ -38,6 +38,7 @@ def main():
     if slack_client.rtm_connect():
         print ("Connected!")
         ticks = 0
+        ignore = False
 
         while True:
             for message in slack_client.rtm_read():
@@ -47,10 +48,21 @@ def main():
                         split("<@%s>" % slack_user_id)[1].\
                         strip()
 
-                    if re.match(r'.*(engage).*', message_text, re.IGNORECASE):
+                    if re.match(r'.*(engage 0).*', message_text, re.IGNORECASE):
                         # Engage the relay
-                        print("engage")
-                        engage()
+                        print("engage 0")
+                        engage0()
+
+                        slack_client.api_call(
+                            "chat.postMessage",
+                            channel=message['channel'],
+                            text="The killswitch was engaged",
+                            as_user=True)
+                            
+                    if re.match(r'.*(engage 1).*', message_text, re.IGNORECASE):
+                        # Engage the relay
+                        print("engage 1")
+                        engage1()
 
                         slack_client.api_call(
                             "chat.postMessage",
@@ -76,7 +88,10 @@ def main():
                         stati = report_volts()
                         info = ""
                         for key in stati:
-                            info += "The " + key[0] + " has " + str(key[1]) + " volts remaining \n"
+                            if "input" in key[0].lower() and ignore:
+                                continue
+                            else:
+                                info += "The " + key[0] + " has " + str(key[1]) + " volts remaining \n"
                         print(info)
                             
                         slack_client.api_call(
@@ -85,9 +100,21 @@ def main():
                             text=info,
                             as_user=True)
                             
+                    if re.match(r'.*(ignore input).*', message_text, re.IGNORECASE):
+                        # Report on the input, battery, and output 
+                        # voltage status
+                        print("ignore input")
+                        ignore = True
+                        
+                    if re.match(r'.*(stop ignore).*', message_text, re.IGNORECASE):
+                        # Report on the input, battery, and output 
+                        # voltage status
+                        print("stop ignore")
+                        ignore = False
+                            
                             
                     if re.match(r'.*(help).*', message_text, re.IGNORECASE):
-                        # Prouce a usage guide
+                        # Produce a usage guide
                         print("help")
                         
                         info = ("Hello! I'm the Killbot5000. I monitor the cameras and "
@@ -96,6 +123,10 @@ def main():
                                "- 'there' makes sure I'm online \n" 
                                "- 'engage' tells me to toggle the relays \n" 
                                "- 'status' produces a status report of all the power sources \n"
+                               "- 'engage 0' toggles relay 0 \n"
+                               "- 'engage 1' toggles relay 1 \n"
+                               "- 'ignore input' tells me not to report on the input voltage \n"
+                               "- 'stop ignore' tells me to report on the input voltage again (enabled by default) \n"
                                "- 'help' brings up this dialogue \n\n"
                                "Happy Killbot-ing!")
                                
@@ -116,12 +147,16 @@ def main():
                 stati = check_volts()
                 if stati != []:
                     for key in stati:
-                        info = "The " + key[0] + " has " + str(key[1]) + " volts remaining"
-                        slack_client.api_call(
-                            "chat.postMessage",
-                            channel=message['channel'],
-                            text=info,
-                            as_user=True)
+                        if "input" in key[0].lower() and ignore:
+                            continue
+                        else:
+                            info = "The " + key[0] + " has " + str(key[1]) + " volts remaining"
+                            slack_client.api_call(
+                                "chat.postMessage",
+                                channel=message['channel'],
+                                text=info,
+                                as_user=True)
+                            
                 
             if ticks % 3600 == 0:
                 # check for new filename every hour
