@@ -1,9 +1,11 @@
 #! /usr/env/python
 import subprocess
 import time
-
+import os
 
 subprocess.call(["python", "/home/pi/Documents/full_circle/pi/close_current.py"])
-time.sleep(5)
+time.sleep(15)
 
-subprocess.Popen(["python", "/home/pi/Documents/full_circle/pi/slack_monitor.py"])
+print("Calling slack monitor...")
+os.chdir("/home/pi/Documents/full_circle/pi/")
+subprocess.call(["python3", "slack_monitor.py"])
