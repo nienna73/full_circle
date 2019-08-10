@@ -12,6 +12,7 @@ dir_name = sys.argv[2]      # location where all .arw files are stored
 filename = sys.argv[3]
 move_to_drive = sys.argv[4]
 camera_ports = int(sys.argv[5])
+drive_dir = sys.argv[6]
 
 
 full_dir_name = "/home/ryan/Documents/full_circle/timelapse/" + dir_name + "/"
@@ -68,4 +69,4 @@ log_file.close()
 # Move the files to the external drive, if applicable
 if move_to_drive.lower() == 'y':
     if x > 0:
-        copy_to_drive(dir_name, x, camera_ports)
+        copy_to_drive(dir_name, x, camera_ports, drive_dir)

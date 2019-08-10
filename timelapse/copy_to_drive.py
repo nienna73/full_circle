@@ -4,8 +4,8 @@ import sys
 import time
 
 
-def copy_to_drive(dir_name, x, number_of_cameras):
-    full_dir_name = "/media/ryan/4TB-WD-012/" + dir_name
+def copy_to_drive(dir_name, x, number_of_cameras, drive_dir):
+    full_dir_name = drive_dir + "/" + dir_name
 
     image_number = "%06d" % (x)
 
