@@ -16,8 +16,30 @@ def video_stitch(x, path_to_jpg, path_to_mp4, log_file):
     try:
         image_number = "%06d" % (x+1)
 
+        photo_name = "%06d" % (int(x+1)) + "-A.arw"
+        shutterspeed = subprocess.check_output(["exiftool", "-shutterspeed", photo_name]).decode('utf-8').split(':')[1].strip()
+        iso = subprocess.check_output(["exiftool", "-iso", photo_name]).decode('utf-8').split(':')[1].strip()
+        frame_date = subprocess.check_output(["exiftool", "-modifydate", photo_name]).decode('utf-8')
+        frame_date = frame_date.replace(":", "$", 1)
+        frame_date = frame_date.split("$")[1].strip()
+        frame_date = frame_date.replace(":", ".")
+
+        display_info = ""
+        display_info = f"{display_info} drawtext='text='Frame number = {str(x+1)}"
+        display_info = f"{display_info}    Shutterspeed = {str(shutterspeed)}"
+        display_info = f"{display_info}    ISO = {str(iso)}"
+        display_info = f"{display_info}    Date = {str(frame_date)}':"
+        display_info = f"{display_info} fontcolor=white: fontsize=36: box=1: boxcolor=black@0.5:"
+        display_info = f"{display_info} boxborderw=5: x=(w-text_w): y=(h-text_h)'"
+
         # take the next stitched image and make it into the newest-video-frame
-        subprocess.call(["ffmpeg", "-y", "-framerate", "24", "-i", path_to_jpg + image_number + "-A.jpg", "-s", "2048x1024", "-vcodec", "libx264", "-cmp", "22", path_to_mp4 + "newest-video-frame.mp4"])
+        subprocess.call(["ffmpeg", "-y", "-framerate", "24", "-i", path_to_jpg + image_number + "-A.jpg", "-s", "2048x1024", "-vcodec", "libx264", "-cmp", "22", path_to_mp4 + "temp-frame.mp4"])
+
+        # add information overlay
+        # first one adds the logo,
+        # second one adds all other information
+        subprocess.call(["ffmpeg", "-y", "-i", path_to_mp4 + "temp-frame.mp4", "-vf", "movie=../FCV_Logo_White_160x80.png [watermark]; [in][watermark] overlay=10:main_h-overlay_h-10 [out]", path_to_mp4 + "temp-frame-logo.mp4"])
+        subprocess.call(["ffmpeg", "-y", "-i", path_to_mp4 + "temp-frame-logo.mp4", "-vf", display_info, path_to_mp4 + "newest-video-frame.mp4"])
 
         # take the current full-stitched-video and add the newest-video-frame to the end of it.
         subprocess.call(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", "/home/ryan/watchfile/input_files.txt", "-c", "copy", path_to_mp4 + "new-full-stitched-video.mp4"])
@@ -48,8 +70,33 @@ def video_stitch(x, path_to_jpg, path_to_mp4, log_file):
 # This function is for stitching the first video
 def first_stitch(path_to_jpg, path_to_mp4, log_file):
     try:
+
+        photo_name = "%06d" % 1 + "-A.arw"
+        shutterspeed = subprocess.check_output(["exiftool", "-shutterspeed", photo_name]).decode('utf-8').split(':')[1].strip()
+        iso = subprocess.check_output(["exiftool", "-iso", photo_name]).decode('utf-8').split(':')[1].strip()
+        frame_date = subprocess.check_output(["exiftool", "-modifydate", photo_name]).decode('utf-8')
+        frame_date = frame_date.replace(":", "$", 1)
+        frame_date = frame_date.split("$")[1].strip()
+        frame_date = frame_date.replace(":", ".")
+
+        display_info = ""
+        display_info = f"{display_info} drawtext='text='Frame number = 1"
+        display_info = f"{display_info}    Shutterspeed = {str(shutterspeed)}"
+        display_info = f"{display_info}    ISO = {str(iso)}"
+        display_info = f"{display_info}    Date = {str(frame_date)}':"
+        display_info = f"{display_info} fontcolor=white: fontsize=36: box=1: boxcolor=black@0.5:"
+        display_info = f"{display_info} boxborderw=5: x=(w-text_w): y=(h-text_h)'"
+
+
         # take first stitched  image and call it full-stitched-video
-        subprocess.call(["ffmpeg", "-y", "-framerate", "24", "-i", path_to_jpg + "000001-A.jpg", "-s", "2048x1024", "-vcodec", "libx264", "-cmp", "22", path_to_mp4 + "full-stitched-video.mp4"])
+        subprocess.call(["ffmpeg", "-y", "-framerate", "24", "-i", path_to_jpg + "000001-A.jpg", "-s", "2048x1024", "-vcodec", "libx264", "-cmp", "22", path_to_mp4 + "temp-frame.mp4"])
+
+        # add information overlay
+        # first one adds the logo,
+        # second one adds all other information
+        subprocess.call(["ffmpeg", "-y", "-i", path_to_mp4 + "temp-frame.mp4", "-vf", "movie=../FCV_Logo_White_160x80.png [watermark]; [in][watermark] overlay=10:main_h-overlay_h-10 [out]", path_to_mp4 + "temp-frame-logo.mp4"])
+        subprocess.call(["ffmpeg", "-y", "-i", path_to_mp4 + "temp-frame-logo.mp4", "-vf", display_info, path_to_mp4 + "full-stitched-video.mp4"])
+
         show_frame(path_to_mp4 + "full-stitched-video.mp4", 1)
         return 0
     except AttributeError as e:
