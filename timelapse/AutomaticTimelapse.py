@@ -288,7 +288,7 @@ def main():
                     # wine_process.wait()
 
                 x += 1
-                # os.chdir("../")                 # Change back a directory to prevent
+                # os.chdir("../")               # Change back a directory to prevent
                                                 # creating multiple nested ones
 
                 time.sleep(3)

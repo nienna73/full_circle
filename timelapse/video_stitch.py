@@ -31,7 +31,7 @@ def video_stitch(x, path_to_jpg, path_to_mp4, log_file):
         message = "Attached new frame to video: " + image_number + "\n"
         log_file.write(message)
         log_file.close()
-        show_frame(path_to_mp4 + "newest-video-frame.mp4")
+        show_frame(path_to_mp4 + "newest-video-frame.mp4", x+1)
         return 0
     except:
         # Print the error to the terminal and to the log file
@@ -42,7 +42,7 @@ def video_stitch(x, path_to_jpg, path_to_mp4, log_file):
         log_file.write("Error in attaching new frame to video \n")
         # log_file.write(str(e) + '\n\n')
         log_file.close()
-        show_frame(path_to_mp4 + "new-full-stitched-video.mp4")
+        show_frame(path_to_mp4 + "new-full-stitched-video.mp4", x+1)
         return -1
 
 # This function is for stitching the first video
@@ -50,7 +50,7 @@ def first_stitch(path_to_jpg, path_to_mp4, log_file):
     try:
         # take first stitched  image and call it full-stitched-video
         subprocess.call(["ffmpeg", "-y", "-framerate", "24", "-i", path_to_jpg + "000001-A.jpg", "-s", "2048x1024", "-vcodec", "libx264", "-cmp", "22", path_to_mp4 + "full-stitched-video.mp4"])
-        show_frame(path_to_mp4 + "full-stitched-video.mp4")
+        show_frame(path_to_mp4 + "full-stitched-video.mp4", 1)
         return 0
     except AttributeError as e:
         # Print the error to the terminal and to the log file
@@ -62,6 +62,6 @@ def first_stitch(path_to_jpg, path_to_mp4, log_file):
         log_file.close()
         return -1
 
-def show_frame(frame_name):
-    subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/display_frame.py", frame_name])
+def show_frame(frame_name, x):
+    subprocess.Popen(["python3", "/home/ryan/Documents/full_circle/timelapse/display_frame.py", frame_name, str(x)])
     return
