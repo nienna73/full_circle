@@ -19,8 +19,8 @@ class PowerSource():
 		self.channel = channel
 		this = self
 		
-		def onVoltageChangeHandler(self, voltage):
-			this.volts = (voltage - 2.5) / 0.0681
+	def onVoltageChangeHandler(self, voltage):
+		this.volts = (voltage - 2.5) / 0.0681
 
 		"""
 		* Add event handlers before calling open so that no events are missed.

@@ -13,21 +13,21 @@ from Phidget22.Phidget import *
 
 
 def open_relay(channel):
-    relay = DigitalOutput()
-    relay.setOnAttachHandler(relayAttachHandler)
-    relay.setOnDetachHandler(relayDetachHandler)
-    relay.setOnErrorHandler(relayErrorHandler)
+	relay = DigitalOutput()
+	relay.setOnAttachHandler(relayAttachHandler)
+	relay.setOnDetachHandler(relayDetachHandler)
+	relay.setOnErrorHandler(relayErrorHandler)
     
-    try:
-	relay.setDeviceSerialNumber(271638)
-	relay.setChannel(channel)
-	print('Wait for relay left to attach...')
-	relay.openWaitForAttachment(5000)
-    except PhidgetException as e:
-	print("Program Terminated: Relay Open Failed")
-	return
+	try:
+		relay.setDeviceSerialNumber(271638)
+		relay.setChannel(channel)
+		print('Wait for relay left to attach...')
+		relay.openWaitForAttachment(5000)
+	except PhidgetException as e:
+		print("Program Terminated: Relay Open Failed")
+		return
 		
-    return relay
+	return relay
 	
 	
 def relayAttachHandler(self):
