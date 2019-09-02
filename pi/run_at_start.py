@@ -8,4 +8,4 @@ time.sleep(15)
 
 print("Calling slack monitor...")
 os.chdir("/home/pi/Documents/full_circle/pi/")
-subprocess.call(["python3", "slack_monitor.py"])
+subprocess.call(["python", "slack_monitor.py"])
