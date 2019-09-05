@@ -15,17 +15,17 @@ def log_status(filename):
 	battery_update_message = "Battery Voltage at " + str(current_datetime) + " is: " + str(battery.getVolts()) + "\n"
 	log_file = open(filename, "a+")
 	log_file.write(battery_update_message)
+	battery.closeDevice()
 	
 	output_update_message = "Output Voltage at " + str(current_datetime) + " is: " + str(output.getVolts()) + "\n"
 	log_file.write(output_update_message)
+	output.closeDevice()
 	
 	_input_update_message = "Input Voltage at " + str(current_datetime) + " is: " + str(_input.getVolts()) + "\n\n"
 	log_file.write(_input_update_message)
+	_input.closeDevice()
+	
 	
 	log_file.close()
-	
-	_input.closeDevice()
-	output.closeDevice()
-	battery.closeDevice()
 	
 	return
