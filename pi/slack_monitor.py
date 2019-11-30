@@ -16,14 +16,13 @@ from voltage_monitor import check_volts, report_volts
 
 
 def main():
-    time.sleep(5)
     
     log_file_name = str(time.strftime("%Y%m%d_%Hh%Mm%Ss")) + "_log.txt"
     log_file = open(log_file_name, "a+")
     log_file.write("\nStart of session\n")
     log_file.close()
     
-    token = os.getenv("KILLBOT_5000_TOKEN")
+    token = os.getenv("KILLBOT_5001_TOKEN")
     slack_client = SlackClient(token)
     
     if token:
@@ -37,7 +36,7 @@ def main():
     user_list = slack_client.api_call("users.list")
     if user_list['ok']:
         for user in user_list.get('members'):
-            if user.get('name') == "killbot5000":
+            if user.get('name') == "killbot5001":
                 slack_user_id = user.get('id')
                 print("Found bot user name")
                 break
@@ -64,7 +63,7 @@ def main():
                     if re.match(r'.*(engage 0).*', message_text, re.IGNORECASE):
                         # Engage the relay
                         print("engage 0")
-                        engage0()
+                        #engage0()
 
                         slack_client.api_call(
                             "chat.postMessage",
@@ -75,7 +74,7 @@ def main():
                     if re.match(r'.*(engage 1).*', message_text, re.IGNORECASE):
                         # Engage the relay
                         print("engage 1")
-                        engage1()
+                        #engage1()
                         slack_client.api_call(
                                 "chat.postMessage",
                                 channel=message['channel'],
@@ -97,20 +96,20 @@ def main():
                         # voltage status
                         print("status")
 
-                        stati = report_volts()
-                        info = ""
-                        for key in stati:
-                            if "input" in key[0].lower() and ignore:
-                                continue
-                            else:
-                                info += "The " + key[0] + " has " + str(key[1]) + " volts remaining \n"
-                        print(info)
+                        #stati = report_volts()
+                        #info = ""
+                        #for key in stati:
+                        #    if "input" in key[0].lower() and ignore:
+                        #        continue
+                        #    else:
+                        #        info += "The " + key[0] + " has " + str(key[1]) + " volts remaining \n"
+                        #print(info)
 
-                        slack_client.api_call(
-                            "chat.postMessage",
-                            channel=message['channel'],
-                            text=info,
-                            as_user=True)
+                        #slack_client.api_call(
+                        #    "chat.postMessage",
+                        #    channel=message['channel'],
+                        #    text=info,
+                        #    as_user=True)
 
                     if re.match(r'.*(ignore input).*', message_text, re.IGNORECASE):
                         # Report on the input, battery, and output 
@@ -129,7 +128,7 @@ def main():
                         # Produce a usage guide
                         print("help")
 
-                        info = ("Hello! I'm the Killbot5000. I monitor the cameras and "
+                        info = ("Hello! I'm the Killbot5001. I monitor the cameras and "
                                "their power sources. You can use these keywords to communicate " 
                                "with me: \n" 
                                "- 'there' makes sure I'm online \n" 
@@ -150,31 +149,31 @@ def main():
                             as_user=True)
                         
                         
-            if ticks % 60 == 0:
+            #if ticks % 60 == 0:
                 # Write status to log file every minute
-                log_status(log_file_name)
+            #    log_status(log_file_name)
         
-            if ticks % 300 == 0:
+            #if ticks % 300 == 0:
                 # Check volt statuses/stati every 5 minutes
-                stati = check_volts()
-                if stati != []:
-                    for key in stati:
-                        if "input" in key[0].lower() and ignore:
-                            continue
-                        else:
-                            info = "The " + key[0] + " has " + str(key[1]) + " volts remaining"
-                            slack_client.api_call(
-                                "chat.postMessage",
-                                channel=message['channel'],
-                                text=info,
-                                as_user=True)
+            #    stati = check_volts()
+            #    if stati != []:
+            #        for key in stati:
+            #            if "input" in key[0].lower() and ignore:
+            #                continue
+            #            else:
+            #                info = "The " + key[0] + " has " + str(key[1]) + " volts remaining"
+            #                slack_client.api_call(
+            #                    "chat.postMessage",
+            #                    channel=message['channel'],
+            #                    text=info,
+            #                    as_user=True)
                             
                 
-            if ticks % 3600 == 0:
+            #if ticks % 3600 == 0:
                 # check for new filename every hour
-                new_name = check_filename(log_file_name)
-                if new_name != None:
-                    log_file_name = new_name
+            #    new_name = check_filename(log_file_name)
+            #    if new_name != None:
+            #        log_file_name = new_name
 
 
             time.sleep(1)
