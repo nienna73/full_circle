@@ -55,4 +55,4 @@ filename = "%06d" % (x + 1) + "-" + str(chr(65 + int(sys.argv[2]))) + ".arw"
 # Sets the camera to usb-capture mode
 # This tells the camera to immediately capture an image, download it with
 # filename 'filename', then delete it from the camera
-subprocess.call(["gphoto2", "--port=" + camera_ports[int(sys.argv[2])], "--capture-image-and-download", "--filename=" + filename])
+subprocess.call(["gphoto2", "--port=" + camera_ports[int(sys.argv[2])], "--set-config=/main/capturesettings/f-number=8", "--capture-image-and-download", "--filename=" + filename])

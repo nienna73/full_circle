@@ -222,6 +222,7 @@ def main():
                     for port in camera_ports:
                         print(port)
                         subprocess.call(["gphoto2", "--port=" + port, "--set-config-value", "shutterspeed=" + str(shutter), "--set-config-value", "iso=" + str(iso)])
+                        # "--set-config=/main/capturesettings/f-number=4"
 
                     # Open an instance of capture.py for each camera, where:
                     # x is the number-th photo taken (used for the filename)
@@ -238,6 +239,7 @@ def main():
                     for port in camera_ports:
                         print(port)
                         subprocess.call(["gphoto2", "--port=" + port, "--set-config", "shutterspeed=bulb", "--set-config-value", "iso=" + str(iso)])
+                        # "--set-config=/main/capturesettings/f-number=4"
 
                     i = 0
                     process = ""
